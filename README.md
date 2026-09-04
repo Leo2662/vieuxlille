@@ -66,3 +66,13 @@ src/
 - **Le domaine.** Pour servir le site sur `lumvieuxlille.fr`, remettre `site`
   sur ce domaine dans `astro.config.mjs`, supprimer `base`, et ajouter un
   fichier `public/CNAME`.
+
+## Activer le déploiement GitHub Pages
+
+Le workflow échoue tant que Pages n'a pas été activé une première fois sur le
+dépôt : le `GITHUB_TOKEN` n'a pas le droit de créer le site lui-même
+(`Create Pages site failed. Error: Resource not accessible by integration`).
+
+À faire une seule fois, dans **Settings → Pages → Build and deployment**,
+choisir **Source : GitHub Actions**, puis relancer le workflow. Le build,
+lui, tourne déjà avant cette étape et n'en dépend pas.

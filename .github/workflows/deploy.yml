@@ -29,16 +29,16 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Configuration de Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
       - name: Installation des dépendances
         run: npm ci
 
       - name: Build du site
         run: npm run build
+
+      - name: Configuration de Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
 
       - name: Envoi de l'artefact
         uses: actions/upload-pages-artifact@v3
