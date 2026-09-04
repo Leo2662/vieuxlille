@@ -4,7 +4,7 @@ Landing page du Coffee Shop & Brunch Healthy LÜM Vieux-Lille,
 94 rue Saint-André à Lille. Le second établissement, LÜM Lille Centre, a son
 propre site : https://leo2662.github.io/lillecentre
 
-En ligne : https://leo2662.github.io/vieuxlille/
+En ligne : https://lumvieuxlille.fr
 
 Deux pages — l'accueil et la carte, réduite à l'offre de la braderie des
 5 & 6 septembre.
@@ -62,16 +62,16 @@ src/
   septembre. L'ancienne carte complète — focaccias, pâtisseries, boissons,
   barista, formules — est dans l'historique git, avec le rendu des formules en
   cartes que `carte.astro` ne porte plus.
-- **Le domaine.** Le site sort aujourd'hui sur
-  `leo2662.github.io/vieuxlille`. Pour le servir sur `lumvieuxlille.fr`,
-  remettre `site` sur ce domaine dans `astro.config.mjs`, supprimer `base`, et
-  ajouter un fichier `public/CNAME`.
 
 ## Déploiement
 
 Chaque push sur `claude/lum-vieux-lille-site-fczgat` déclenche
 `.github/workflows/deploy.yml`, qui construit le site et le publie sur
-GitHub Pages.
+GitHub Pages, servi sur `lumvieuxlille.fr`.
+
+Le domaine tient à `public/CNAME` : Astro recopie ce fichier dans `dist/`, et
+c'est lui qui conserve le domaine personnalisé d'un déploiement à l'autre. Le
+supprimer ferait retomber le site sur `leo2662.github.io/vieuxlille`.
 
 Le premier run avait échoué : `actions/configure-pages` n'arrive pas à créer
 le site Pages avec le seul `GITHUB_TOKEN` tant que Pages n'existe pas encore
