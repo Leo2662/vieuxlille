@@ -3,11 +3,10 @@
 // insécable avant l'euro, comme le veut la typographie française.
 //
 // ⚠️  À RELIRE — CES PRIX SONT DÉJÀ PUBLICS
-// Cette carte reprend la gamme commune à LÜM (celle affichée sur le site de
-// Lille Centre) et y ajoute les signatures du Vieux-Lille : les élixirs, le
-// café de torréfaction MUDA, les matchas et le kombucha Goodsky. Les prix des
-// lignes propres au Vieux-Lille sont posés dans la même fourchette que ceux
-// de Lille Centre : à confirmer boutique par boutique.
+// Hors rubrique Spécial Braderie, les prix sont ceux de LÜM Lille Centre :
+// à confirmer boutique par boutique. Le café de torréfaction MUDA et le
+// kombucha Goodsky sont propres au Vieux-Lille et ont gardé le prix de la
+// ligne correspondante à Lille Centre.
 
 export interface Article {
   nom: string;
@@ -28,31 +27,6 @@ export interface Formule {
 }
 
 export const rubriques: Rubrique[] = [
-  {
-    titre: 'Élixirs',
-    articles: [
-      {
-        nom: 'Élixir Spiruline',
-        prix: '6,50 €',
-        description: 'Spiruline, pomme verte & citron vert',
-      },
-      {
-        nom: 'Élixir Collagène',
-        prix: '6,90 €',
-        description: 'Collagène marin, fruits rouges & hibiscus',
-      },
-      {
-        nom: 'Élixir Curcuma',
-        prix: '6,50 €',
-        description: 'Curcuma, gingembre, lait végétal & miel',
-      },
-      {
-        nom: 'Élixir Cacao Cru',
-        prix: '6,90 €',
-        description: 'Cacao cru, maca & lait d’avoine',
-      },
-    ],
-  },
   {
     titre: 'Salé',
     articles: [
@@ -134,14 +108,6 @@ export const rubriques: Rubrique[] = [
 ];
 
 export const formules: Formule[] = [
-  {
-    // ⚠️ Le croissant a été retiré de la carte : cette formule renvoie à un
-    // produit qui n'y figure plus. Changer la viennoiserie ou retirer la
-    // formule.
-    nom: 'Petit Déj',
-    prix: '3,50 €',
-    composition: ['1 Croissant', '1 Café Filtre MUDA'],
-  },
   {
     nom: 'Petit Déj Gourmand',
     prix: '5,50 €',

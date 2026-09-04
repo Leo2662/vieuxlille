@@ -57,14 +57,11 @@ src/
 
 ## À confirmer — le site est déjà public
 
-- **Les prix de `src/data/carte.ts`.** La carte reprend la gamme commune à LÜM
-  (celle affichée sur le site de Lille Centre) et y ajoute les signatures du
-  Vieux-Lille : élixirs, café MUDA, matchas, kombucha Goodsky. Les prix des
-  lignes propres au Vieux-Lille sont posés dans la même fourchette que ceux de
-  Lille Centre — à confirmer.
+- **Les prix de `src/data/carte.ts`.** Hors rubrique Spécial Braderie, ce sont
+  ceux de LÜM Lille Centre — à confirmer boutique par boutique. Le café MUDA et
+  le kombucha Goodsky sont propres au Vieux-Lille et ont gardé le prix de la
+  ligne correspondante à Lille Centre.
 - **Les horaires** affichés sur l'accueil (mercredi → lundi, 10h – 18h).
-- **Le lien TikTok.** Aucun compte TikTok Vieux-Lille n'a été trouvé : le second
-  bouton de l'accueil pointe pour l'instant vers l'itinéraire Google Maps.
 - **Le domaine.** Le site sort aujourd'hui sur
   `leo2662.github.io/vieuxlille`. Pour le servir sur `lumvieuxlille.fr`,
   remettre `site` sur ce domaine dans `astro.config.mjs`, supprimer `base`, et
