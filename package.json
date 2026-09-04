@@ -1,0 +1,19 @@
+{
+  "name": "vieuxlille",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@fontsource-variable/nunito": "^5.3.0",
+    "@fontsource/anton": "^5.3.0",
+    "@fontsource/caveat": "^5.3.0",
+    "astro": "^7.3.1"
+  }
+}

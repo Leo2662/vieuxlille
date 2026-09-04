@@ -1,0 +1,247 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Entete from '../components/Entete.astro';
+import { rubriques, formules } from '../data/carte';
+---
+
+<BaseLayout
+  title="La carte — LÜM Vieux-Lille"
+  description="Élixirs, brunch, pâtisseries et café de spécialité MUDA chez LÜM Vieux-Lille."
+>
+  <div class="page">
+    <Entete />
+
+    <h1 class="titre-page">La carte</h1>
+
+    {
+      rubriques.map((rubrique) => (
+        <section class="bloc">
+          <div class="chip">
+            <h2>{rubrique.titre}</h2>
+          </div>
+
+          <ul class={rubrique.articles.length > 8 ? 'articles articles--deux' : 'articles'}>
+            {rubrique.articles.map((article) => (
+              <li class="article">
+                <div class="article__ligne">
+                  <span class="article__nom">{article.nom}</span>
+                  <span class="article__filet" aria-hidden="true" />
+                  <span class="article__prix">{article.prix}</span>
+                </div>
+                {article.description && <p class="article__desc">{article.description}</p>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+
+    <section class="bloc">
+      <div class="chip">
+        <h2>Formules</h2>
+      </div>
+
+      <div class="formules">
+        {
+          formules.map((formule) => (
+            <article class="formule">
+              <div class="formule__tete">
+                <h3>{formule.nom}</h3>
+                <span class="formule__prix">{formule.prix}</span>
+              </div>
+              <ul>
+                {formule.composition.map((ligne) => (
+                  <li>{ligne}</li>
+                ))}
+              </ul>
+              {formule.supplement && <p class="formule__sup">{formule.supplement}</p>}
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <p class="note">Prix en euros, taxes comprises.</p>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: 28px var(--gutter) 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 46px;
+  }
+
+  .titre-page {
+    margin: 18px 0 0;
+    text-align: center;
+    font-size: clamp(2.6rem, 9vw, 5rem);
+    color: var(--cream);
+  }
+
+  /* --- Bloc crème, avec cartouche de titre à cheval sur le bord --- */
+  .bloc {
+    position: relative;
+    padding: 62px 34px 38px;
+    border-radius: var(--radius-lg);
+    background: var(--cream);
+    box-shadow: var(--shadow);
+  }
+
+  .chip {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: max-content;
+    max-width: calc(100% - 40px);
+    padding: 11px 28px;
+    border: 3px solid var(--terracotta-light);
+    border-radius: var(--radius);
+    background: var(--cream);
+  }
+
+  .chip h2 {
+    font-size: clamp(1.3rem, 3.4vw, 1.9rem);
+  }
+
+  /* --- Articles --- */
+  .articles {
+    list-style: none;
+    /* Sur une colonne, on resserre : sinon les pointillés s'étirent */
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0;
+    display: grid;
+    gap: 20px 46px;
+  }
+
+  .articles--deux {
+    max-width: none;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .article__ligne {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .article__nom {
+    font-weight: 800;
+    font-size: 1.02rem;
+  }
+
+  .article__filet {
+    flex: 1;
+    min-width: 18px;
+    border-bottom: 2px dotted var(--terracotta-light);
+    transform: translateY(-5px);
+  }
+
+  .article__prix {
+    font-weight: 800;
+    font-size: 1.02rem;
+    white-space: nowrap;
+  }
+
+  .article__desc {
+    margin-top: 2px;
+    max-width: 46ch;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--brown);
+  }
+
+  /* --- Formules --- */
+  .formules {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+  }
+
+  .formule {
+    padding: 22px 24px 24px;
+    border: 3px solid var(--terracotta-light);
+    border-radius: var(--radius);
+  }
+
+  .formule__tete {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid var(--cream-dark);
+  }
+
+  .formule__tete h3 {
+    font-size: 1.35rem;
+  }
+
+  .formule__prix {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    white-space: nowrap;
+  }
+
+  .formule ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+
+  .formule li {
+    position: relative;
+    padding-left: 20px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    font-weight: 700;
+  }
+
+  /* Puce en losange, dans l'esprit des tracés de l'affiche */
+  .formule li::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 0.55em;
+    width: 7px;
+    height: 7px;
+    background: var(--terracotta);
+    transform: rotate(45deg);
+  }
+
+  .formule__sup {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 2px dotted var(--terracotta-light);
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--brown);
+  }
+
+  .note {
+    text-align: center;
+    color: var(--cream);
+    font-size: 0.85rem;
+    font-weight: 700;
+    opacity: 0.75;
+  }
+
+  @media (max-width: 768px) {
+    .bloc {
+      padding: 56px 20px 32px;
+    }
+
+    .articles--deux,
+    .formules {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

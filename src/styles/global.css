@@ -1,0 +1,135 @@
+/* ==========================================================================
+   LÜM — Design tokens
+   Même direction artistique que LÜM Lille Centre — traits épais, formes
+   arrondies, illustrations au trait et accents manuscrits — déclinée dans
+   la terre cuite du Vieux-Lille (#944826) sur crème.
+   ========================================================================== */
+
+:root {
+  /* --- Couleurs ------------------------------------------------------- */
+  --terracotta: #944826;       /* Encre principale : fonds, textes, traits */
+  --terracotta-dark: #6e351c;  /* Survols, ombres portées */
+  --terracotta-light: #c4714a; /* Bordures secondaires, filets, puces */
+  --brown: #5c3d2e;            /* Texte atténué sur crème (contraste AA) */
+  --cream: #f9f1e6;            /* Fond des blocs */
+  --cream-dark: #f0e5d4;       /* Aplats secondaires, séparateurs */
+  --white: #ffffff;            /* Contours de titres, texte sur terre cuite */
+
+  /* --- Typographie ---------------------------------------------------- */
+  --font-display: 'Anton', 'Impact', sans-serif;      /* Titres affiche */
+  --font-body: 'Nunito Variable', system-ui, sans-serif; /* UI et texte courant */
+  --font-script: 'Caveat', cursive;                   /* Accents manuscrits */
+
+  /* --- Formes --------------------------------------------------------- */
+  --radius: 18px;
+  --radius-lg: 28px;
+  --border: 3px solid var(--terracotta);
+  --shadow: 0 4px 20px rgba(148, 72, 38, 0.16);
+  --shadow-hover: 0 10px 32px rgba(148, 72, 38, 0.28);
+
+  /* --- Rythme --------------------------------------------------------- */
+  --page-max: 1200px;
+  --gutter: 24px;
+  --section-y: 80px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body {
+  margin: 0;
+  background: var(--terracotta);
+  color: var(--terracotta);
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400; /* Anton n'a qu'une graisse */
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* --- Titre contourné, comme sur l'affiche ----------------------------- */
+.lum-outlined {
+  color: var(--terracotta);
+  -webkit-text-stroke: 6px var(--white);
+  paint-order: stroke fill;
+}
+
+/* --- Bouton pilule ---------------------------------------------------- */
+.lum-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 30px;
+  border: 3px solid var(--terracotta);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--terracotta);
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.lum-pill-btn:hover {
+  background: var(--terracotta);
+  color: var(--cream);
+}
+
+.lum-pill-btn .arrow {
+  transition: transform 0.2s;
+}
+
+.lum-pill-btn:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* Sur fond terre cuite, on inverse */
+.lum-pill-btn--inverse {
+  border-color: var(--cream);
+  color: var(--cream);
+}
+
+.lum-pill-btn--inverse:hover {
+  background: var(--cream);
+  color: var(--terracotta);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
