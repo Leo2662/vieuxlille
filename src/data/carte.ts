@@ -2,7 +2,7 @@
 // Les prix sont des chaînes : on garde la virgule décimale et l'espace
 // insécable avant l'euro, comme le veut la typographie française.
 //
-// ⚠️  À RELIRE AVANT MISE EN LIGNE
+// ⚠️  À RELIRE — CES PRIX SONT DÉJÀ PUBLICS
 // Cette carte reprend la gamme commune à LÜM (celle affichée sur le site de
 // Lille Centre) et y ajoute les signatures du Vieux-Lille : les élixirs, le
 // café de torréfaction MUDA, les matchas et le kombucha Goodsky. Les prix des

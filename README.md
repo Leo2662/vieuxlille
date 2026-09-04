@@ -4,8 +4,10 @@ Landing page du coffee shop, brunch healthy et salon de thé LÜM Vieux-Lille,
 94 rue Saint-André à Lille. Le second établissement, LÜM Lille Centre, a son
 propre site : https://leo2662.github.io/lillecentre
 
-État actuel : initialisation du projet — une page « hello world » qui pose la
-direction artistique et les fondations techniques.
+En ligne : https://leo2662.github.io/vieuxlille/
+
+Deux pages pour l'instant — l'accueil et la carte — qui posent la direction
+artistique et les fondations techniques.
 
 ## Stack
 
@@ -53,7 +55,7 @@ src/
 └── styles/global.css          # variables de design et composants de base
 ```
 
-## À vérifier avant mise en ligne
+## À confirmer — le site est déjà public
 
 - **Les prix de `src/data/carte.ts`.** La carte reprend la gamme commune à LÜM
   (celle affichée sur le site de Lille Centre) et y ajoute les signatures du
@@ -63,16 +65,22 @@ src/
 - **Les horaires** affichés sur l'accueil (mercredi → lundi, 10h – 18h).
 - **Le lien TikTok.** Aucun compte TikTok Vieux-Lille n'a été trouvé : le second
   bouton de l'accueil pointe pour l'instant vers l'itinéraire Google Maps.
-- **Le domaine.** Pour servir le site sur `lumvieuxlille.fr`, remettre `site`
-  sur ce domaine dans `astro.config.mjs`, supprimer `base`, et ajouter un
-  fichier `public/CNAME`.
+- **Le domaine.** Le site sort aujourd'hui sur
+  `leo2662.github.io/vieuxlille`. Pour le servir sur `lumvieuxlille.fr`,
+  remettre `site` sur ce domaine dans `astro.config.mjs`, supprimer `base`, et
+  ajouter un fichier `public/CNAME`.
 
-## Activer le déploiement GitHub Pages
+## Déploiement
 
-Le workflow échoue tant que Pages n'a pas été activé une première fois sur le
-dépôt : le `GITHUB_TOKEN` n'a pas le droit de créer le site lui-même
-(`Create Pages site failed. Error: Resource not accessible by integration`).
+Chaque push sur `claude/lum-vieux-lille-site-fczgat` déclenche
+`.github/workflows/deploy.yml`, qui construit le site et le publie sur
+GitHub Pages.
 
-À faire une seule fois, dans **Settings → Pages → Build and deployment**,
-choisir **Source : GitHub Actions**, puis relancer le workflow. Le build,
-lui, tourne déjà avant cette étape et n'en dépend pas.
+Le premier run avait échoué : `actions/configure-pages` n'arrive pas à créer
+le site Pages avec le seul `GITHUB_TOKEN` tant que Pages n'existe pas encore
+sur le dépôt. Une fois Pages activé, le run suivant est passé et le site est
+publié.
+
+Si des runs « pages build and deployment » apparaissent et échouent, c'est que
+la source Pages est repassée sur une branche : la remettre sur
+**Settings → Pages → Build and deployment → Source : GitHub Actions**.
