@@ -1,12 +1,10 @@
-// Source unique de la carte. Modifier les prix ici, les pages suivent.
-// Les prix sont des chaînes : on garde la virgule décimale et l'espace
-// insécable avant l'euro, comme le veut la typographie française.
+// Source unique de la carte. Modifier les prix ici, la page suit.
+// Les prix sont des chaînes : on garde la virgule décimale, comme le veut la
+// typographie française.
 //
-// ⚠️  À RELIRE — CES PRIX SONT DÉJÀ PUBLICS
-// Hors rubrique Spécial Braderie, les prix sont ceux de LÜM Lille Centre :
-// à confirmer boutique par boutique. Le café de torréfaction MUDA et le
-// kombucha Goodsky sont propres au Vieux-Lille et ont gardé le prix de la
-// ligne correspondante à Lille Centre.
+// Carte réduite à l'offre des 5 & 6 septembre. L'ancienne carte complète
+// (focaccias, pâtisseries, boissons, barista, formules) reste dans
+// l'historique git si elle doit revenir après la braderie.
 
 export interface Article {
   nom: string;
@@ -19,46 +17,8 @@ export interface Rubrique {
   articles: Article[];
 }
 
-export interface Formule {
-  nom: string;
-  prix: string;
-  composition: string[];
-  supplement?: string;
-}
-
 export const rubriques: Rubrique[] = [
   {
-    titre: 'Salé',
-    articles: [
-      {
-        nom: 'Focaccia Poulet Curry',
-        prix: '8,90 €',
-        description: 'Poulet au curry, salade fraîche & tomates',
-      },
-      {
-        nom: 'Focaccia Thon Gourmand',
-        prix: '8,90 €',
-        description: 'Thon, mayonnaise, salade fraîche & tomates',
-      },
-      {
-        nom: 'Focaccia Œufs Crémeux',
-        prix: '8,90 €',
-        description: "Salade d'œufs, ciboulette, salade fraîche & tomate",
-      },
-    ],
-  },
-  {
-    titre: 'Sucré & Pâtisseries',
-    articles: [
-      { nom: 'Cookie', prix: '4,00 €' },
-      { nom: 'Cinnamon Roll', prix: '4,50 €' },
-      { nom: 'Brookie', prix: '4,90 €' },
-      { nom: 'Marbré / Cake Matcha', prix: '4,50 €' },
-      { nom: 'Fondant Sans Gluten', prix: '5,40 €' },
-    ],
-  },
-  {
-    // Offre des 5 & 6 septembre. À retirer une fois la braderie passée.
     titre: 'Spécial Braderie',
     articles: [
       { nom: 'Triple Bellus 8° — 25 cl (Ferme Brasserie de Beaumont)', prix: '3,50 €' },
@@ -69,58 +29,12 @@ export const rubriques: Rubrique[] = [
     ],
   },
   {
-    titre: 'Boissons',
+    titre: 'Formules Spécial Braderie',
     articles: [
-      { nom: 'Eau St Amand 50 cl', prix: '1,90 €' },
-      { nom: 'San Pellegrino 50 cl', prix: '2,60 €' },
-      { nom: 'Citronnade Maison', prix: '3,90 €' },
-      { nom: "Jus d'Orange Pressé", prix: '4,50 €' },
-      { nom: 'Kombucha Goodsky', prix: '4,50 €' },
-      { nom: 'Ginger Beer Bio', prix: '4,50 €' },
+      { nom: 'Burrata Pesto', prix: '8,50 €' },
+      { nom: '2 Bières Colibri 25 cl + Burrata', prix: '14,50 €' },
+      { nom: '15 Mini Saucissons', prix: '6,00 €' },
+      { nom: '30 Mini Saucissons', prix: '11,50 €' },
     ],
-  },
-  {
-    titre: 'Barista',
-    articles: [
-      { nom: 'Espresso', prix: '2,50 €' },
-      { nom: 'Double Espresso', prix: '3,70 €' },
-      { nom: 'Café Allongé', prix: '3,70 €' },
-      { nom: 'Café Filtre MUDA', prix: '3,60 €' },
-      { nom: 'Cappuccino', prix: '4,50 €' },
-      { nom: 'Latte', prix: '5,20 €' },
-      { nom: 'Chocolat Chaud', prix: '5,00 €' },
-      { nom: 'Chaï Latte', prix: '5,00 €' },
-      { nom: 'Matcha Latte', prix: '5,00 €' },
-      { nom: 'Iced Americano', prix: '4,20 €' },
-      { nom: 'Iced Latte', prix: '5,00 €' },
-      { nom: 'Iced Chaï Latte', prix: '5,70 €' },
-      { nom: 'Iced Matcha Latte', prix: '5,70 €' },
-    ],
-  },
-];
-
-export const formules: Formule[] = [
-  {
-    nom: 'Petit Déj Gourmand',
-    prix: '5,50 €',
-    composition: ['1 Cookie ou Cinnamon Roll', '1 Café Filtre MUDA'],
-  },
-  {
-    nom: 'Déjeuner',
-    prix: '10,50 €',
-    composition: [
-      '1 Focaccia : Poulet Curry, Thon Gourmand ou Œufs Crémeux',
-      '1 boisson : Eau St Amand, San Pellegrino ou Citronnade',
-    ],
-    supplement: '+2,00 € : Kombucha Goodsky ou Ginger Beer',
-  },
-  {
-    nom: 'Goûter',
-    prix: '8,00 €',
-    composition: [
-      '1 pâtisserie : Cookie, Cinnamon Roll, Brookie ou Marbré / Cake Matcha',
-      '1 boisson : Cappuccino, Latte, Chocolat Chaud ou Iced Americano',
-    ],
-    supplement: '+0,80 € : Fondant Sans Gluten',
   },
 ];

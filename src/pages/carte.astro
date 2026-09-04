@@ -1,12 +1,12 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Entete from '../components/Entete.astro';
-import { rubriques, formules } from '../data/carte';
+import { rubriques } from '../data/carte';
 ---
 
 <BaseLayout
   title="La carte — LÜM Vieux-Lille"
-  description="Focaccias, pâtisseries, boissons et café de spécialité MUDA chez LÜM Vieux-Lille."
+  description="L'offre des 5 & 6 septembre chez LÜM Vieux-Lille : bières artisanales, burrata et planches à partager."
 >
   <div class="page">
     <Entete />
@@ -35,31 +35,6 @@ import { rubriques, formules } from '../data/carte';
         </section>
       ))
     }
-
-    <section class="bloc">
-      <div class="chip">
-        <h2>Formules</h2>
-      </div>
-
-      <div class="formules">
-        {
-          formules.map((formule) => (
-            <article class="formule">
-              <div class="formule__tete">
-                <h3>{formule.nom}</h3>
-                <span class="formule__prix">{formule.prix}</span>
-              </div>
-              <ul>
-                {formule.composition.map((ligne) => (
-                  <li>{ligne}</li>
-                ))}
-              </ul>
-              {formule.supplement && <p class="formule__sup">{formule.supplement}</p>}
-            </article>
-          ))
-        }
-      </div>
-    </section>
 
     <p class="note">Prix en euros, taxes comprises.</p>
   </div>
@@ -156,76 +131,6 @@ import { rubriques, formules } from '../data/carte';
     color: var(--brown);
   }
 
-  /* --- Formules --- */
-  .formules {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 22px;
-  }
-
-  .formule {
-    padding: 22px 24px 24px;
-    border: 3px solid var(--terracotta-light);
-    border-radius: var(--radius);
-  }
-
-  .formule__tete {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 14px;
-    padding-bottom: 12px;
-    margin-bottom: 12px;
-    border-bottom: 2px solid var(--cream-dark);
-  }
-
-  .formule__tete h3 {
-    font-size: 1.35rem;
-  }
-
-  .formule__prix {
-    font-family: var(--font-display);
-    font-size: 1.35rem;
-    white-space: nowrap;
-  }
-
-  .formule ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 8px;
-  }
-
-  .formule li {
-    position: relative;
-    padding-left: 20px;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    font-weight: 700;
-  }
-
-  /* Puce en losange, dans l'esprit des tracés de l'affiche */
-  .formule li::before {
-    content: '';
-    position: absolute;
-    left: 2px;
-    top: 0.55em;
-    width: 7px;
-    height: 7px;
-    background: var(--terracotta);
-    transform: rotate(45deg);
-  }
-
-  .formule__sup {
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 2px dotted var(--terracotta-light);
-    font-size: 0.9rem;
-    font-weight: 800;
-    color: var(--brown);
-  }
-
   .note {
     text-align: center;
     color: var(--cream);
@@ -239,8 +144,7 @@ import { rubriques, formules } from '../data/carte';
       padding: 56px 20px 32px;
     }
 
-    .articles--deux,
-    .formules {
+    .articles--deux {
       grid-template-columns: 1fr;
     }
   }

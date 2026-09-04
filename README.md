@@ -6,8 +6,8 @@ propre site : https://leo2662.github.io/lillecentre
 
 En ligne : https://leo2662.github.io/vieuxlille/
 
-Deux pages pour l'instant — l'accueil et la carte — qui posent la direction
-artistique et les fondations techniques.
+Deux pages — l'accueil et la carte, réduite à l'offre de la braderie des
+5 & 6 septembre.
 
 ## Stack
 
@@ -48,7 +48,7 @@ illustrations au trait.
 ```
 src/
 ├── components/Entete.astro    # logo + retour, en tête des pages intérieures
-├── data/carte.ts              # source unique de la carte et des formules
+├── data/carte.ts              # source unique de la carte
 ├── layouts/BaseLayout.astro   # <head>, polices, réglages partagés
 ├── pages/index.astro          # page d'accueil
 ├── pages/carte.astro          # la carte
@@ -57,11 +57,11 @@ src/
 
 ## À confirmer — le site est déjà public
 
-- **Les prix de `src/data/carte.ts`.** Hors rubrique Spécial Braderie, ce sont
-  ceux de LÜM Lille Centre — à confirmer boutique par boutique. Le café MUDA et
-  le kombucha Goodsky sont propres au Vieux-Lille et ont gardé le prix de la
-  ligne correspondante à Lille Centre.
 - **Les horaires** affichés sur l'accueil (mercredi → lundi, 10h – 18h).
+- **La carte après la braderie.** Elle est réduite à l'offre des 5 & 6
+  septembre. L'ancienne carte complète — focaccias, pâtisseries, boissons,
+  barista, formules — est dans l'historique git, avec le rendu des formules en
+  cartes que `carte.astro` ne porte plus.
 - **Le domaine.** Le site sort aujourd'hui sur
   `leo2662.github.io/vieuxlille`. Pour le servir sur `lumvieuxlille.fr`,
   remettre `site` sur ce domaine dans `astro.config.mjs`, supprimer `base`, et
