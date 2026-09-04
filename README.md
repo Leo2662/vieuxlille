@@ -81,6 +81,21 @@ le site Pages avec le seul `GITHUB_TOKEN` tant que Pages n'existe pas encore
 sur le dépôt. Une fois Pages activé, le run suivant est passé et le site est
 publié.
 
-Si des runs « pages build and deployment » apparaissent et échouent, c'est que
-la source Pages est repassée sur une branche : la remettre sur
-**Settings → Pages → Build and deployment → Source : GitHub Actions**.
+En parallèle, GitHub lance son ancien pipeline Jekyll
+(« pages build and deployment »), qui échoue à chaque push :
+
+```
+Invalid YAML front matter in /github/workspace/src/pages/carte.astro
+```
+
+Jekyll essaie de lire les blocs `---` d'Astro comme du front matter YAML.
+Ces échecs ne touchent pas le site en ligne — le pipeline meurt avant de
+publier, donc c'est bien le déploiement Actions qui sert. Ils signalent
+seulement que la source Pages est restée sur une branche.
+
+Pour les faire disparaître : **Settings → Pages → Build and deployment →
+Source : GitHub Actions**.
+
+⚠️ Ne pas « corriger » ça en ajoutant un fichier `.nojekyll` à la racine :
+Jekyll cesserait d'échouer, et l'ancien pipeline publierait alors le dépôt
+brut (`src/`, `package.json`, `README.md`) par-dessus le site construit.
