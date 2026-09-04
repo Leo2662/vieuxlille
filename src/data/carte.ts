@@ -61,18 +61,10 @@ export const rubriques: Rubrique[] = [
     // Offre des 5 & 6 septembre. À retirer une fois la braderie passée.
     titre: 'Spécial Braderie',
     articles: [
-      {
-        nom: 'Triple Bellus — 25 cl',
-        prix: '3,50 €',
-        description: 'Bière artisanale de la Ferme Brasserie de Beaumont',
-      },
-      { nom: 'Triple Bellus — 50 cl', prix: '7,00 €' },
-      {
-        nom: 'Colibri — 25 cl',
-        prix: '3,00 €',
-        description: 'Bière de la nanobrasserie lilloise Colibri',
-      },
-      { nom: 'Colibri — 50 cl', prix: '6,00 €' },
+      { nom: 'Triple Bellus 8° — 25 cl (Ferme Brasserie de Beaumont)', prix: '3,50 €' },
+      { nom: 'Triple Bellus 8° — 50 cl', prix: '7,00 €' },
+      { nom: 'Colibri blonde 5,5° — 25 cl (Nanobrasserie du Colibri)', prix: '3,00 €' },
+      { nom: 'Colibri blonde 5,5° — 50 cl', prix: '6,00 €' },
       { nom: 'Verre de Vin UBY', prix: '5,00 €' },
     ],
   },
