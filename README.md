@@ -1,6 +1,6 @@
 # LÜM — Vieux-Lille
 
-Landing page du coffee shop, brunch healthy et salon de thé LÜM Vieux-Lille,
+Landing page du Coffee Shop & Brunch Healthy LÜM Vieux-Lille,
 94 rue Saint-André à Lille. Le second établissement, LÜM Lille Centre, a son
 propre site : https://leo2662.github.io/lillecentre
 

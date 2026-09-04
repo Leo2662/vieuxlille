@@ -54,7 +54,7 @@ export const rubriques: Rubrique[] = [
     ],
   },
   {
-    titre: 'Brunch & Salé',
+    titre: 'Salé',
     articles: [
       {
         nom: 'Focaccia Poulet Curry',
@@ -71,27 +71,35 @@ export const rubriques: Rubrique[] = [
         prix: '8,90 €',
         description: "Salade d'œufs, ciboulette, salade fraîche & tomate",
       },
-      {
-        nom: 'Avocado Toast',
-        prix: '9,50 €',
-        description: 'Pain au levain, avocat, œuf poché & graines torréfiées',
-      },
-      {
-        nom: 'Bowl du Matin',
-        prix: '9,90 €',
-        description: 'Yaourt, granola maison, fruits frais & superaliments',
-      },
     ],
   },
   {
     titre: 'Sucré & Pâtisseries',
     articles: [
-      { nom: 'Croissant', prix: '1,20 €' },
       { nom: 'Cookie', prix: '4,00 €' },
       { nom: 'Cinnamon Roll', prix: '4,50 €' },
       { nom: 'Brookie', prix: '4,90 €' },
       { nom: 'Marbré / Cake Matcha', prix: '4,50 €' },
       { nom: 'Fondant Sans Gluten', prix: '5,40 €' },
+    ],
+  },
+  {
+    // Offre des 5 & 6 septembre. À retirer une fois la braderie passée.
+    titre: 'Spécial Braderie',
+    articles: [
+      {
+        nom: 'Triple Bellus — 25 cl',
+        prix: '3,50 €',
+        description: 'Bière artisanale de la Ferme Brasserie de Beaumont',
+      },
+      { nom: 'Triple Bellus — 50 cl', prix: '7,00 €' },
+      {
+        nom: 'Colibri — 25 cl',
+        prix: '3,00 €',
+        description: 'Bière de la nanobrasserie lilloise Colibri',
+      },
+      { nom: 'Colibri — 50 cl', prix: '6,00 €' },
+      { nom: 'Verre de Vin UBY', prix: '5,00 €' },
     ],
   },
   {
@@ -127,6 +135,9 @@ export const rubriques: Rubrique[] = [
 
 export const formules: Formule[] = [
   {
+    // ⚠️ Le croissant a été retiré de la carte : cette formule renvoie à un
+    // produit qui n'y figure plus. Changer la viennoiserie ou retirer la
+    // formule.
     nom: 'Petit Déj',
     prix: '3,50 €',
     composition: ['1 Croissant', '1 Café Filtre MUDA'],
