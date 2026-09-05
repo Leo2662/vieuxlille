@@ -19,22 +19,27 @@ export interface Rubrique {
 
 export const rubriques: Rubrique[] = [
   {
-    titre: 'Spécial Braderie',
+    titre: 'À Grignoter',
     articles: [
-      { nom: 'Triple Bellus 8° — 25 cl (Ferme Brasserie de Beaumont)', prix: '3,50 €' },
-      { nom: 'Triple Bellus 8° — 50 cl', prix: '7,00 €' },
-      { nom: 'Colibri blonde 5,5° — 25 cl (Nanobrasserie du Colibri)', prix: '3,00 €' },
-      { nom: 'Colibri blonde 5,5° — 50 cl', prix: '6,00 €' },
-      { nom: 'Verre de Vin UBY', prix: '5,00 €' },
-    ],
-  },
-  {
-    titre: 'Formules Spécial Braderie',
-    articles: [
-      { nom: 'Burrata Pesto', prix: '8,50 €' },
-      { nom: '2 Bières Colibri 25 cl + Burrata', prix: '14,50 €' },
       { nom: '15 Mini Saucissons', prix: '6,00 €' },
       { nom: '30 Mini Saucissons', prix: '11,50 €' },
     ],
+  },
+  {
+    titre: 'Bières',
+    articles: [
+      { nom: 'Triple Bellus 8° — 50 cl (Ferme Brasserie de Beaumont)', prix: '7,50 €' },
+      { nom: 'Triple Bellus 8° — 25 cl', prix: '4,00 €' },
+      { nom: 'Colibri blonde 5,5° — 50 cl (Nanobrasserie lilloise)', prix: '6,00 €' },
+      { nom: 'Colibri blonde 5,5° — 25 cl', prix: '3,50 €' },
+    ],
+  },
+  {
+    titre: 'Vin',
+    articles: [{ nom: 'Uby — 12 cl', prix: '5,00 €' }],
+  },
+  {
+    titre: 'Formule',
+    articles: [{ nom: '15 Mini Saucissons + Pain & Beurre', prix: '7,50 €' }],
   },
 ];
