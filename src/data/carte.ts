@@ -23,20 +23,21 @@ export const rubriques: Rubrique[] = [
     articles: [
       { nom: '15 Mini Saucissons', prix: '6,00 €' },
       { nom: '30 Mini Saucissons', prix: '11,50 €' },
+      { nom: 'Burrata Pesto', prix: '8,50 €' },
     ],
   },
   {
-    titre: 'Bières',
+    // Bières et vin réunis : le bloc Vin ne portait qu'une ligne. Le vin
+    // garde « Verre de Vin » dans son nom, sinon la mention disparaîtrait
+    // avec l'intitulé du bloc.
+    titre: 'Boissons',
     articles: [
       { nom: 'Triple Bellus 8° — 50 cl (Ferme Brasserie de Beaumont)', prix: '7,50 €' },
       { nom: 'Triple Bellus 8° — 25 cl', prix: '4,00 €' },
       { nom: 'Colibri blonde 5,5° — 50 cl (Nanobrasserie lilloise)', prix: '6,00 €' },
       { nom: 'Colibri blonde 5,5° — 25 cl', prix: '3,50 €' },
+      { nom: 'Verre de Vin Uby — 12 cl', prix: '5,00 €' },
     ],
-  },
-  {
-    titre: 'Vin',
-    articles: [{ nom: 'Uby — 12 cl', prix: '5,00 €' }],
   },
   {
     titre: 'Formule',
