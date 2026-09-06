@@ -8,4 +8,10 @@ export default defineConfig({
   // dans dist/ à chaque déploiement — sans ce fichier, GitHub Pages perdrait
   // le domaine personnalisé au déploiement suivant.
   site: 'https://lumvieuxlille.fr',
+
+  // L'ancienne carte braderie vivait sur /carte. Le menu étant passé sur
+  // Canva, on y redirige : les liens déjà partagés continuent d'aboutir.
+  redirects: {
+    '/carte': 'https://xn--lm-xka.my.canva.site/l-m/menu',
+  },
 });

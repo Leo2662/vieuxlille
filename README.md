@@ -6,8 +6,8 @@ propre site : https://leo2662.github.io/lillecentre
 
 En ligne : https://lumvieuxlille.fr
 
-Deux pages — l'accueil et la carte, réduite à l'offre de la braderie des
-5 & 6 septembre.
+Une page d'accueil. Le menu est hébergé sur Canva, et `/carte` — qui portait
+la carte braderie — y redirige.
 
 ## Stack
 
@@ -47,21 +47,17 @@ illustrations au trait.
 
 ```
 src/
-├── components/Entete.astro    # logo + retour, en tête des pages intérieures
-├── data/carte.ts              # source unique de la carte
 ├── layouts/BaseLayout.astro   # <head>, polices, réglages partagés
 ├── pages/index.astro          # page d'accueil
-├── pages/carte.astro          # la carte
 └── styles/global.css          # variables de design et composants de base
 ```
 
 ## À confirmer — le site est déjà public
 
 - **Les horaires** affichés sur l'accueil (mercredi → lundi, 10h – 18h).
-- **La carte après la braderie.** Elle est réduite à l'offre des 5 & 6
-  septembre. L'ancienne carte complète — focaccias, pâtisseries, boissons,
-  barista, formules — est dans l'historique git, avec le rendu des formules en
-  cartes que `carte.astro` ne porte plus.
+- **Les liens externes.** Le menu pointe sur Canva et la réservation sur un
+  autre dépôt Pages : ni l'un ni l'autre n'est vérifié par le build. Les
+  cartes braderie et complète restent dans l'historique git.
 
 ## Déploiement
 
