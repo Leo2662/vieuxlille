@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://lumvieuxlille.fr/sitemap-index.xml

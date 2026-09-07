@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
@@ -14,4 +15,13 @@ export default defineConfig({
   redirects: {
     '/carte': 'https://xn--lm-xka.my.canva.site/l-m/menu',
   },
+
+  integrations: [
+    sitemap({
+      // /carte n'est qu'une redirection vers Canva, en noindex et canonique
+      // vers la destination : l'annoncer aux moteurs les enverrait sur une
+      // page qui leur dit aussitôt de ne pas la garder.
+      filter: (page) => !page.includes('/carte'),
+    }),
+  ],
 });

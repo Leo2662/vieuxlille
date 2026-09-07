@@ -52,6 +52,19 @@ src/
 └── styles/global.css          # variables de design et composants de base
 ```
 
+`public/` porte les fichiers recopiés tels quels dans `dist/` : le favicon, le
+`CNAME` du domaine et le `robots.txt`.
+
+## Référencement
+
+`@astrojs/sitemap` génère `sitemap-index.xml` et `sitemap-0.xml` à chaque
+build, à partir de `site` dans `astro.config.mjs`. `/carte` en est exclu par un
+`filter` : ce n'est qu'une redirection vers le menu Canva, servie en `noindex`
+avec une canonique vers la destination.
+
+`public/robots.txt` déclare le sitemap. Sans cette ligne, il faut le soumettre
+à la main dans la Search Console pour que Google le trouve.
+
 ## À confirmer — le site est déjà public
 
 - **Les horaires** affichés sur l'accueil (mercredi → lundi, 10h – 18h).
