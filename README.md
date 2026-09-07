@@ -74,21 +74,31 @@ le site Pages avec le seul `GITHUB_TOKEN` tant que Pages n'existe pas encore
 sur le dépôt. Une fois Pages activé, le run suivant est passé et le site est
 publié.
 
-En parallèle, GitHub lance son ancien pipeline Jekyll
-(« pages build and deployment »), qui échoue à chaque push :
+### L'incident du 6 septembre
+
+Tant que la source Pages est restée sur « Deploy from a branch », GitHub a
+lancé son ancien pipeline Jekyll (« pages build and deployment ») à chaque
+push, **en plus** du nôtre. Il échouait systématiquement :
 
 ```
 Invalid YAML front matter in /github/workspace/src/pages/carte.astro
 ```
 
-Jekyll essaie de lire les blocs `---` d'Astro comme du front matter YAML.
-Ces échecs ne touchent pas le site en ligne — le pipeline meurt avant de
-publier, donc c'est bien le déploiement Actions qui sert. Ils signalent
-seulement que la source Pages est restée sur une branche.
+Jekyll lisait le `---` d'Astro comme du front matter YAML. Cet échec était la
+seule chose qui laissait notre déploiement Actions servir le site.
 
-Pour les faire disparaître : **Settings → Pages → Build and deployment →
-Source : GitHub Actions**.
+En supprimant `carte.astro` — devenu inutile avec la redirection de `/carte`
+vers le menu Canva — cette protection accidentelle a sauté. Jekyll s'est mis
+à réussir, à finir une douzaine de secondes après notre workflow, et à
+publier le dépôt rendu par Jekyll : le plugin `jekyll-readme-index` affichait
+le README en page d'accueil, à la place du site.
 
-⚠️ Ne pas « corriger » ça en ajoutant un fichier `.nojekyll` à la racine :
-Jekyll cesserait d'échouer, et l'ancien pipeline publierait alors le dépôt
-brut (`src/`, `package.json`, `README.md`) par-dessus le site construit.
+Le correctif est le réglage du dépôt, pas le code : **Settings → Pages →
+Build and deployment → Source : GitHub Actions**. Avec cette source, le
+pipeline Jekyll ne se déclenche plus du tout et la course disparaît.
+
+⚠️ Deux fausses bonnes idées si le symptôme revient. Ajouter un `.nojekyll` à
+la racine : Jekyll cesserait d'échouer mais servirait le dépôt brut, qui n'a
+pas d'`index.html` à la racine — donc une 404. Et remettre un fichier
+`.astro` cassé pour refaire échouer Jekyll : ça marche, mais le site ne tient
+alors que par un build en échec.
