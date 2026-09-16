@@ -132,11 +132,6 @@ const liens = [
 
       <h2>Ça vous a plu&nbsp;?</h2>
 
-      <p>
-        Un avis Google, c'est trente secondes. Pour un coffee shop de quartier, ça change
-        tout.
-      </p>
-
       <a class="lum-pill-btn" href={AVIS} target="_blank" rel="noopener noreferrer">
         Laisser un avis <span class="arrow">→</span>
       </a>
@@ -359,15 +354,10 @@ const liens = [
   }
 
   .avis h2 {
+    /* h2 est à margin 0 globalement : l'écart avant le bouton se reprend ici,
+       il était porté par le paragraphe retiré. */
+    margin-bottom: 24px;
     font-size: clamp(1.5rem, 4.5vw, 2.2rem);
-  }
-
-  .avis p {
-    max-width: 44ch;
-    margin: 12px auto 24px;
-    font-weight: 700;
-    font-size: 1.02rem;
-    text-wrap: balance;
   }
 
   /* Bouton plein plutôt qu'en contour : c'est l'action la plus appuyée de
