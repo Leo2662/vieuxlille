@@ -6,6 +6,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const MENU = 'https://xn--lm-xka.my.canva.site/l-m/menu';
 const RESERVATION = 'https://lumvieuxlille-hash.github.io/lum-vieuxlille/';
 const LILLE_CENTRE = 'https://leo2662.github.io/lillecentre';
+const AVIS =
+  'https://search.google.com/local/writereview?placeid=ChIJzXLWKBcrw0cRI0DdWOWtaRM';
+
+// Étoile pleine, tracée une fois et répétée cinq fois.
+const ETOILE =
+  'M12 2.6l2.9 5.9 6.5.95-4.7 4.6 1.1 6.45L12 17.45 6.2 20.5l1.1-6.45-4.7-4.6 6.5-.95z';
 
 const liens = [
   {
@@ -111,6 +117,29 @@ const liens = [
           ))
         }
       </div>
+    </section>
+
+    <section class="avis">
+      <div class="avis__etoiles" aria-hidden="true">
+        {
+          [0, 1, 2, 3, 4].map(() => (
+            <svg viewBox="0 0 24 24">
+              <path d={ETOILE} fill="currentColor" />
+            </svg>
+          ))
+        }
+      </div>
+
+      <h2>Ça vous a plu&nbsp;?</h2>
+
+      <p>
+        Un avis Google, c'est trente secondes. Pour un coffee shop de quartier, ça change
+        tout.
+      </p>
+
+      <a class="lum-pill-btn" href={AVIS} target="_blank" rel="noopener noreferrer">
+        Laisser un avis <span class="arrow">→</span>
+      </a>
     </section>
 
     <footer class="pied">
@@ -304,6 +333,56 @@ const liens = [
     color: var(--cream);
   }
 
+  /* --- Appel à l'avis Google --- */
+  .avis {
+    width: 100%;
+    max-width: 820px;
+    padding: 34px 32px 38px;
+    border-radius: var(--radius-lg);
+    background: var(--cream);
+    box-shadow: var(--shadow);
+    text-align: center;
+    animation: fade-up 0.5s ease 0.1s both;
+  }
+
+  .avis__etoiles {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 14px;
+    color: var(--terracotta);
+  }
+
+  .avis__etoiles svg {
+    width: 27px;
+    height: 27px;
+  }
+
+  .avis h2 {
+    font-size: clamp(1.5rem, 4.5vw, 2.2rem);
+  }
+
+  .avis p {
+    max-width: 44ch;
+    margin: 12px auto 24px;
+    font-weight: 700;
+    font-size: 1.02rem;
+    text-wrap: balance;
+  }
+
+  /* Bouton plein plutôt qu'en contour : c'est l'action la plus appuyée de
+     la page, elle doit se détacher des deux boutons du panneau. */
+  .avis .lum-pill-btn {
+    background: var(--terracotta);
+    color: var(--cream);
+  }
+
+  .avis .lum-pill-btn:hover,
+  .avis .lum-pill-btn:focus-visible {
+    background: var(--terracotta-dark);
+    border-color: var(--terracotta-dark);
+  }
+
   /* --- Pied de page, sur la terre cuite --- */
   .pied {
     color: var(--cream);
@@ -351,6 +430,10 @@ const liens = [
     .chip {
       max-width: calc(100% - 32px);
       padding: 12px 22px;
+    }
+
+    .avis {
+      padding: 28px 20px 30px;
     }
   }
 </style>
