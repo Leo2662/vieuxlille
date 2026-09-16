@@ -23,9 +23,9 @@ const {
 const siteUrl = Astro.site?.href.replace(/\/$/, '') ?? 'https://lumvieuxlille.fr';
 
 // Fiche établissement pour les moteurs de recherche. N'y figure que ce qui
-// est vérifié : pas de téléphone, de coordonnées GPS, de fourchette de prix
-// ni de photo tant qu'on ne les a pas — une valeur inventée dans un balisage
-// structuré se retrouve telle quelle dans les résultats de recherche.
+// est fourni par la boutique : il manque encore `image`, faute de photo
+// hébergée — une valeur inventée dans un balisage structuré se retrouve
+// telle quelle dans les résultats de recherche.
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'CafeOrCoffeeShop',
@@ -33,12 +33,20 @@ const jsonLd = {
   name: 'LÜM Vieux-Lille',
   description,
   url: siteUrl,
+  // Format E.164 : sans espaces, c'est ce qui rend l'appel cliquable partout.
+  telephone: '+33642996242',
+  priceRange: '10€-15€',
   address: {
     '@type': 'PostalAddress',
     streetAddress: '94 rue Saint-André',
     postalCode: '59800',
     addressLocality: 'Lille',
     addressCountry: 'FR',
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: 50.645346,
+    longitude: 3.0567,
   },
   // Ouvert du mercredi au lundi : le mardi est fermé, donc absent de la liste.
   openingHoursSpecification: [

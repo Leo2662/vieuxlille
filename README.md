@@ -66,11 +66,12 @@ avec une canonique vers la destination.
 à la main dans la Search Console pour que Google le trouve.
 
 `BaseLayout.astro` émet une fiche JSON-LD `CafeOrCoffeeShop` : nom, adresse,
-horaires, menu et réseaux. N'y figure que ce qui est vérifié — pas de
-téléphone, de coordonnées GPS, de fourchette de prix ni de photo. Un balisage
-structuré est repris tel quel dans les résultats de recherche, donc une valeur
-inventée y est plus coûteuse qu'un champ absent. Les ajouter le jour où on les
-a améliorerait la fiche.
+coordonnées GPS, téléphone, fourchette de prix, horaires, menu et réseaux.
+
+Il manque `image`, faute de photo hébergée — c'est l'ajout qui reste le plus
+utile pour une fiche locale. N'y mettre que des valeurs fournies par la
+boutique : un balisage structuré est repris tel quel dans les résultats de
+recherche, donc une valeur inventée y coûte plus cher qu'un champ absent.
 
 ## À confirmer — le site est déjà public
 
