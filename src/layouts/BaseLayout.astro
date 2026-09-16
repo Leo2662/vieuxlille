@@ -18,6 +18,51 @@ const {
   description =
     "Coffee Shop & Brunch Healthy au 94 rue Saint-André, dans le Vieux-Lille.",
 } = Astro.props;
+
+// Le domaine vient de `site` dans astro.config.mjs : une seule source.
+const siteUrl = Astro.site?.href.replace(/\/$/, '') ?? 'https://lumvieuxlille.fr';
+
+// Fiche établissement pour les moteurs de recherche. N'y figure que ce qui
+// est vérifié : pas de téléphone, de coordonnées GPS, de fourchette de prix
+// ni de photo tant qu'on ne les a pas — une valeur inventée dans un balisage
+// structuré se retrouve telle quelle dans les résultats de recherche.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CafeOrCoffeeShop',
+  '@id': `${siteUrl}/#cafe`,
+  name: 'LÜM Vieux-Lille',
+  description,
+  url: siteUrl,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '94 rue Saint-André',
+    postalCode: '59800',
+    addressLocality: 'Lille',
+    addressCountry: 'FR',
+  },
+  // Ouvert du mercredi au lundi : le mardi est fermé, donc absent de la liste.
+  openingHoursSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: [
+        'Monday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday',
+      ],
+      opens: '10:00',
+      closes: '18:00',
+    },
+  ],
+  servesCuisine: ['Coffee', 'Brunch'],
+  hasMenu: 'https://xn--lm-xka.my.canva.site/l-m/menu',
+  sameAs: [
+    'https://www.instagram.com/lum_vieuxlille',
+    'https://www.tiktok.com/@lum_vieuxlille',
+  ],
+};
 ---
 
 <!doctype html>
@@ -29,6 +74,7 @@ const {
     <meta name="generator" content={Astro.generator} />
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
     <title>{title}</title>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
   </head>
   <body>
     <slot />

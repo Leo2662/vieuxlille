@@ -65,6 +65,13 @@ avec une canonique vers la destination.
 `public/robots.txt` déclare le sitemap. Sans cette ligne, il faut le soumettre
 à la main dans la Search Console pour que Google le trouve.
 
+`BaseLayout.astro` émet une fiche JSON-LD `CafeOrCoffeeShop` : nom, adresse,
+horaires, menu et réseaux. N'y figure que ce qui est vérifié — pas de
+téléphone, de coordonnées GPS, de fourchette de prix ni de photo. Un balisage
+structuré est repris tel quel dans les résultats de recherche, donc une valeur
+inventée y est plus coûteuse qu'un champ absent. Les ajouter le jour où on les
+a améliorerait la fiche.
+
 ## À confirmer — le site est déjà public
 
 - **Les horaires** affichés sur l'accueil (mercredi → lundi, 10h – 18h).
