@@ -48,19 +48,43 @@ illustrations au trait.
 ```
 src/
 ├── layouts/BaseLayout.astro   # <head>, polices, réglages partagés
+├── lib/qr.ts                  # cibles des QR codes et leur rendu SVG
 ├── pages/index.astro          # page d'accueil
+├── pages/qr-code.astro        # les QR codes, à télécharger
+├── pages/[slug].svg.ts        # un fichier .svg par QR, écrit au build
 └── styles/global.css          # variables de design et composants de base
 ```
 
 `public/` porte les fichiers recopiés tels quels dans `dist/` : le favicon, le
 `CNAME` du domaine et le `robots.txt`.
 
+## QR codes
+
+`/qr-code` affiche les codes et propose leur téléchargement. Image affichée et
+fichier téléchargé sortent du même appel dans `src/lib/qr.ts` : ils ne peuvent
+pas diverger de l'URL réelle. Les boutons pointent sur des `.svg` écrits dans
+`dist/` au build, donc le téléchargement ne dépend d'aucun JavaScript.
+
+Le niveau de correction d'erreur est réglé **par code**, et mesuré en décodant
+le rendu à différentes tailles :
+
+| Code | Niveau | Modules | Lisible dès |
+|---|---|---|---|
+| Site | `H` | 29×29 | 80 px |
+| Avis Google | `M` | 37×37 | 80 px |
+
+L'URL d'avis est longue : en `Q` elle passe à 45×45 et en `H` à 49×49, et le
+code devient alors trop dense pour être lu sous 160 px. `M` garde une marge de
+correction correcte tout en restant lisible en petit. Changer une cible sans
+refaire cette mesure, c'est risquer un code qui ne scanne plus à l'impression.
+
 ## Référencement
 
 `@astrojs/sitemap` génère `sitemap-index.xml` et `sitemap-0.xml` à chaque
-build, à partir de `site` dans `astro.config.mjs`. `/carte` en est exclu par un
-`filter` : ce n'est qu'une redirection vers le menu Canva, servie en `noindex`
-avec une canonique vers la destination.
+build, à partir de `site` dans `astro.config.mjs`. Deux pages en sont exclues
+par un `filter` : `/carte`, qui n'est qu'une redirection vers le menu Canva
+servie en `noindex` avec une canonique vers la destination, et `/qr-code`, page
+outil servie en `noindex` via la propriété du même nom de `BaseLayout`.
 
 `public/robots.txt` déclare le sitemap. Sans cette ligne, il faut le soumettre
 à la main dans la Search Console pour que Google le trouve.

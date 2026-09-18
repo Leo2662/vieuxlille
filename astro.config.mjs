@@ -20,8 +20,9 @@ export default defineConfig({
     sitemap({
       // /carte n'est qu'une redirection vers Canva, en noindex et canonique
       // vers la destination : l'annoncer aux moteurs les enverrait sur une
-      // page qui leur dit aussitôt de ne pas la garder.
-      filter: (page) => !page.includes('/carte'),
+      // page qui leur dit aussitôt de ne pas la garder. /qr-code est une page
+      // outil, servie en noindex elle aussi.
+      filter: (page) => !['/carte', '/qr-code'].some((p) => page.includes(p)),
     }),
   ],
 });

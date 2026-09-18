@@ -1,0 +1,214 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { codes, rendreSvg } from '../lib/qr';
+
+// Le rendu se fait au build : la page sort en HTML statique, sans JS.
+const rendus = await Promise.all(
+  codes.map(async (code) => ({ ...code, svg: await rendreSvg(code) })),
+);
+---
+
+<BaseLayout
+  title="QR Code — LÜM Vieux-Lille"
+  description="Les QR codes de LÜM Vieux-Lille, à télécharger en SVG."
+  noindex
+>
+  <div class="page">
+    <header class="entete">
+      <a class="logo" href="/">
+        LÜM
+        <small>Vieux-Lille</small>
+      </a>
+      <a class="retour" href="/">
+        <span class="arrow">←</span> Retour
+      </a>
+    </header>
+
+    <h1 class="titre-page">QR Code</h1>
+
+    <div class="grille">
+      {
+        rendus.map((code) => (
+          <section class="carte">
+            <div class="carte__code" set:html={code.svg} />
+
+            <h2>{code.titre}</h2>
+            <p class="carte__libelle">{code.libelle}</p>
+
+            <a class="lum-pill-btn" href={`/${code.slug}.svg`} download={`${code.slug}.svg`}>
+              Télécharger en SVG <span class="fleche-bas">↓</span>
+            </a>
+          </section>
+        ))
+      }
+    </div>
+
+    <p class="note">
+      Format vectoriel : s'imprime net à n'importe quelle taille, de l'étiquette à l'affiche.
+    </p>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    padding: 28px var(--gutter) 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+  }
+
+  /* --- En-tête, sur la terre cuite --- */
+  .entete {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    color: var(--cream);
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    line-height: 1;
+    letter-spacing: 0.06em;
+  }
+
+  .logo small {
+    display: block;
+    margin-top: 3px;
+    font-family: var(--font-body);
+    font-weight: 800;
+    font-size: 0.55rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .retour {
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 2px solid rgba(249, 241, 230, 0.45);
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
+  }
+
+  .retour:hover,
+  .retour:focus-visible {
+    border-bottom-color: var(--cream);
+  }
+
+  .retour .arrow {
+    display: inline-block;
+    transition: transform 0.2s;
+  }
+
+  .retour:hover .arrow {
+    transform: translateX(-3px);
+  }
+
+  .titre-page {
+    margin: 6px 0 0;
+    text-align: center;
+    font-size: clamp(2.6rem, 9vw, 5rem);
+    color: var(--cream);
+  }
+
+  /* --- Une carte par code --- */
+  .grille {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+  }
+
+  .carte {
+    padding: 32px 28px 34px;
+    border-radius: var(--radius-lg);
+    background: var(--cream);
+    box-shadow: var(--shadow);
+    text-align: center;
+    animation: fade-up 0.5s ease both;
+  }
+
+  .carte:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  /* Le SVG du QR est injecté tel quel : on le contraint ici. */
+  .carte__code {
+    width: min(260px, 100%);
+    margin: 0 auto 22px;
+  }
+
+  .carte__code :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+  }
+
+  .carte h2 {
+    font-size: 1.6rem;
+  }
+
+  .carte__libelle {
+    margin: 6px 0 22px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--brown);
+    overflow-wrap: anywhere;
+  }
+
+  /* Bouton plein : c'est l'unique action de la carte. */
+  .carte .lum-pill-btn {
+    background: var(--terracotta);
+    color: var(--cream);
+  }
+
+  .carte .lum-pill-btn:hover,
+  .carte .lum-pill-btn:focus-visible {
+    background: var(--terracotta-dark);
+    border-color: var(--terracotta-dark);
+  }
+
+  /* La flèche descend au survol, là où celles des liens avancent. */
+  .fleche-bas {
+    display: inline-block;
+    transition: transform 0.2s;
+  }
+
+  .carte .lum-pill-btn:hover .fleche-bas {
+    transform: translateY(3px);
+  }
+
+  .note {
+    text-align: center;
+    color: var(--cream);
+    font-size: 0.85rem;
+    font-weight: 700;
+    opacity: 0.75;
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .grille {
+      grid-template-columns: 1fr;
+    }
+
+    .carte {
+      padding: 26px 20px 28px;
+    }
+  }
+</style>

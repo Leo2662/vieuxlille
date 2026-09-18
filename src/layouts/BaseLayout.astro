@@ -8,6 +8,8 @@ import '../styles/global.css';
 interface Props {
   title?: string;
   description?: string;
+  /** Page outil : à tenir hors des résultats de recherche. */
+  noindex?: boolean;
 }
 
 // `base` est pris en compte : les chemins absolus doivent en tenir compte.
@@ -17,6 +19,7 @@ const {
   title = 'LÜM — Vieux-Lille',
   description =
     "Coffee Shop & Brunch Healthy au 94 rue Saint-André, dans le Vieux-Lille.",
+  noindex = false,
 } = Astro.props;
 
 // Le domaine vient de `site` dans astro.config.mjs : une seule source.
@@ -80,6 +83,7 @@ const jsonLd = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
     <title>{title}</title>
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
