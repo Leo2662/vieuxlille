@@ -132,8 +132,6 @@ const liens = [
 
       <p class="avis__note"><strong>4,7</strong> sur 150 avis</p>
 
-      <h2>Ça vous a plu&nbsp;?</h2>
-
       <a class="lum-pill-btn" href={AVIS} target="_blank" rel="noopener noreferrer">
         Laisser un avis <span class="arrow">→</span>
       </a>
@@ -353,7 +351,7 @@ const liens = [
   /* La note annote la rangée d'étoiles, qui est décorative : c'est ce texte
      qui porte l'information pour un lecteur d'écran. */
   .avis__note {
-    margin-bottom: 18px;
+    margin-bottom: 24px;
     font-weight: 700;
     font-size: 0.95rem;
     color: var(--brown);
@@ -371,13 +369,6 @@ const liens = [
   .avis__etoiles svg {
     width: 27px;
     height: 27px;
-  }
-
-  .avis h2 {
-    /* h2 est à margin 0 globalement : l'écart avant le bouton se reprend ici,
-       il était porté par le paragraphe retiré. */
-    margin-bottom: 24px;
-    font-size: clamp(1.5rem, 4.5vw, 2.2rem);
   }
 
   /* Bouton plein plutôt qu'en contour : c'est l'action la plus appuyée de
