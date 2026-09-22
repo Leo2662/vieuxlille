@@ -92,31 +92,6 @@ const liens = [
         </a>
       </div>
 
-      <div class="reseaux">
-        {
-          liens.map((lien) => (
-            <a
-              class="reseau"
-              href={lien.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`LÜM — ${lien.nom}`}
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  d={lien.trace}
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="1.9"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <span>{lien.nom}</span>
-            </a>
-          ))
-        }
-      </div>
     </section>
 
     <section class="avis">
@@ -145,6 +120,32 @@ const liens = [
         </a>
       </p>
     </footer>
+
+    <div class="reseaux">
+      {
+        liens.map((lien) => (
+          <a
+            class="reseau"
+            href={lien.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={`LÜM — ${lien.nom}`}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d={lien.trace}
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.9"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+            <span>{lien.nom}</span>
+          </a>
+        ))
+      }
+    </div>
   </main>
 </BaseLayout>
 
@@ -292,24 +293,23 @@ const liens = [
     text-wrap: balance;
   }
 
-  /* --- Liens, dans le panneau crème --- */
+  /* --- Liens réseaux, en bas de page sur la terre cuite --- */
   .reseaux {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
     gap: 12px;
-    margin-top: 38px;
-    padding-top: 26px;
-    border-top: 2px solid var(--cream-dark);
   }
 
+  /* Contour crème, et non terre cuite : le fond n'est plus le panneau. */
   .reseau {
     display: inline-flex;
     align-items: center;
     gap: 9px;
     padding: 9px 20px;
-    border: 2.5px solid var(--terracotta);
+    border: 2.5px solid var(--cream);
     border-radius: 999px;
+    color: var(--cream);
     font-weight: 800;
     font-size: 0.9rem;
     letter-spacing: 0.06em;
@@ -324,8 +324,8 @@ const liens = [
 
   .reseau:hover,
   .reseau:focus-visible {
-    background: var(--terracotta);
-    color: var(--cream);
+    background: var(--cream);
+    color: var(--terracotta);
   }
 
   /* --- Appel à l'avis Google --- */
