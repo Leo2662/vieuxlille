@@ -130,6 +130,8 @@ const liens = [
         }
       </div>
 
+      <p class="avis__note"><strong>4,7</strong> sur 150 avis</p>
+
       <h2>Ça vous a plu&nbsp;?</h2>
 
       <a class="lum-pill-btn" href={AVIS} target="_blank" rel="noopener noreferrer">
@@ -344,8 +346,26 @@ const liens = [
     display: flex;
     justify-content: center;
     gap: 6px;
-    margin-bottom: 14px;
+    margin-bottom: 8px;
     color: var(--terracotta);
+  }
+
+  /* La note annote la rangée d'étoiles, qui est décorative : c'est ce texte
+     qui porte l'information pour un lecteur d'écran. */
+  .avis__note {
+    margin-bottom: 18px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--brown);
+  }
+
+  .avis__note strong {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.35rem;
+    letter-spacing: 0.02em;
+    color: var(--terracotta);
+    vertical-align: -0.04em;
   }
 
   .avis__etoiles svg {
