@@ -90,5 +90,13 @@ const jsonLd = {
   </head>
   <body>
     <slot />
+
+    <!-- Cloudflare Web Analytics -->
+    <script
+      is:inline
+      type="module"
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "49bf6d7e8ddf43379c8938c63093b8cc"}'></script>
+    <!-- End Cloudflare Web Analytics -->
   </body>
 </html>

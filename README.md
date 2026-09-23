@@ -78,6 +78,15 @@ code devient alors trop dense pour être lu sous 160 px. `M` garde une marge de
 correction correcte tout en restant lisible en petit. Changer une cible sans
 refaire cette mesure, c'est risquer un code qui ne scanne plus à l'impression.
 
+## Mesure d'audience
+
+`BaseLayout` charge le beacon Cloudflare Web Analytics en fin de `<body>`, sur
+toutes les pages. Le `<script>` porte `is:inline` : sans lui Astro le passerait
+dans son bundler, ce qui réécrirait le `src` et perdrait `data-cf-beacon`.
+
+Le jeton est un identifiant de site public, destiné à figurer dans le HTML —
+ce n'est pas un secret. La mesure est sans cookie.
+
 ## Référencement
 
 `@astrojs/sitemap` génère `sitemap-index.xml` et `sitemap-0.xml` à chaque
