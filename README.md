@@ -98,6 +98,12 @@ outil servie en `noindex` via la propriété du même nom de `BaseLayout`.
 `public/robots.txt` déclare le sitemap. Sans cette ligne, il faut le soumettre
 à la main dans la Search Console pour que Google le trouve.
 
+`public/llms.txt` suit la convention du même nom : un résumé du lieu et les
+liens utiles, pour les modèles de langage. C'est une convention proposée, pas
+un standard — Google a annoncé ne pas s'en servir. Le fichier redit l'adresse
+et les horaires déjà présents dans `index.astro` et dans le JSON-LD de
+`BaseLayout` : les trois sont à modifier ensemble.
+
 `BaseLayout.astro` émet une fiche JSON-LD `CafeOrCoffeeShop` : nom, adresse,
 coordonnées GPS, téléphone, fourchette de prix, horaires, menu et réseaux.
 

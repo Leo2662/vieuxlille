@@ -1,0 +1,25 @@
+# LÜM Vieux-Lille
+
+> Coffee shop et brunch healthy au 94 rue Saint-André, 59800 Lille, dans le
+> quartier du Vieux-Lille. Café de spécialité, brunch, pâtisseries et
+> boissons, sur place ou à emporter.
+
+Ouvert du mercredi au lundi, de 10h à 18h. Fermé le mardi.
+Téléphone : +33 6 42 99 62 42.
+
+Le site tient en une page ; le menu et la réservation sont hébergés ailleurs.
+
+## Commander
+
+- [Menu](https://xn--lm-xka.my.canva.site/l-m/menu) : la carte, hébergée sur Canva. L'adresse `/carte` du site y redirige.
+- [Réservation](https://lumvieuxlille-hash.github.io/lum-vieuxlille/) : réserver une table.
+
+## Suivre et donner son avis
+
+- [Instagram](https://www.instagram.com/lum_vieuxlille)
+- [TikTok](https://www.tiktok.com/@lum_vieuxlille)
+- [Avis Google](https://search.google.com/local/writereview?placeid=ChIJzXLWKBcrw0cRI0DdWOWtaRM) : laisser un avis sur la fiche du lieu.
+
+## Optionnel
+
+- [LÜM Lille Centre](https://leo2662.github.io/lillecentre) : le second établissement, avec son propre site.
