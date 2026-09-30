@@ -32,11 +32,6 @@ const liens = [
 
 <BaseLayout>
   <main class="stage">
-    <a class="banniere" href={LILLE_CENTRE} target="_blank" rel="noopener noreferrer">
-      <span class="banniere__pastille">Nouveau</span>
-      <span>Ouverture du LÜM Lille Centre le jeudi 17 septembre <span class="arrow">→</span></span>
-    </a>
-
     <section class="panel">
       <div class="chip">
         <h1>Healthy and Local</h1>
@@ -158,50 +153,6 @@ const liens = [
     align-items: center;
     justify-content: center;
     gap: 28px;
-  }
-
-  .banniere {
-    display: inline-flex;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    max-width: 100%;
-    padding: 11px 22px;
-    border-radius: 999px;
-    background: var(--cream);
-    color: var(--terracotta);
-    font-weight: 800;
-    font-size: 0.95rem;
-    text-align: center;
-    box-shadow: var(--shadow);
-    animation: fade-up 0.5s ease both;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-
-  .banniere:hover,
-  .banniere:focus-visible {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-hover);
-  }
-
-  .banniere__pastille {
-    padding: 3px 11px;
-    border-radius: 999px;
-    background: var(--terracotta);
-    color: var(--cream);
-    font-size: 0.7rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-  }
-
-  .banniere .arrow {
-    display: inline-block;
-    transition: transform 0.2s;
-  }
-
-  .banniere:hover .arrow {
-    transform: translateX(3px);
   }
 
   /* Les deux appels à l'action, côte à côte puis empilés sur mobile. */
