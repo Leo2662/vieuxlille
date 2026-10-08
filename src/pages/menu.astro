@@ -1,0 +1,359 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Entete from '../components/Entete.astro';
+import { carte, formules } from '../data/menu';
+
+// Les deux séries de formules sont rendues au build ; le script en tête de
+// page choisit celle du jour. Sans JS, les deux restent visibles, chacune
+// sous son titre.
+const moments = [
+  {
+    cle: 'semaine',
+    titre: 'En semaine',
+    autre: 'weekend',
+    lien: 'Voir le menu du week-end',
+    formules: formules.semaine,
+  },
+  {
+    cle: 'weekend',
+    titre: 'Le week-end',
+    autre: 'semaine',
+    lien: 'Voir le menu de la semaine',
+    formules: formules.weekend,
+  },
+];
+---
+
+<BaseLayout
+  title="Le menu — LÜM Vieux-Lille"
+  description="Petit déj et déjeuner en semaine, brunch le week-end, café de spécialité et boissons chez LÜM Vieux-Lille."
+>
+  <script is:inline>
+    // Samedi ou dimanche à l'heure de Lille, quel que soit le fuseau du
+    // visiteur. Exécuté avant le reste de la page : rien ne clignote.
+    (function () {
+      var jour = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Europe/Paris',
+        weekday: 'short',
+      }).format(new Date());
+      document.documentElement.dataset.moment =
+        jour === 'Sat' || jour === 'Sun' ? 'weekend' : 'semaine';
+    })();
+  </script>
+
+  <div class="page">
+    <Entete />
+
+    <h1 class="titre-page">Le menu</h1>
+
+    {
+      moments.map((moment) => (
+        <div class={`moment moment--${moment.cle}`}>
+          <section class="bloc">
+            <div class="chip">
+              <h2 tabindex="-1">{moment.titre}</h2>
+            </div>
+
+            <div class="formules">
+              {moment.formules.map((formule) => (
+                <article class="formule">
+                  <div class="formule__tete">
+                    <h3>{formule.nom}</h3>
+                    {formule.prix && <span class="formule__prix">{formule.prix}</span>}
+                  </div>
+                  {formule.composition.length > 0 ? (
+                    <ul>
+                      {formule.composition.map((ligne) => (
+                        <li>{ligne}</li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p class="formule__vide">Composition et prix à venir.</p>
+                  )}
+                  {formule.supplement && <p class="formule__sup">{formule.supplement}</p>}
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <button class="bascule" type="button" data-vers={moment.autre}>
+            {moment.lien} <span class="arrow">→</span>
+          </button>
+        </div>
+      ))
+    }
+
+    {
+      carte.map((rubrique) => (
+        <section class="bloc">
+          <div class="chip">
+            <h2>{rubrique.titre}</h2>
+          </div>
+
+          <ul class={rubrique.articles.length > 8 ? 'articles articles--deux' : 'articles'}>
+            {rubrique.articles.map((article) => (
+              <li class="article">
+                <span class="article__nom">{article.nom}</span>
+                <span class="article__filet" aria-hidden="true" />
+                <span class="article__prix">{article.prix}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+
+    <p class="note">Prix en euros, taxes comprises.</p>
+  </div>
+</BaseLayout>
+
+<script>
+  // Passe à l'autre série de formules, puis donne le focus à son titre pour
+  // qu'un lecteur d'écran annonce le changement.
+  document.querySelectorAll<HTMLButtonElement>('.bascule').forEach((bouton) => {
+    bouton.addEventListener('click', () => {
+      const vers = bouton.dataset.vers;
+      document.documentElement.dataset.moment = vers;
+      document.querySelector<HTMLElement>(`.moment--${vers} h2`)?.focus();
+    });
+  });
+</script>
+
+<style>
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 28px var(--gutter) 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 46px;
+  }
+
+  .titre-page {
+    margin: 6px 0 0;
+    text-align: center;
+    font-size: clamp(2.6rem, 9vw, 5rem);
+    color: var(--cream);
+  }
+
+  /* --- Formules du jour : le script en tête de page pose data-moment --- */
+  .moment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+  }
+
+  .moment .bloc {
+    width: 100%;
+  }
+
+  :global(html[data-moment='semaine']) .moment--weekend,
+  :global(html[data-moment='weekend']) .moment--semaine {
+    display: none;
+  }
+
+  /* Sans JS, les deux séries sont affichées : le bouton n'aurait rien à
+     basculer. */
+  .bascule {
+    display: none;
+    padding: 0 0 1px;
+    border: 0;
+    border-bottom: 2px solid rgba(249, 241, 230, 0.45);
+    background: none;
+    color: var(--cream);
+    font: inherit;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  :global(html[data-moment]) .bascule {
+    display: inline-block;
+  }
+
+  .bascule:hover,
+  .bascule:focus-visible {
+    border-bottom-color: var(--cream);
+  }
+
+  .bascule .arrow {
+    display: inline-block;
+    transition: transform 0.2s;
+  }
+
+  .bascule:hover .arrow {
+    transform: translateX(3px);
+  }
+
+  /* --- Bloc crème, avec cartouche de titre à cheval sur le bord --- */
+  .bloc {
+    position: relative;
+    padding: 62px 34px 38px;
+    border-radius: var(--radius-lg);
+    background: var(--cream);
+    box-shadow: var(--shadow);
+    animation: fade-up 0.5s ease both;
+  }
+
+  .chip {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: max-content;
+    max-width: calc(100% - 40px);
+    padding: 11px 28px;
+    border: 3px solid var(--terracotta-light);
+    border-radius: var(--radius);
+    background: var(--cream);
+  }
+
+  .chip h2 {
+    font-size: clamp(1.3rem, 3.4vw, 1.9rem);
+  }
+
+  /* Le titre ne reçoit le focus que par le script : pas de contour au clic. */
+  .chip h2:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* --- Formules --- */
+  .formules {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 22px;
+  }
+
+  .formule {
+    padding: 22px 24px 24px;
+    border: 3px solid var(--terracotta-light);
+    border-radius: var(--radius);
+  }
+
+  .formule__tete {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid var(--cream-dark);
+  }
+
+  .formule__tete h3 {
+    font-size: 1.35rem;
+  }
+
+  .formule__prix {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    white-space: nowrap;
+  }
+
+  .formule ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+
+  .formule li {
+    position: relative;
+    padding-left: 20px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    font-weight: 700;
+  }
+
+  /* Puce en losange, dans l'esprit des tracés de l'affiche */
+  .formule li::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 0.55em;
+    width: 7px;
+    height: 7px;
+    background: var(--terracotta);
+    transform: rotate(45deg);
+  }
+
+  .formule__vide {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--brown);
+  }
+
+  .formule__sup {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 2px dotted var(--terracotta-light);
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--brown);
+  }
+
+  /* --- Carte barista et boissons --- */
+  .articles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px 46px;
+  }
+
+  .articles--deux {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .article {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 1.02rem;
+  }
+
+  .article__filet {
+    flex: 1;
+    min-width: 18px;
+    border-bottom: 2px dotted var(--terracotta-light);
+    transform: translateY(-5px);
+  }
+
+  .article__prix {
+    white-space: nowrap;
+  }
+
+  .note {
+    margin-top: -16px;
+    text-align: center;
+    color: var(--cream);
+    font-size: 0.85rem;
+    font-weight: 700;
+    opacity: 0.75;
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .bloc {
+      padding: 56px 20px 32px;
+    }
+
+    .articles--deux {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,9 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// Le menu vit désormais sur Canva. Le domaine porte un « ü » : on écrit sa
-// forme punycode, qui passe partout sans dépendre de l'encodage de l'URL.
-const MENU = 'https://xn--lm-xka.my.canva.site/l-m/menu';
 const RESERVATION = 'https://lumvieuxlille-hash.github.io/lum-vieuxlille/';
 const LILLE_CENTRE = 'https://leo2662.github.io/lillecentre';
 const AVIS =
@@ -86,7 +83,7 @@ const liens = [
       </p>
 
       <div class="actions">
-        <a class="lum-pill-btn" href={MENU} target="_blank" rel="noopener noreferrer">
+        <a class="lum-pill-btn" href="/menu">
           Consulter le menu <span class="arrow">→</span>
         </a>
         <a class="lum-pill-btn" href={RESERVATION} target="_blank" rel="noopener noreferrer">

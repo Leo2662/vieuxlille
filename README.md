@@ -6,8 +6,8 @@ propre site : https://leo2662.github.io/lillecentre
 
 En ligne : https://lumvieuxlille.fr
 
-Une page d'accueil. Le menu est hébergé sur Canva, et `/carte` — qui portait
-la carte braderie — y redirige.
+Une page d'accueil et une page `/menu`. `/carte` — qui portait la carte
+braderie — redirige vers `/menu`.
 
 ## Stack
 
@@ -47,9 +47,12 @@ illustrations au trait.
 
 ```
 src/
+├── components/Entete.astro    # logo et retour, en tête des pages intérieures
+├── data/menu.ts               # contenu et prix du menu
 ├── layouts/BaseLayout.astro   # <head>, polices, réglages partagés
 ├── lib/qr.ts                  # cibles des QR codes et leur rendu SVG
 ├── pages/index.astro          # page d'accueil
+├── pages/menu.astro           # le menu, selon le jour
 ├── pages/qr-code.astro        # les QR codes, à télécharger
 ├── pages/[slug].svg.ts        # un fichier .svg par QR, écrit au build
 └── styles/global.css          # variables de design et composants de base
@@ -57,6 +60,19 @@ src/
 
 `public/` porte les fichiers recopiés tels quels dans `dist/` : le favicon, le
 `CNAME` du domaine et le `robots.txt`.
+
+## Menu
+
+`/menu` affiche tous les jours la carte barista et boissons, et une seule
+série de formules selon le jour : petit déj et déjeuner du lundi au vendredi,
+brunch le samedi et le dimanche. Le contenu et les prix sont dans
+`src/data/menu.ts`.
+
+Le site est statique : le jour ne peut pas être fixé au build. Un script
+inline, placé avant le contenu, lit le jour **à l'heure de Paris** et pose
+`data-moment` sur `<html>` ; le CSS masque l'autre série avant le premier
+affichage. Un bouton permet de voir l'autre série. Sans JavaScript, les deux
+séries restent affichées, chacune sous son titre.
 
 ## QR codes
 
@@ -91,7 +107,7 @@ ce n'est pas un secret. La mesure est sans cookie.
 
 `@astrojs/sitemap` génère `sitemap-index.xml` et `sitemap-0.xml` à chaque
 build, à partir de `site` dans `astro.config.mjs`. Deux pages en sont exclues
-par un `filter` : `/carte`, qui n'est qu'une redirection vers le menu Canva
+par un `filter` : `/carte`, qui n'est qu'une redirection vers `/menu`
 servie en `noindex` avec une canonique vers la destination, et `/qr-code`, page
 outil servie en `noindex` via la propriété du même nom de `BaseLayout`.
 
@@ -115,9 +131,13 @@ recherche, donc une valeur inventée y coûte plus cher qu'un champ absent.
 ## À confirmer — le site est déjà public
 
 - **Les horaires** affichés sur l'accueil (mercredi → lundi, 10h – 18h).
-- **Les liens externes.** Le menu pointe sur Canva et la réservation sur un
-  autre dépôt Pages : ni l'un ni l'autre n'est vérifié par le build. Les
-  cartes braderie et complète restent dans l'historique git.
+- **Le menu.** Barista, boissons, petit déj et déjeuner reprennent la carte
+  du 4 septembre, aux prix de Lille Centre. La formule brunch n'a encore ni
+  composition ni prix. Le menu Canva de la boutique n'est plus lié depuis le
+  site.
+- **Le lien de réservation**, qui pointe sur un autre dépôt Pages : le build
+  ne le vérifie pas. Les cartes braderie et complète restent dans
+  l'historique git.
 
 ## Déploiement
 

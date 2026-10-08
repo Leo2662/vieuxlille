@@ -7,11 +7,12 @@
 Ouvert du mercredi au lundi, de 10h à 18h. Fermé le mardi.
 Téléphone : +33 6 42 99 62 42.
 
-Le site tient en une page ; le menu et la réservation sont hébergés ailleurs.
+Le site tient en deux pages, l'accueil et le menu ; la réservation est
+hébergée ailleurs.
 
 ## Commander
 
-- [Menu](https://xn--lm-xka.my.canva.site/l-m/menu) : la carte, hébergée sur Canva. L'adresse `/carte` du site y redirige.
+- [Menu](https://lumvieuxlille.fr/menu) : café de spécialité et boissons tous les jours, formules petit déj et déjeuner en semaine, brunch le week-end. L'adresse `/carte` du site y redirige.
 - [Réservation](https://lumvieuxlille-hash.github.io/lum-vieuxlille/) : réserver une table.
 
 ## Suivre et donner son avis
