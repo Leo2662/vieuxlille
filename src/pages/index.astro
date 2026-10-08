@@ -32,6 +32,13 @@ const liens = [
 
 <BaseLayout>
   <main class="stage">
+    <p class="banniere">
+      <span class="banniere__offre">
+        Privatisez le LÜM pour votre afterwork<span class="banniere__tiret">&nbsp;–</span>
+      </span>
+      <span class="banniere__quand">tous les jeudis de 18h30 à 22h30</span>
+    </p>
+
     <section class="panel">
       <div class="chip">
         <h1>Healthy and Local</h1>
@@ -153,6 +160,30 @@ const liens = [
     align-items: center;
     justify-content: center;
     gap: 28px;
+  }
+
+  /* Annonce au-dessus du panneau : une pilule sur une ligne, deux lignes sur
+     mobile. Le tiret ne sert qu'à la version sur une ligne. */
+  .banniere {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 0.3em;
+    max-width: 100%;
+    padding: 11px 24px;
+    border-radius: 999px;
+    background: var(--cream);
+    font-weight: 800;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    text-align: center;
+    text-wrap: balance;
+    box-shadow: var(--shadow);
+    animation: fade-up 0.5s ease both;
+  }
+
+  .banniere__quand {
+    color: var(--brown);
   }
 
   /* Les deux appels à l'action, côte à côte puis empilés sur mobile. */
@@ -375,6 +406,15 @@ const liens = [
   }
 
   @media (max-width: 768px) {
+    .banniere {
+      flex-direction: column;
+      border-radius: var(--radius);
+    }
+
+    .banniere__tiret {
+      display: none;
+    }
+
     .panel {
       padding: 74px 22px 48px;
     }
