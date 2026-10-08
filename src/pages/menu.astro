@@ -1,123 +1,294 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Entete from '../components/Entete.astro';
-import { carte, formules } from '../data/menu';
+import { sections, type Icone } from '../data/menu';
 
-// Les deux séries de formules sont rendues au build ; le script en tête de
-// page choisit celle du jour. Sans JS, les deux restent visibles, chacune
-// sous son titre.
-const moments = [
-  {
-    cle: 'semaine',
-    titre: 'En semaine',
-    autre: 'weekend',
-    lien: 'Voir le menu du week-end',
-    formules: formules.semaine,
-  },
-  {
-    cle: 'weekend',
-    titre: 'Le week-end',
-    autre: 'semaine',
-    lien: 'Voir le menu de la semaine',
-    formules: formules.weekend,
-  },
-];
+// Icônes au trait, sur une grille de 48, dans l'esprit de la tasse de
+// l'accueil.
+const icones: Record<Icone, string> = {
+  croissant:
+    'M24 12c-7 0-12 6-12 12l4 9h16l4-9c0-6-5-12-12-12Z M12 24c-4 0-7 3-7 7 3 3 8 3 11 2 M36 24c4 0 7 3 7 7-3 3-8 3-11 2 M19 14l2 19 M29 14l-2 19',
+  couverts: 'M14 8v10a5 5 0 0 0 10 0V8 M19 8v32 M34 40V8c-4 2-6 8-6 14v6h6',
+  oeuf:
+    'M22 7c8-1 11 5 15 7 5 3 6 10 2 15-3 5-3 11-11 12-7 1-14-1-18-7-4-6-3-13 1-18 3-5 5-8 11-9Z M24 31.5a6.5 6.5 0 1 0 0-13 6.5 6.5 0 0 0 0 13Z M21 24a3 3 0 0 1 3-3',
+  tasse:
+    'M8 19h24v11a10 10 0 0 1-10 10h-4A10 10 0 0 1 8 30V19Z M32 22h3a5.5 5.5 0 0 1 0 11h-3 M16 13c0-3 3-4 3-7 M24 13c0-3 3-4 3-7',
+  verre: 'M12 14h24l-3.2 25.6A3 3 0 0 1 29.8 42H18.2a3 3 0 0 1-3-2.4L12 14Z M13 22h22 M26 28l5-22h6',
+  cloche: 'M6 35h36 M9 35a15 15 0 0 1 30 0 M24 20v-4 M20 16h8 M10 40h28 M29 25a9 9 0 0 1 4 5',
+};
 ---
 
 <BaseLayout
   title="Le menu — LÜM Vieux-Lille"
-  description="Petit déj et déjeuner en semaine, brunch le week-end, café de spécialité et boissons chez LÜM Vieux-Lille."
+  description="Petit déj et déjeuner en semaine, brunch le week-end, café de spécialité, boissons et carte salée et sucrée chez LÜM Vieux-Lille."
 >
-  <script is:inline>
-    // Samedi ou dimanche à l'heure de Lille, quel que soit le fuseau du
-    // visiteur. Exécuté avant le reste de la page : rien ne clignote.
-    (function () {
-      var jour = new Intl.DateTimeFormat('en-US', {
-        timeZone: 'Europe/Paris',
-        weekday: 'short',
-      }).format(new Date());
-      document.documentElement.dataset.moment =
-        jour === 'Sat' || jour === 'Sun' ? 'weekend' : 'semaine';
-    })();
-  </script>
-
   <div class="page">
     <Entete />
 
     <h1 class="titre-page">Le menu</h1>
 
-    {
-      moments.map((moment) => (
-        <div class={`moment moment--${moment.cle}`}>
-          <section class="bloc">
-            <div class="chip">
-              <h2 tabindex="-1">{moment.titre}</h2>
-            </div>
+    <!-- Sans JS, les onglets sont de simples ancres et toutes les rubriques
+         s'affichent à la suite. Le script en fin de bloc en fait des onglets. -->
+    <div class="menu" data-menu>
+      <div class="barre">
+        <button class="fleche" type="button" data-pas="-1" aria-label="Rubrique précédente">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+        </button>
 
-            <div class="formules">
-              {moment.formules.map((formule) => (
-                <article class="formule">
-                  <div class="formule__tete">
-                    <h3>{formule.nom}</h3>
-                    {formule.prix && <span class="formule__prix">{formule.prix}</span>}
-                  </div>
-                  {formule.composition.length > 0 ? (
-                    <ul>
-                      {formule.composition.map((ligne) => (
-                        <li>{ligne}</li>
-                      ))}
-                    </ul>
+        <ul class="onglets">
+          {
+            sections.map((section) => (
+              <li>
+                <a
+                  class="onglet"
+                  id={`onglet-${section.id}`}
+                  href={`#${section.id}`}
+                  data-moment={section.moment}
+                  data-jours={section.service?.jours.join(',')}
+                  data-debut={section.service?.debut}
+                  data-fin={section.service?.fin}
+                >
+                  <svg class="onglet__icone" viewBox="0 0 48 48" aria-hidden="true">
+                    <path d={icones[section.icone]} />
+                  </svg>
+                  <span>{section.nom}</span>
+                  <span class="onglet__point" hidden>
+                    <span class="masque">, servi en ce moment</span>
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+
+        <button class="fleche" type="button" data-pas="1" aria-label="Rubrique suivante">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+        </button>
+      </div>
+
+      {
+        sections.map((section) => (
+          <section class="panneau" id={section.id}>
+            <h2>{section.nom}</h2>
+
+            <p class="horaires">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5.2l3.4 2" />
+              </svg>
+              {section.horaires}
+              <span class="maintenant" hidden>En ce moment</span>
+            </p>
+
+            <div class="bloc">
+              {section.formule && (
+                <div class="formule">
+                  {section.formule.composition.length > 0 ? (
+                    <>
+                      <div class="formule__tete">
+                        <span>La formule</span>
+                        <span class="formule__prix">{section.formule.prix}</span>
+                      </div>
+                      <ul>
+                        {section.formule.composition.map((ligne) => (
+                          <li>{ligne}</li>
+                        ))}
+                      </ul>
+                      {section.formule.supplement && (
+                        <p class="formule__sup">{section.formule.supplement}</p>
+                      )}
+                    </>
                   ) : (
                     <p class="formule__vide">Composition et prix à venir.</p>
                   )}
-                  {formule.supplement && <p class="formule__sup">{formule.supplement}</p>}
-                </article>
+                </div>
+              )}
+
+              {section.rubriques?.map((rubrique) => (
+                <div class="rubrique">
+                  {rubrique.titre && <h3>{rubrique.titre}</h3>}
+                  <ul class={rubrique.articles.length > 8 ? 'articles articles--deux' : 'articles'}>
+                    {rubrique.articles.map((article) => (
+                      <li class="article">
+                        <div class="article__ligne">
+                          <span class="article__nom">{article.nom}</span>
+                          <span class="article__filet" aria-hidden="true" />
+                          <span class="article__prix">{article.prix}</span>
+                        </div>
+                        {article.description && <p class="article__desc">{article.description}</p>}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
             </div>
           </section>
+        ))
+      }
 
-          <button class="bascule" type="button" data-vers={moment.autre}>
-            {moment.lien} <span class="arrow">→</span>
-          </button>
-        </div>
-      ))
-    }
-
-    {
-      carte.map((rubrique) => (
-        <section class="bloc">
-          <div class="chip">
-            <h2>{rubrique.titre}</h2>
-          </div>
-
-          <ul class={rubrique.articles.length > 8 ? 'articles articles--deux' : 'articles'}>
-            {rubrique.articles.map((article) => (
-              <li class="article">
-                <span class="article__nom">{article.nom}</span>
-                <span class="article__filet" aria-hidden="true" />
-                <span class="article__prix">{article.prix}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))
-    }
+      <button class="bascule" type="button" hidden>
+        <span></span> <span class="arrow">→</span>
+      </button>
+    </div>
 
     <p class="note">Prix en euros, taxes comprises.</p>
   </div>
-</BaseLayout>
 
-<script>
-  // Passe à l'autre série de formules, puis donne le focus à son titre pour
-  // qu'un lecteur d'écran annonce le changement.
-  document.querySelectorAll<HTMLButtonElement>('.bascule').forEach((bouton) => {
-    bouton.addEventListener('click', () => {
-      const vers = bouton.dataset.vers;
-      document.documentElement.dataset.moment = vers;
-      document.querySelector<HTMLElement>(`.moment--${vers} h2`)?.focus();
-    });
-  });
-</script>
+  <!-- Inline et placé juste après le menu : il s'exécute avant le premier
+       affichage, donc on ne voit jamais toutes les rubriques clignoter. -->
+  <script is:inline>
+    (function () {
+      var menu = document.querySelector('[data-menu]');
+      var liste = menu.querySelector('.onglets');
+      var onglets = Array.from(menu.querySelectorAll('.onglet'));
+      var fleches = Array.from(menu.querySelectorAll('.fleche'));
+      var bascule = menu.querySelector('.bascule');
+
+      // Jour et heure à Paris, quel que soit le fuseau du visiteur.
+      var parts = {};
+      new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Europe/Paris',
+        weekday: 'short',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23',
+      })
+        .formatToParts(new Date())
+        .forEach(function (p) {
+          parts[p.type] = p.value;
+        });
+      var jour = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(parts.weekday);
+      var maintenant = Number(parts.hour) * 60 + Number(parts.minute);
+      var moment = jour === 0 || jour === 6 ? 'weekend' : 'semaine';
+
+      function minutes(hhmm) {
+        var p = hhmm.split(':');
+        return Number(p[0]) * 60 + Number(p[1]);
+      }
+
+      // 'en-cours', 'a-venir' (plus tard aujourd'hui) ou null.
+      function service(onglet) {
+        var d = onglet.dataset;
+        if (!d.jours || d.jours.split(',').map(Number).indexOf(jour) < 0) return null;
+        if (maintenant < minutes(d.debut)) return 'a-venir';
+        if (maintenant < minutes(d.fin)) return 'en-cours';
+        return null;
+      }
+
+      function visibles() {
+        return onglets.filter(function (o) {
+          return !o.parentElement.hidden;
+        });
+      }
+
+      function actif() {
+        return onglets.find(function (o) {
+          return o.getAttribute('aria-selected') === 'true';
+        });
+      }
+
+      // Les formules de l'autre moment disparaissent de la barre.
+      function montrerMoment(m) {
+        moment = m;
+        onglets.forEach(function (o) {
+          o.parentElement.hidden = Boolean(o.dataset.moment) && o.dataset.moment !== m;
+        });
+        bascule.firstElementChild.textContent =
+          m === 'semaine' ? 'Voir le menu du week-end' : 'Voir le menu de la semaine';
+      }
+
+      // La première formule servie en ce moment ou plus tard dans la journée,
+      // sinon la première formule du moment.
+      function parDefaut() {
+        var formules = visibles().filter(function (o) {
+          return o.dataset.moment;
+        });
+        return formules.find(service) || formules[0] || visibles()[0];
+      }
+
+      function choisir(onglet, options) {
+        options = options || {};
+        onglets.forEach(function (o) {
+          var choisi = o === onglet;
+          o.setAttribute('aria-selected', String(choisi));
+          o.tabIndex = choisi ? 0 : -1;
+          document.getElementById(o.getAttribute('aria-controls')).hidden = !choisi;
+        });
+
+        var vis = visibles();
+        var i = vis.indexOf(onglet);
+        fleches[0].disabled = i === 0;
+        fleches[1].disabled = i === vis.length - 1;
+
+        // Ramène l'onglet au centre de la barre, sans faire défiler la page.
+        liste.scrollTo({
+          left: onglet.parentElement.offsetLeft - (liste.clientWidth - onglet.offsetWidth) / 2,
+          behavior: options.doux ? 'smooth' : 'auto',
+        });
+
+        if (options.focus) onglet.focus();
+        if (options.url) history.replaceState(null, '', onglet.hash);
+      }
+
+      menu.dataset.js = '';
+      liste.setAttribute('role', 'tablist');
+      liste.setAttribute('aria-label', 'Rubriques du menu');
+      bascule.hidden = false;
+
+      onglets.forEach(function (o) {
+        var panneau = document.getElementById(o.hash.slice(1));
+        o.parentElement.setAttribute('role', 'presentation');
+        o.setAttribute('role', 'tab');
+        o.setAttribute('aria-controls', panneau.id);
+        panneau.setAttribute('role', 'tabpanel');
+        panneau.setAttribute('aria-labelledby', o.id);
+
+        if (service(o) === 'en-cours') {
+          o.querySelector('.onglet__point').hidden = false;
+          panneau.querySelector('.maintenant').hidden = false;
+        }
+      });
+
+      // Un lien direct (/menu#brunch) ouvre son onglet, quitte à changer de
+      // moment.
+      var cible = onglets.find(function (o) {
+        return o.hash === location.hash;
+      });
+      montrerMoment((cible && cible.dataset.moment) || moment);
+      choisir(cible || parDefaut());
+
+      liste.addEventListener('click', function (e) {
+        var o = e.target.closest('.onglet');
+        if (!o) return;
+        e.preventDefault();
+        choisir(o, { doux: true, url: true });
+      });
+
+      // Flèches du clavier, Début et Fin : le motif d'onglets standard.
+      liste.addEventListener('keydown', function (e) {
+        var vis = visibles();
+        var i = vis.indexOf(document.activeElement);
+        var j = { ArrowLeft: i - 1, ArrowRight: i + 1, Home: 0, End: vis.length - 1 }[e.key];
+        if (i < 0 || j === undefined || !vis[j]) return;
+        e.preventDefault();
+        choisir(vis[j], { doux: true, focus: true, url: true });
+      });
+
+      fleches.forEach(function (f) {
+        f.addEventListener('click', function () {
+          var vis = visibles();
+          var suivant = vis[vis.indexOf(actif()) + Number(f.dataset.pas)];
+          if (suivant) choisir(suivant, { doux: true, url: true });
+        });
+      });
+
+      bascule.addEventListener('click', function () {
+        montrerMoment(moment === 'semaine' ? 'weekend' : 'semaine');
+        choisir(parDefaut(), { focus: true, url: true });
+      });
+    })();
+  </script>
+</BaseLayout>
 
 <style>
   .page {
@@ -126,7 +297,7 @@ const moments = [
     padding: 28px var(--gutter) 64px;
     display: flex;
     flex-direction: column;
-    gap: 46px;
+    gap: 34px;
   }
 
   .titre-page {
@@ -136,27 +307,345 @@ const moments = [
     color: var(--cream);
   }
 
-  /* --- Formules du jour : le script en tête de page pose data-moment --- */
-  .moment {
+  /* --- Barre d'onglets : crème, l'onglet choisi prend la terre cuite du fond
+     et s'ouvre sur sa rubrique --- */
+  .barre {
+    display: flex;
+    gap: 2px;
+    border: 3px solid var(--cream);
+    border-bottom: 0;
+    border-radius: var(--radius) var(--radius) 0 0;
+    background: var(--terracotta-light);
+    overflow: hidden;
+  }
+
+  .fleche {
+    display: none;
+    flex: none;
+    width: 46px;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    background: var(--cream);
+    color: var(--terracotta);
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .menu[data-js] .fleche {
+    display: grid;
+  }
+
+  .fleche:hover:not(:disabled) {
+    background: var(--cream-dark);
+  }
+
+  /* L'opacité porte sur le chevron seul : sur le bouton entier, elle
+     laisserait voir le fond des séparateurs. */
+  .fleche:disabled {
+    cursor: default;
+  }
+
+  .fleche:disabled svg {
+    opacity: 0.3;
+  }
+
+  .fleche svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .onglets {
+    position: relative;
+    flex: 1;
+    display: flex;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .onglets::-webkit-scrollbar {
+    display: none;
+  }
+
+  .onglets li {
+    flex: 1 0 auto;
+    display: flex;
+  }
+
+  .onglets li[hidden] {
+    display: none;
+  }
+
+  .onglet {
+    position: relative;
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 22px;
+    gap: 8px;
+    min-width: 116px;
+    padding: 18px 14px 14px;
+    background: var(--cream);
+    color: var(--terracotta);
+    font-weight: 800;
+    font-size: 0.8rem;
+    letter-spacing: 0.07em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    white-space: nowrap;
+    transition: background 0.2s, color 0.2s;
   }
 
-  .moment .bloc {
-    width: 100%;
+  .onglet:hover {
+    background: var(--cream-dark);
   }
 
-  :global(html[data-moment='semaine']) .moment--weekend,
-  :global(html[data-moment='weekend']) .moment--semaine {
+  .onglet[aria-selected='true'] {
+    background: var(--terracotta);
+    color: var(--cream);
+  }
+
+  .onglet:focus-visible {
+    outline: 3px solid currentColor;
+    outline-offset: -7px;
+  }
+
+  .onglet__icone {
+    width: 38px;
+    height: 38px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Le point signale la formule servie à l'heure qu'il est. */
+  .onglet__point {
+    position: absolute;
+    top: 11px;
+    right: 13px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .onglet__point[hidden] {
     display: none;
   }
 
-  /* Sans JS, les deux séries sont affichées : le bouton n'aurait rien à
-     basculer. */
+  .masque {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* --- Rubrique : titre et horaires sur la terre cuite, puis le bloc --- */
+  .panneau {
+    padding-top: 34px;
+    animation: fade-up 0.4s ease both;
+  }
+
+  .panneau[hidden] {
+    display: none;
+  }
+
+  .menu:not([data-js]) .panneau + .panneau {
+    margin-top: 30px;
+  }
+
+  .panneau h2 {
+    font-size: clamp(2.4rem, 8vw, 3.6rem);
+    color: var(--cream);
+  }
+
+  .horaires {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
+    margin: 12px 0 26px;
+    color: var(--cream);
+    font-weight: 800;
+    font-size: 1rem;
+  }
+
+  .horaires svg {
+    width: 20px;
+    height: 20px;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .maintenant {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 3px 12px;
+    border-radius: 999px;
+    background: var(--cream);
+    color: var(--terracotta);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .maintenant::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .maintenant[hidden] {
+    display: none;
+  }
+
+  .bloc {
+    padding: 30px 34px 34px;
+    border-radius: var(--radius-lg);
+    background: var(--cream);
+    box-shadow: var(--shadow);
+  }
+
+  /* --- Formule --- */
+  .formule__tete {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+    border-bottom: 2px solid var(--cream-dark);
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brown);
+  }
+
+  .formule__prix {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: var(--terracotta);
+    white-space: nowrap;
+  }
+
+  .formule ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+
+  .formule li {
+    position: relative;
+    padding-left: 22px;
+    font-size: 1rem;
+    line-height: 1.5;
+    font-weight: 700;
+  }
+
+  /* Puce en losange, dans l'esprit des tracés de l'affiche */
+  .formule li::before {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 0.55em;
+    width: 7px;
+    height: 7px;
+    background: var(--terracotta);
+    transform: rotate(45deg);
+  }
+
+  .formule__vide {
+    font-weight: 700;
+    color: var(--brown);
+  }
+
+  .formule__sup {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 2px dotted var(--terracotta-light);
+    font-size: 0.92rem;
+    font-weight: 800;
+    color: var(--brown);
+  }
+
+  /* --- Articles --- */
+  .rubrique + .rubrique {
+    margin-top: 30px;
+  }
+
+  .rubrique h3 {
+    margin-bottom: 14px;
+    font-size: 1.4rem;
+  }
+
+  .articles {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 14px 46px;
+  }
+
+  .articles--deux {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .article__ligne {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 1.02rem;
+    line-height: 1.4;
+  }
+
+  .article__filet {
+    flex: 1;
+    min-width: 18px;
+    border-bottom: 2px dotted var(--terracotta-light);
+    transform: translateY(-5px);
+  }
+
+  .article__prix {
+    white-space: nowrap;
+  }
+
+  .article__desc {
+    margin-top: 2px;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--brown);
+  }
+
+  /* --- Passage à l'autre moment de la semaine --- */
   .bascule {
-    display: none;
+    align-self: center;
+    margin-top: 26px;
     padding: 0 0 1px;
     border: 0;
     border-bottom: 2px solid rgba(249, 241, 230, 0.45);
@@ -169,8 +658,8 @@ const moments = [
     transition: border-color 0.2s;
   }
 
-  :global(html[data-moment]) .bascule {
-    display: inline-block;
+  .bascule[hidden] {
+    display: none;
   }
 
   .bascule:hover,
@@ -187,148 +676,13 @@ const moments = [
     transform: translateX(3px);
   }
 
-  /* --- Bloc crème, avec cartouche de titre à cheval sur le bord --- */
-  .bloc {
-    position: relative;
-    padding: 62px 34px 38px;
-    border-radius: var(--radius-lg);
-    background: var(--cream);
-    box-shadow: var(--shadow);
-    animation: fade-up 0.5s ease both;
-  }
-
-  .chip {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: max-content;
-    max-width: calc(100% - 40px);
-    padding: 11px 28px;
-    border: 3px solid var(--terracotta-light);
-    border-radius: var(--radius);
-    background: var(--cream);
-  }
-
-  .chip h2 {
-    font-size: clamp(1.3rem, 3.4vw, 1.9rem);
-  }
-
-  /* Le titre ne reçoit le focus que par le script : pas de contour au clic. */
-  .chip h2:focus:not(:focus-visible) {
-    outline: none;
-  }
-
-  /* --- Formules --- */
-  .formules {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 22px;
-  }
-
-  .formule {
-    padding: 22px 24px 24px;
-    border: 3px solid var(--terracotta-light);
-    border-radius: var(--radius);
-  }
-
-  .formule__tete {
+  .menu {
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 14px;
-    padding-bottom: 12px;
-    margin-bottom: 12px;
-    border-bottom: 2px solid var(--cream-dark);
-  }
-
-  .formule__tete h3 {
-    font-size: 1.35rem;
-  }
-
-  .formule__prix {
-    font-family: var(--font-display);
-    font-size: 1.35rem;
-    white-space: nowrap;
-  }
-
-  .formule ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 8px;
-  }
-
-  .formule li {
-    position: relative;
-    padding-left: 20px;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    font-weight: 700;
-  }
-
-  /* Puce en losange, dans l'esprit des tracés de l'affiche */
-  .formule li::before {
-    content: '';
-    position: absolute;
-    left: 2px;
-    top: 0.55em;
-    width: 7px;
-    height: 7px;
-    background: var(--terracotta);
-    transform: rotate(45deg);
-  }
-
-  .formule__vide {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--brown);
-  }
-
-  .formule__sup {
-    margin-top: 14px;
-    padding-top: 12px;
-    border-top: 2px dotted var(--terracotta-light);
-    font-size: 0.9rem;
-    font-weight: 800;
-    color: var(--brown);
-  }
-
-  /* --- Carte barista et boissons --- */
-  .articles {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 14px 46px;
-  }
-
-  .articles--deux {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .article {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
-    font-weight: 800;
-    font-size: 1.02rem;
-  }
-
-  .article__filet {
-    flex: 1;
-    min-width: 18px;
-    border-bottom: 2px dotted var(--terracotta-light);
-    transform: translateY(-5px);
-  }
-
-  .article__prix {
-    white-space: nowrap;
+    flex-direction: column;
   }
 
   .note {
-    margin-top: -16px;
+    margin-top: -8px;
     text-align: center;
     color: var(--cream);
     font-size: 0.85rem;
@@ -339,7 +693,7 @@ const moments = [
   @keyframes fade-up {
     from {
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(16px);
     }
     to {
       opacity: 1;
@@ -348,8 +702,18 @@ const moments = [
   }
 
   @media (max-width: 768px) {
+    .fleche {
+      width: 40px;
+    }
+
+    .onglet {
+      min-width: 104px;
+      padding: 16px 10px 12px;
+      font-size: 0.75rem;
+    }
+
     .bloc {
-      padding: 56px 20px 32px;
+      padding: 24px 20px 28px;
     }
 
     .articles--deux {

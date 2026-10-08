@@ -63,16 +63,26 @@ src/
 
 ## Menu
 
-`/menu` affiche tous les jours la carte barista et boissons, et une seule
-série de formules selon le jour : petit déj et déjeuner du lundi au vendredi,
-brunch le samedi et le dimanche. Le contenu et les prix sont dans
+`/menu` présente une rubrique à la fois, derrière une barre d'onglets :
+Petit déj et Déjeuner en semaine, Brunch le week-end, puis Barista, Boissons
+et À la carte tous les jours. Le contenu, les prix et les horaires sont dans
 `src/data/menu.ts`.
 
-Le site est statique : le jour ne peut pas être fixé au build. Un script
-inline, placé avant le contenu, lit le jour **à l'heure de Paris** et pose
-`data-moment` sur `<html>` ; le CSS masque l'autre série avant le premier
-affichage. Un bouton permet de voir l'autre série. Sans JavaScript, les deux
-séries restent affichées, chacune sous son titre.
+Le site est statique : le jour et l'heure ne peuvent pas être fixés au build.
+Un script inline, placé juste après le menu, les lit **à l'heure de Paris**
+avant le premier affichage, et :
+
+- ne garde dans la barre que les formules du jour (semaine ou week-end) ;
+- ouvre la formule servie en ce moment ou plus tard dans la journée, sinon la
+  première du jour ;
+- marque d'un point les formules servies à l'heure qu'il est (« En ce
+  moment »), d'après le `service` de chaque rubrique. Le mardi, jour de
+  fermeture, n'en allume aucun.
+
+Un lien sous la rubrique passe aux formules de l'autre moment. Chaque onglet a
+son ancre : `/menu#brunch` ouvre directement le brunch, même un jeudi. Sans
+JavaScript, les onglets restent des ancres et toutes les rubriques
+s'affichent à la suite.
 
 ## QR codes
 
@@ -131,10 +141,9 @@ recherche, donc une valeur inventée y coûte plus cher qu'un champ absent.
 ## À confirmer — le site est déjà public
 
 - **Les horaires** affichés sur l'accueil (mercredi → lundi, 10h – 18h).
-- **Le menu.** Barista, boissons, petit déj et déjeuner reprennent la carte
-  du 4 septembre, aux prix de Lille Centre. La formule brunch n'a encore ni
-  composition ni prix. Le menu Canva de la boutique n'est plus lié depuis le
-  site.
+- **Le menu.** Les articles et les prix reprennent la carte du 4 septembre,
+  aux prix de Lille Centre. La formule brunch n'a encore ni composition ni
+  prix. Le menu Canva de la boutique n'est plus lié depuis le site.
 - **Le lien de réservation**, qui pointe sur un autre dépôt Pages : le build
   ne le vérifie pas. Les cartes braderie et complète restent dans
   l'historique git.

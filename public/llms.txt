@@ -12,7 +12,7 @@ hébergée ailleurs.
 
 ## Commander
 
-- [Menu](https://lumvieuxlille.fr/menu) : café de spécialité et boissons tous les jours, formules petit déj et déjeuner en semaine, brunch le week-end. L'adresse `/carte` du site y redirige.
+- [Menu](https://lumvieuxlille.fr/menu) : en semaine, formule petit déj de 10h à 11h et formule déjeuner toute la journée ; le week-end, brunch de 11h à 15h30 ; tous les jours, carte barista, boissons et à la carte (focaccias, pâtisseries). L'adresse `/carte` du site y redirige.
 - [Réservation](https://lumvieuxlille-hash.github.io/lum-vieuxlille/) : réserver une table.
 
 ## Suivre et donner son avis
