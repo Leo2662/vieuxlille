@@ -113,11 +113,13 @@ s'affichent à la suite.
 Sur l'accueil, une carte cliquable en tête de page mène à `/afterwork`, la
 page de vente de la privatisation : tous les jeudis, de 18h30 à 22h30, à
 29 € par personne. Accroche, trois atouts (20 personnes, un serveur dédié, le
-Vieux-Lille), la carte de l'offre et ce qu'elle comprend, le déroulé en trois
-étapes, les infos pratiques, puis un dernier appel à l'action.
+Vieux-Lille), la carte de l'offre et ce qu'elle comprend, puis « Comment ça
+se passe ? » : une FAQ en accordéon qui porte le déroulé et les infos
+pratiques. L'accordéon est natif (`details`/`summary`) : il marche sans
+JavaScript, et l'attribut `name` n'y laisse qu'une réponse ouverte à la fois.
 
-La page n'a qu'un appel à l'action, « Réserver maintenant », répété trois
-fois. Il mène à `/afterwork/reservation`.
+La page n'a qu'un appel à l'action, « Réserver maintenant », dans l'accroche
+et sur la carte de l'offre. Il mène à `/afterwork/reservation`.
 
 Le prix, la capacité, le créneau et le contenu de la formule vivent dans
 `src/data/afterwork.ts`, lu par les deux pages : changer le prix là change

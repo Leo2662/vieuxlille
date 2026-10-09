@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Entete from '../components/Entete.astro';
 import Trinquer from '../components/Trinquer.astro';
-import { PRIX_PAR_PERSONNE, inclus, euros } from '../data/afterwork';
+import { PRIX_PAR_PERSONNE, CAPACITE, inclus, euros } from '../data/afterwork';
 
 // L'unique appel à l'action de la page : il mène au paiement.
 const RESERVER = '/afterwork/reservation';
@@ -43,18 +43,39 @@ const atouts = [
   },
 ];
 
-const etapes = [
+// « Comment ça se passe ? » : le déroulé et les infos pratiques, en
+// questions-réponses. Les réponses sont du HTML écrit ici, sans contenu venu
+// de l'extérieur.
+const faq = [
   {
-    titre: 'Réservez votre jeudi',
-    texte: 'Choisissez la date et le nombre de personnes, puis réglez en ligne.',
+    question: 'Comment réserver\u00a0?',
+    reponse:
+      'Choisissez votre jeudi et le nombre de personnes, puis réglez en ligne. Votre soirée est réservée.',
   },
   {
-    titre: 'On s\u2019occupe de tout',
-    texte: 'Bière, planches apéro, dînatoire et dessert\u00a0: tout est prévu.',
+    question: 'Qu\u2019est-ce qui est prévu pendant la soirée\u00a0?',
+    reponse:
+      'Bière, planche apéro, planche dînatoire et planche dessert. Un serveur dédié s\u2019occupe de votre groupe toute la soirée\u00a0: vous n\u2019avez rien à prévoir.',
   },
   {
-    titre: 'Vous n\u2019avez plus qu\u2019à venir',
-    texte: 'Rendez-vous à 18h30 au 94 rue Saint-André. On s\u2019occupe du reste.',
+    question: 'Quel jour, à quelle heure\u00a0?',
+    reponse: 'Tous les jeudis, de 18h30 à 22h30. Rendez-vous à 18h30, on s\u2019occupe du reste.',
+  },
+  {
+    question: 'Combien de personnes peut-on être\u00a0?',
+    reponse: `Jusqu\u2019à ${CAPACITE} personnes\u00a0: le café entier est privatisé pour votre groupe.`,
+  },
+  {
+    question: 'Combien ça coûte\u00a0?',
+    reponse: `${euros(PRIX_PAR_PERSONNE)} par personne. Le prix comprend la bière, les trois planches et le service.`,
+  },
+  {
+    question: 'Où se trouve le LÜM\u00a0?',
+    reponse: `Au 94 rue Saint-André, 59800 Lille, au cœur du Vieux-Lille. <a href="${ITINERAIRE}" target="_blank" rel="noopener noreferrer">Voir l\u2019itinéraire\u00a0→</a>`,
+  },
+  {
+    question: 'Une autre question\u00a0?',
+    reponse: `Appelez-nous au <a href="${TELEPHONE}">${TELEPHONE_LISIBLE}</a> ou écrivez-nous sur <a href="${INSTAGRAM}" target="_blank" rel="noopener noreferrer">Instagram</a>.`,
   },
 ];
 ---
@@ -156,73 +177,23 @@ const etapes = [
       </div>
     </section>
 
-    <!-- Le déroulé, en trois temps -->
+    <!-- Questions fréquentes. Accordéon natif (details/summary) : il marche
+         sans JavaScript, et `name` n'en laisse qu'une ouverte à la fois. -->
     <section class="section">
       <h2 class="titre-section">Comment ça se passe&nbsp;?</h2>
 
-      <ol class="etapes">
+      <div class="carte faq">
         {
-          etapes.map((etape, i) => (
-            <li class="carte carte--petite etape">
-              <span class="etape__numero" aria-hidden="true">
-                {i + 1}
-              </span>
-              <h3>{etape.titre}</h3>
-              <p>{etape.texte}</p>
-            </li>
+          faq.map((item, i) => (
+            <details name="faq" open={i === 0}>
+              <summary>
+                <span>{item.question}</span>
+                <span class="faq__icone" aria-hidden="true" />
+              </summary>
+              <p class="faq__reponse" set:html={item.reponse} />
+            </details>
           ))
         }
-      </ol>
-    </section>
-
-    <!-- Infos pratiques -->
-    <section class="carte infos">
-      <h2>Infos pratiques</h2>
-
-      <dl>
-        <div>
-          <dt>Quand</dt>
-          <dd>Tous les jeudis, de 18h30 à 22h30</dd>
-        </div>
-        <div>
-          <dt>Groupe</dt>
-          <dd>Jusqu'à 20 personnes, avec un serveur dédié</dd>
-        </div>
-        <div>
-          <dt>Prix</dt>
-          <dd>{euros(PRIX_PAR_PERSONNE)} par personne</dd>
-        </div>
-        <div>
-          <dt>Où</dt>
-          <dd>
-            94 rue Saint-André, 59800 Lille
-            <a href={ITINERAIRE} target="_blank" rel="noopener noreferrer">
-              Itinéraire <span class="arrow">→</span>
-            </a>
-          </dd>
-        </div>
-        <div>
-          <dt>Une question&nbsp;?</dt>
-          <dd>
-            <a href={TELEPHONE}>{TELEPHONE_LISIBLE}</a>
-            <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer">
-              Instagram <span class="arrow">→</span>
-            </a>
-          </dd>
-        </div>
-      </dl>
-    </section>
-
-    <!-- Dernier appel -->
-    <section class="carte final">
-      <h2>Un jeudi vous fait de l'œil&nbsp;?</h2>
-      <p class="lede">
-        Choisissez votre date, indiquez le nombre de personnes&nbsp;: votre soirée est réservée.
-      </p>
-      <div class="actions">
-        <a class="lum-pill-btn lum-pill-btn--plein" href={RESERVER}>
-          Réserver maintenant <span class="arrow">→</span>
-        </a>
       </div>
     </section>
   </div>
@@ -409,14 +380,12 @@ const etapes = [
     stroke-linejoin: round;
   }
 
-  .atout h3,
-  .etape h3 {
+  .atout h3 {
     margin-bottom: 8px;
     font-size: 1.35rem;
   }
 
-  .atout p,
-  .etape p {
+  .atout p {
     font-size: 0.97rem;
     line-height: 1.6;
     color: var(--brown);
@@ -490,109 +459,108 @@ const etapes = [
     color: var(--brown);
   }
 
-  /* --- Étapes --- */
-  .etapes {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 22px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  /* Double classe : ce padding haut nul doit primer sur celui des
-     petites cartes, y compris sur mobile. */
-  .carte.etape {
-    padding-top: 0;
-    margin-top: 24px;
-  }
-
-  .etape:nth-child(2) {
-    animation-delay: 0.08s;
-  }
-
-  .etape:nth-child(3) {
-    animation-delay: 0.16s;
-  }
-
-  /* Le numéro chevauche le haut de la carte, comme les cartouches. */
-  .etape__numero {
-    display: grid;
-    place-items: center;
-    width: 52px;
-    height: 52px;
-    margin: -26px auto 16px;
-    border-radius: 50%;
-    background: var(--terracotta);
-    color: var(--cream);
-    font-family: var(--font-display);
-    font-size: 1.6rem;
-    line-height: 1;
-    box-shadow: var(--elevation-2);
-  }
-
-  /* --- Infos pratiques --- */
-  .infos {
+  /* --- FAQ en accordéon --- */
+  .faq {
+    padding: 6px 32px;
     text-align: left;
   }
 
-  .infos h2 {
-    margin-bottom: 20px;
-  }
-
-  .infos dl {
-    display: grid;
-    gap: 14px;
-    margin: 0;
-  }
-
-  .infos dl div {
-    display: grid;
-    grid-template-columns: 110px 1fr;
-    gap: 16px;
-    padding-top: 14px;
+  .faq details + details {
     border-top: 2px solid var(--cream-dark);
   }
 
-  .infos dt {
-    font-weight: 800;
-    font-size: 0.85rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--brown);
-  }
-
-  .infos dd {
+  .faq summary {
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 6px 18px;
-    margin: 0;
-    font-weight: 800;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 0;
+    font-weight: 900;
+    font-size: 1.08rem;
+    line-height: 1.35;
+    list-style: none;
+    cursor: pointer;
   }
 
-  .infos a {
+  .faq summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq summary:focus-visible {
+    outline: 3px solid var(--terracotta);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  /* Un « + » dessiné en CSS, qui tourne en « × » à l'ouverture. */
+  .faq__icone {
+    position: relative;
+    flex: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--cream-dark);
+    transition: background 0.2s, color 0.2s, transform 0.25s, box-shadow 0.25s;
+  }
+
+  .faq__icone::before,
+  .faq__icone::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 2.5px;
+    border-radius: 2px;
+    background: currentColor;
+    transform: translate(-50%, -50%);
+  }
+
+  .faq__icone::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  .faq summary:hover .faq__icone {
+    background: var(--terracotta-light);
+    color: var(--cream);
+  }
+
+  .faq details[open] .faq__icone {
+    background: var(--terracotta);
+    color: var(--cream);
+    transform: rotate(45deg);
+    box-shadow: var(--elevation-1);
+  }
+
+  .faq__reponse {
+    padding: 0 48px 22px 0;
+    line-height: 1.65;
+    color: var(--brown);
+    animation: deplie 0.3s ease;
+  }
+
+  /* Les liens arrivent par set:html : hors de la portée des styles scopés. */
+  .faq__reponse :global(a) {
+    color: var(--terracotta);
+    font-weight: 800;
     border-bottom: 2px solid var(--terracotta-light);
     transition: border-color 0.2s;
   }
 
-  .infos a:hover,
-  .infos a:focus-visible {
+  .faq__reponse :global(a:hover),
+  .faq__reponse :global(a:focus-visible) {
     border-bottom-color: var(--terracotta);
   }
 
-  .infos .arrow {
-    display: inline-block;
-    transition: transform 0.2s;
-  }
-
-  .infos a:hover .arrow {
-    transform: translateX(3px);
-  }
-
-  /* --- Dernier appel --- */
-  .final h2 {
-    margin-bottom: 12px;
+  @keyframes deplie {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @keyframes fade-up {
@@ -623,18 +591,23 @@ const etapes = [
       padding: 24px 22px;
     }
 
-    .atouts,
-    .etapes {
+    .atouts {
       grid-template-columns: 1fr;
     }
 
-    .etapes {
-      gap: 34px;
+    .faq {
+      padding: 4px 20px;
     }
 
-    .infos dl div {
-      grid-template-columns: 1fr;
-      gap: 4px;
+    .faq__reponse {
+      padding-right: 0;
+    }
+
+    /* Bouton resserré : « Réserver maintenant » tient sur une ligne. */
+    .carte .lum-pill-btn {
+      padding: 12px 20px;
+      font-size: 0.9rem;
+      letter-spacing: 0.06em;
     }
   }
 </style>
