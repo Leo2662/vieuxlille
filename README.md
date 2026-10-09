@@ -43,6 +43,25 @@ Les formes reprennent l'affiche : angles arrondis, traits épais de 3 px,
 cartouches de titre qui chevauchent les blocs, boutons en pilule et
 illustrations au trait.
 
+### Élévation
+
+Les blocs crème flottent au-dessus de la terre cuite. Trois niveaux d'ombres,
+déclarés dans `global.css`, superposent chacun une ombre de contact et une
+ombre diffuse, teintées brun très foncé — une ombre terre cuite ne se voit
+pas sur un fond terre cuite :
+
+| Niveau | Variable | Pour |
+|---|---|---|
+| 1 — posé | `--elevation-1` | boutons pleins, pastilles |
+| 2 — détaché | `--elevation-2` | bannière, cartouches, barre d'onglets, onglet choisi |
+| 3 — flottant | `--elevation-3` | cartes de contenu |
+
+Les cartes crème ajoutent `--edge-light`, un liseré clair sur l'arête haute.
+Seul ce qui est cliquable bouge : au survol, boutons et onglets montent de
+2 px (`--lift`) et prennent le niveau 2, puis redescendent à l'appui. Ce
+soulèvement est réservé aux appareils à survol, pour qu'il ne reste pas collé
+après un toucher sur mobile.
+
 ## Structure
 
 ```

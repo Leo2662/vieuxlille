@@ -24,8 +24,33 @@
   --radius: 18px;
   --radius-lg: 28px;
   --border: 3px solid var(--terracotta);
-  --shadow: 0 4px 20px rgba(148, 72, 38, 0.16);
-  --shadow-hover: 0 10px 32px rgba(148, 72, 38, 0.28);
+
+  /* --- Élévation ------------------------------------------------------
+     Chaque niveau superpose une ombre de contact, courte et nette, et une
+     ombre diffuse, large et douce : c'est ce mélange qui fait flotter un
+     objet. Teinte brun très foncé — une ombre terre cuite, sur un fond
+     terre cuite, ne se voit pas. Plus le niveau monte, plus l'objet semble
+     décollé du fond. */
+  --shadow-color: 18deg 60% 9%;
+  /* 1 — posé : boutons pleins, pastilles */
+  --elevation-1:
+    0 1px 2px hsl(var(--shadow-color) / 0.2),
+    0 3px 6px hsl(var(--shadow-color) / 0.16);
+  /* 2 — détaché : bannière, cartouches, barre d'onglets, onglet choisi */
+  --elevation-2:
+    0 1px 2px hsl(var(--shadow-color) / 0.16),
+    0 4px 8px hsl(var(--shadow-color) / 0.18),
+    0 10px 22px hsl(var(--shadow-color) / 0.2);
+  /* 3 — flottant : cartes de contenu */
+  --elevation-3:
+    0 2px 4px hsl(var(--shadow-color) / 0.14),
+    0 8px 16px hsl(var(--shadow-color) / 0.18),
+    0 22px 44px hsl(var(--shadow-color) / 0.26);
+  /* Liseré clair sur l'arête haute des cartes crème, comme une lumière
+     venue d'en haut. S'ajoute à un niveau d'élévation. */
+  --edge-light: inset 0 1px 0 rgb(255 255 255 / 0.7);
+  /* Au survol, un élément cliquable monte d'un cran. */
+  --lift: translateY(-2px);
 
   /* --- Rythme --------------------------------------------------------- */
   --page-max: 1200px;
@@ -97,12 +122,41 @@ img {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, transform 0.25s, box-shadow 0.25s;
 }
 
 .lum-pill-btn:hover {
   background: var(--terracotta);
   color: var(--cream);
+}
+
+/* Le soulèvement est réservé aux appareils à survol : sur un écran
+   tactile, l'état :hover reste collé après le toucher. */
+@media (hover: hover) {
+  .lum-pill-btn:hover {
+    transform: var(--lift);
+    box-shadow: var(--elevation-2);
+  }
+}
+
+/* Bouton plein : l'action principale d'un bloc. Déjà posé au repos
+   (élévation 1), il monte d'un cran au survol comme les autres. */
+.lum-pill-btn--plein {
+  background: var(--terracotta);
+  color: var(--cream);
+  box-shadow: var(--elevation-1);
+}
+
+.lum-pill-btn--plein:hover,
+.lum-pill-btn--plein:focus-visible {
+  background: var(--terracotta-dark);
+  border-color: var(--terracotta-dark);
+}
+
+/* À l'appui, le bouton redescend : on sent le clic. */
+.lum-pill-btn:active {
+  transform: none;
+  box-shadow: none;
 }
 
 .lum-pill-btn .arrow {

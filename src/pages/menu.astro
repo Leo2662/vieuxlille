@@ -307,29 +307,29 @@ const icones: Record<Icone, string> = {
     color: var(--cream);
   }
 
-  /* --- Barre d'onglets : crème, l'onglet choisi prend la terre cuite du fond
-     et s'ouvre sur sa rubrique --- */
+  /* --- Barre d'onglets : une carte crème qui flotte au-dessus de la
+     rubrique. L'onglet choisi y prend la terre cuite et monte d'un cran. --- */
   .barre {
     display: flex;
-    gap: 2px;
-    border: 3px solid var(--cream);
-    border-bottom: 0;
-    border-radius: var(--radius) var(--radius) 0 0;
-    background: var(--terracotta-light);
-    overflow: hidden;
+    gap: 4px;
+    padding: 6px;
+    border-radius: var(--radius-lg);
+    background: var(--cream);
+    box-shadow: var(--edge-light), var(--elevation-2);
   }
 
   .fleche {
     display: none;
     flex: none;
-    width: 46px;
+    width: 42px;
     place-items: center;
     padding: 0;
     border: 0;
-    background: var(--cream);
+    border-radius: var(--radius);
+    background: none;
     color: var(--terracotta);
     cursor: pointer;
-    transition: background 0.2s;
+    transition: background 0.2s, opacity 0.2s;
   }
 
   .menu[data-js] .fleche {
@@ -340,14 +340,9 @@ const icones: Record<Icone, string> = {
     background: var(--cream-dark);
   }
 
-  /* L'opacité porte sur le chevron seul : sur le bouton entier, elle
-     laisserait voir le fond des séparateurs. */
   .fleche:disabled {
-    cursor: default;
-  }
-
-  .fleche:disabled svg {
     opacity: 0.3;
+    cursor: default;
   }
 
   .fleche svg {
@@ -360,13 +355,17 @@ const icones: Record<Icone, string> = {
     stroke-linejoin: round;
   }
 
+  /* Un conteneur qui défile rogne tout ce qui dépasse de lui, ombres
+     comprises. Il déborde donc sur la marge de la barre (marge négative) et
+     rend cette place en marge intérieure : l'ombre de l'onglet choisi s'y
+     dessine au lieu d'être coupée. */
   .onglets {
     position: relative;
     flex: 1;
     display: flex;
-    gap: 2px;
-    margin: 0;
-    padding: 0;
+    gap: 4px;
+    margin: -6px 0;
+    padding: 6px 4px;
     list-style: none;
     overflow-x: auto;
     scrollbar-width: none;
@@ -392,9 +391,9 @@ const icones: Record<Icone, string> = {
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    min-width: 116px;
-    padding: 18px 14px 14px;
-    background: var(--cream);
+    min-width: 112px;
+    padding: 16px 14px 13px;
+    border-radius: var(--radius);
     color: var(--terracotta);
     font-weight: 800;
     font-size: 0.8rem;
@@ -402,16 +401,24 @@ const icones: Record<Icone, string> = {
     line-height: 1.2;
     text-transform: uppercase;
     white-space: nowrap;
-    transition: background 0.2s, color 0.2s;
+    transition: background 0.2s, color 0.2s, transform 0.25s, box-shadow 0.25s;
   }
 
   .onglet:hover {
     background: var(--cream-dark);
   }
 
+  @media (hover: hover) {
+    .onglet:not([aria-selected='true']):hover {
+      transform: var(--lift);
+      box-shadow: var(--elevation-1);
+    }
+  }
+
   .onglet[aria-selected='true'] {
     background: var(--terracotta);
     color: var(--cream);
+    box-shadow: var(--elevation-2);
   }
 
   .onglet:focus-visible {
@@ -505,6 +512,7 @@ const icones: Record<Icone, string> = {
     font-size: 0.7rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    box-shadow: var(--elevation-1);
   }
 
   .maintenant::before {
@@ -523,7 +531,7 @@ const icones: Record<Icone, string> = {
     padding: 30px 34px 34px;
     border-radius: var(--radius-lg);
     background: var(--cream);
-    box-shadow: var(--shadow);
+    box-shadow: var(--edge-light), var(--elevation-3);
   }
 
   /* --- Formule --- */
@@ -703,12 +711,12 @@ const icones: Record<Icone, string> = {
 
   @media (max-width: 768px) {
     .fleche {
-      width: 40px;
+      width: 34px;
     }
 
     .onglet {
-      min-width: 104px;
-      padding: 16px 10px 12px;
+      min-width: 100px;
+      padding: 14px 10px 11px;
       font-size: 0.75rem;
     }
 

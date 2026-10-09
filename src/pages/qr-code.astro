@@ -28,7 +28,11 @@ const rendus = await Promise.all(
             <h2>{code.titre}</h2>
             <p class="carte__libelle">{code.libelle}</p>
 
-            <a class="lum-pill-btn" href={`/${code.slug}.svg`} download={`${code.slug}.svg`}>
+            <a
+              class="lum-pill-btn lum-pill-btn--plein"
+              href={`/${code.slug}.svg`}
+              download={`${code.slug}.svg`}
+            >
               Télécharger en SVG <span class="fleche-bas">↓</span>
             </a>
           </section>
@@ -70,7 +74,7 @@ const rendus = await Promise.all(
     padding: 32px 28px 34px;
     border-radius: var(--radius-lg);
     background: var(--cream);
-    box-shadow: var(--shadow);
+    box-shadow: var(--edge-light), var(--elevation-3);
     text-align: center;
     animation: fade-up 0.5s ease both;
   }
@@ -102,18 +106,6 @@ const rendus = await Promise.all(
     font-size: 0.95rem;
     color: var(--brown);
     overflow-wrap: anywhere;
-  }
-
-  /* Bouton plein : c'est l'unique action de la carte. */
-  .carte .lum-pill-btn {
-    background: var(--terracotta);
-    color: var(--cream);
-  }
-
-  .carte .lum-pill-btn:hover,
-  .carte .lum-pill-btn:focus-visible {
-    background: var(--terracotta-dark);
-    border-color: var(--terracotta-dark);
   }
 
   /* La flèche descend au survol, là où celles des liens avancent. */

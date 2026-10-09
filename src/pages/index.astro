@@ -106,7 +106,14 @@ const liens = [
 
       <p class="avis__note"><strong>4,7</strong> sur 150 avis</p>
 
-      <a class="lum-pill-btn" href={AVIS} target="_blank" rel="noopener noreferrer">
+      <!-- Bouton plein plutôt qu'en contour : c'est l'action la plus appuyée
+           de la page, elle doit se détacher des deux boutons du panneau. -->
+      <a
+        class="lum-pill-btn lum-pill-btn--plein"
+        href={AVIS}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         Laisser un avis <span class="arrow">→</span>
       </a>
     </section>
@@ -175,7 +182,7 @@ const liens = [
     line-height: 1.5;
     text-align: center;
     text-wrap: balance;
-    box-shadow: var(--shadow);
+    box-shadow: var(--edge-light), var(--elevation-2);
     animation: fade-up 0.5s ease both;
   }
 
@@ -199,12 +206,13 @@ const liens = [
     padding: 88px 40px 64px;
     border-radius: var(--radius-lg);
     background: var(--cream);
-    box-shadow: var(--shadow);
+    box-shadow: var(--edge-light), var(--elevation-3);
     text-align: center;
     animation: fade-up 0.5s ease both;
   }
 
-  /* Le cartouche du titre chevauche le bord du panneau, comme sur l'affiche */
+  /* Le cartouche du titre chevauche le bord du panneau, comme sur l'affiche.
+     Son ombre tombe sur le panneau : il flotte un cran au-dessus. */
   .chip {
     position: absolute;
     top: 0;
@@ -216,6 +224,7 @@ const liens = [
     border: 3px solid var(--terracotta-light);
     border-radius: var(--radius);
     background: var(--cream);
+    box-shadow: var(--elevation-2);
   }
 
   h1 {
@@ -293,7 +302,7 @@ const liens = [
     font-size: 0.9rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    transition: background 0.2s, color 0.2s;
+    transition: background 0.2s, color 0.2s, transform 0.25s, box-shadow 0.25s;
   }
 
   .reseau svg {
@@ -307,6 +316,18 @@ const liens = [
     color: var(--terracotta);
   }
 
+  @media (hover: hover) {
+    .reseau:hover {
+      transform: var(--lift);
+      box-shadow: var(--elevation-2);
+    }
+  }
+
+  .reseau:active {
+    transform: none;
+    box-shadow: none;
+  }
+
   /* --- Appel à l'avis Google --- */
   .avis {
     width: 100%;
@@ -314,7 +335,7 @@ const liens = [
     padding: 34px 32px 38px;
     border-radius: var(--radius-lg);
     background: var(--cream);
-    box-shadow: var(--shadow);
+    box-shadow: var(--edge-light), var(--elevation-3);
     text-align: center;
     animation: fade-up 0.5s ease 0.1s both;
   }
@@ -348,19 +369,6 @@ const liens = [
   .avis__etoiles svg {
     width: 27px;
     height: 27px;
-  }
-
-  /* Bouton plein plutôt qu'en contour : c'est l'action la plus appuyée de
-     la page, elle doit se détacher des deux boutons du panneau. */
-  .avis .lum-pill-btn {
-    background: var(--terracotta);
-    color: var(--cream);
-  }
-
-  .avis .lum-pill-btn:hover,
-  .avis .lum-pill-btn:focus-visible {
-    background: var(--terracotta-dark);
-    border-color: var(--terracotta-dark);
   }
 
   /* --- Pied de page, sur la terre cuite --- */
