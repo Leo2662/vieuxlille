@@ -1,0 +1,759 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Entete from '../../components/Entete.astro';
+import {
+  PRIX_PAR_PERSONNE,
+  CAPACITE,
+  PERSONNES_PAR_DEFAUT,
+  CRENEAU,
+  inclus,
+  euros,
+} from '../../data/afterwork';
+
+// ⚠️  PAGE DE PAIEMENT FACTICE, pour tester le parcours de réservation.
+// Rien ne quitte le navigateur : le script intercepte l'envoi, ne fait
+// aucune requête, et les champs de carte n'ont pas d'attribut `name` —
+// même sans script, ils ne partiraient pas avec le formulaire. Le bouton
+// de paiement reste désactivé tant que le script n'a pas pris la main.
+//
+// Avant la mise en production, remplacer cette page par un vrai
+// prestataire de paiement (Stripe Checkout, lien de paiement SumUp…), qui
+// affiche lui-même la saisie de la carte.
+const totalParDefaut = PERSONNES_PAR_DEFAUT * PRIX_PAR_PERSONNE;
+---
+
+<BaseLayout
+  title="Réservation — Afterwork LÜM Vieux-Lille"
+  description="Réservez votre afterwork privatisé au LÜM Vieux-Lille."
+  noindex
+>
+  <div class="page">
+    <Entete retour="/afterwork" />
+
+    <p class="test">
+      <span class="test__pastille">Mode test</span>
+      Paiement simulé&nbsp;: aucun montant ne sera débité. N'entrez pas votre vraie carte.
+    </p>
+
+    <h1 class="titre-page">Réservation</h1>
+
+    <form class="paiement" data-paiement>
+      <div class="blocs">
+        <fieldset class="carte bloc">
+          <legend><span class="num" aria-hidden="true">1</span> Votre soirée</legend>
+
+          <div class="champs">
+            <label class="champ">
+              <span class="champ__libelle">Date</span>
+              <select data-date required>
+                <option value="">Chargement des jeudis…</option>
+              </select>
+            </label>
+
+            <div class="champ">
+              <span class="champ__libelle" id="personnes-libelle">Nombre de personnes</span>
+              <div class="compteur">
+                <button type="button" data-pas="-1" aria-label="Une personne de moins">−</button>
+                <input
+                  type="number"
+                  data-personnes
+                  min="1"
+                  max={CAPACITE}
+                  value={PERSONNES_PAR_DEFAUT}
+                  inputmode="numeric"
+                  required
+                  aria-labelledby="personnes-libelle"
+                />
+                <button type="button" data-pas="1" aria-label="Une personne de plus">+</button>
+              </div>
+              <span class="champ__aide">Jusqu'à {CAPACITE} personnes, {CRENEAU}.</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="carte bloc">
+          <legend><span class="num" aria-hidden="true">2</span> Vos coordonnées</legend>
+
+          <div class="champs champs--deux">
+            <label class="champ">
+              <span class="champ__libelle">Nom et prénom</span>
+              <input autocomplete="name" required />
+            </label>
+            <label class="champ">
+              <span class="champ__libelle">Entreprise (facultatif)</span>
+              <input autocomplete="organization" />
+            </label>
+            <label class="champ">
+              <span class="champ__libelle">E-mail</span>
+              <input type="email" autocomplete="email" required />
+            </label>
+            <label class="champ">
+              <span class="champ__libelle">Téléphone</span>
+              <input type="tel" autocomplete="tel" required />
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="carte bloc">
+          <legend><span class="num" aria-hidden="true">3</span> Paiement</legend>
+
+          <!-- Carte de test pré-remplie. Pas d'autocomplétion : le navigateur
+               ne doit pas proposer une vraie carte enregistrée. -->
+          <div class="champs">
+            <label class="champ">
+              <span class="champ__libelle">Numéro de carte</span>
+              <input
+                data-carte
+                value="4242 4242 4242 4242"
+                inputmode="numeric"
+                autocomplete="off"
+                maxlength="19"
+                pattern="(\d{4} ){3}\d{4}"
+                required
+              />
+            </label>
+          </div>
+          <div class="champs champs--deux">
+            <label class="champ">
+              <span class="champ__libelle">Expiration</span>
+              <input
+                data-expiration
+                value="12/30"
+                placeholder="MM/AA"
+                inputmode="numeric"
+                autocomplete="off"
+                maxlength="5"
+                pattern="(0[1-9]|1[0-2])/\d{2}"
+                required
+              />
+            </label>
+            <label class="champ">
+              <span class="champ__libelle">Cryptogramme</span>
+              <input
+                data-cvc
+                value="123"
+                inputmode="numeric"
+                autocomplete="off"
+                maxlength="4"
+                pattern="\d{3,4}"
+                required
+              />
+            </label>
+          </div>
+          <p class="champ__aide">Carte de test pré-remplie&nbsp;: rien n'est envoyé.</p>
+        </fieldset>
+      </div>
+
+      <aside class="carte recap">
+        <h2>Récapitulatif</h2>
+
+        <p class="recap__offre">Afterwork privatisé</p>
+        <p class="recap__date" data-recap-date>Jeudi à choisir</p>
+        <p class="recap__lieu">{CRENEAU} · 94 rue Saint-André</p>
+
+        <ul class="recap__inclus">
+          {inclus.map((ligne) => <li>{ligne.titre}</li>)}
+        </ul>
+
+        <p class="recap__ligne">
+          <span><span data-recap-personnes>{PERSONNES_PAR_DEFAUT}</span> × {euros(PRIX_PAR_PERSONNE)}</span>
+          <span data-recap-sous-total>{euros(totalParDefaut)}</span>
+        </p>
+        <p class="recap__total">
+          <span>Total</span>
+          <strong data-recap-total>{euros(totalParDefaut)}</strong>
+        </p>
+
+        <button class="lum-pill-btn lum-pill-btn--plein recap__payer" type="submit" disabled data-payer>
+          <span data-payer-texte>Payer {euros(totalParDefaut)}</span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </button>
+        <p class="recap__note">Mode test&nbsp;: rien ne sera débité.</p>
+      </aside>
+    </form>
+
+    <noscript>
+      <p class="test">Cette page de test a besoin de JavaScript pour fonctionner.</p>
+    </noscript>
+
+    <section class="carte confirmation" data-confirmation hidden tabindex="-1">
+      <span class="confirmation__icone" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" /></svg>
+      </span>
+      <h2>C'est réservé&nbsp;!</h2>
+      <p class="confirmation__texte">
+        <span data-conf-date></span>, de 18h30 à 22h30, pour <span data-conf-personnes></span>.
+        Rendez-vous au 94 rue Saint-André.
+      </p>
+      <dl class="confirmation__details">
+        <div>
+          <dt>Référence</dt>
+          <dd data-conf-ref></dd>
+        </div>
+        <div>
+          <dt>Montant</dt>
+          <dd data-conf-total></dd>
+        </div>
+      </dl>
+      <p class="recap__note">
+        Mode test&nbsp;: aucun paiement n'a été débité et aucun e-mail n'est envoyé.
+      </p>
+      <a class="lum-pill-btn lum-pill-btn--plein" href="/">
+        Retour à l'accueil <span class="arrow">→</span>
+      </a>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import { PRIX_PAR_PERSONNE, CAPACITE, euros } from '../../data/afterwork';
+
+  const form = document.querySelector<HTMLFormElement>('[data-paiement]')!;
+  const date = form.querySelector<HTMLSelectElement>('[data-date]')!;
+  const personnes = form.querySelector<HTMLInputElement>('[data-personnes]')!;
+  const [moins, plus] = form.querySelectorAll<HTMLButtonElement>('[data-pas]');
+  const payer = form.querySelector<HTMLButtonElement>('[data-payer]')!;
+  const confirmation = document.querySelector<HTMLElement>('[data-confirmation]')!;
+  const champ = (cle: string) => document.querySelector<HTMLElement>(`[data-${cle}]`)!;
+
+  // Les prochains jeudis, à l'heure de Paris. Le jour même n'est pas
+  // proposé : il faut le temps de préparer la soirée.
+  function prochainsJeudis(nombre: number): Date[] {
+    const parts = Object.fromEntries(
+      new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Europe/Paris',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+      })
+        .formatToParts(new Date())
+        .map((p) => [p.type, p.value]),
+    );
+    const aujourdhui = Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day));
+    const ecart = (4 - new Date(aujourdhui).getUTCDay() + 7) % 7 || 7;
+    return Array.from(
+      { length: nombre },
+      (_, i) => new Date(aujourdhui + (ecart + 7 * i) * 86_400_000),
+    );
+  }
+
+  const libelle = new Intl.DateTimeFormat('fr-FR', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+    timeZone: 'UTC',
+  });
+  const majuscule = (texte: string) => texte.charAt(0).toUpperCase() + texte.slice(1);
+
+  date.replaceChildren(
+    ...prochainsJeudis(8).map(
+      (jour) => new Option(majuscule(libelle.format(jour)), jour.toISOString().slice(0, 10)),
+    ),
+  );
+
+  function nombre(): number {
+    const n = Math.round(Number(personnes.value));
+    return Number.isFinite(n) ? Math.min(Math.max(n, 1), CAPACITE) : 1;
+  }
+
+  // Le récapitulatif et le bouton suivent la date et le nombre de personnes.
+  function majRecap() {
+    const n = nombre();
+    const total = euros(n * PRIX_PAR_PERSONNE);
+    champ('recap-date').textContent = date.selectedOptions[0]?.text ?? 'Jeudi à choisir';
+    champ('recap-personnes').textContent = String(n);
+    champ('recap-sous-total').textContent = total;
+    champ('recap-total').textContent = total;
+    champ('payer-texte').textContent = `Payer ${total}`;
+    moins.disabled = n <= 1;
+    plus.disabled = n >= CAPACITE;
+  }
+
+  [moins, plus].forEach((bouton) =>
+    bouton.addEventListener('click', () => {
+      personnes.value = String(Math.min(Math.max(nombre() + Number(bouton.dataset.pas), 1), CAPACITE));
+      majRecap();
+    }),
+  );
+  personnes.addEventListener('input', majRecap);
+  personnes.addEventListener('change', () => {
+    personnes.value = String(nombre());
+    majRecap();
+  });
+  date.addEventListener('change', majRecap);
+
+  // Mise en forme pendant la frappe : 4242 4242…, MM/AA, chiffres seuls.
+  const carte = champ('carte') as HTMLInputElement;
+  const expiration = champ('expiration') as HTMLInputElement;
+  const cvc = champ('cvc') as HTMLInputElement;
+  carte.addEventListener('input', () => {
+    carte.value = carte.value
+      .replace(/\D/g, '')
+      .slice(0, 16)
+      .replace(/(\d{4})(?=\d)/g, '$1 ');
+  });
+  expiration.addEventListener('input', () => {
+    const chiffres = expiration.value.replace(/\D/g, '').slice(0, 4);
+    expiration.value = chiffres.length > 2 ? `${chiffres.slice(0, 2)}/${chiffres.slice(2)}` : chiffres;
+  });
+  cvc.addEventListener('input', () => {
+    cvc.value = cvc.value.replace(/\D/g, '').slice(0, 4);
+  });
+
+  // Le navigateur ne déclenche l'envoi que si tous les champs sont valides.
+  // On l'intercepte : rien ne part, on simule le délai d'un vrai paiement.
+  form.addEventListener('submit', (evenement) => {
+    evenement.preventDefault();
+    payer.disabled = true;
+    champ('payer-texte').textContent = 'Paiement en cours…';
+
+    setTimeout(() => {
+      const n = nombre();
+      champ('conf-date').textContent = date.selectedOptions[0].text;
+      champ('conf-personnes').textContent = `${n} personne${n > 1 ? 's' : ''}`;
+      champ('conf-ref').textContent = `LUM-${Math.floor(1000 + Math.random() * 9000)}`;
+      champ('conf-total').textContent = euros(n * PRIX_PAR_PERSONNE);
+      form.hidden = true;
+      confirmation.hidden = false;
+      window.scrollTo({ top: 0 });
+      confirmation.focus({ preventScroll: true });
+    }, 1400);
+  });
+
+  majRecap();
+  payer.disabled = false;
+</script>
+
+<style>
+  .page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 28px var(--gutter) 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .titre-page {
+    margin: 0;
+    text-align: center;
+    font-size: clamp(2.4rem, 8vw, 4rem);
+    color: var(--cream);
+  }
+
+  /* --- Bandeau du mode test : impossible à manquer --- */
+  .test {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 12px;
+    padding: 12px 18px;
+    border: 2px dashed rgba(249, 241, 230, 0.6);
+    border-radius: var(--radius);
+    color: var(--cream);
+    font-weight: 700;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .test__pastille {
+    padding: 3px 12px;
+    border-radius: 999px;
+    background: var(--cream);
+    color: var(--terracotta);
+    font-weight: 800;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* --- Cartes --- */
+  .carte {
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    background: var(--cream);
+    box-shadow: var(--edge-light), var(--elevation-3);
+  }
+
+  .paiement {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .paiement[hidden] {
+    display: none;
+  }
+
+  .blocs {
+    display: grid;
+    gap: 22px;
+  }
+
+  /* Un fieldset garde des marges et une bordure propres : on les retire. */
+  .bloc {
+    min-width: 0;
+    margin: 0;
+    border: 0;
+  }
+
+  /* La légende flotte pour se placer comme un titre ordinaire, au lieu de
+     s'asseoir sur la bordure du fieldset. */
+  .bloc legend {
+    float: left;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 0;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .bloc legend + * {
+    clear: both;
+  }
+
+  .num {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    color: var(--cream);
+    font-size: 1.05rem;
+    box-shadow: var(--elevation-1);
+  }
+
+  /* --- Champs --- */
+  .champs {
+    display: grid;
+    gap: 16px;
+  }
+
+  .champs + .champs {
+    margin-top: 16px;
+  }
+
+  .champs--deux {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .champ {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .champ__libelle {
+    font-weight: 800;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brown);
+  }
+
+  .champ__aide {
+    margin-top: 2px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--brown);
+  }
+
+  .bloc > .champ__aide {
+    margin-top: 12px;
+  }
+
+  input,
+  select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid var(--terracotta-light);
+    border-radius: 12px;
+    background: #fffaf3;
+    color: var(--terracotta);
+    font: inherit;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.3;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input:focus,
+  select:focus {
+    outline: none;
+    border-color: var(--terracotta);
+    box-shadow: 0 0 0 3px rgba(196, 113, 74, 0.3);
+  }
+
+  /* --- Compteur de personnes --- */
+  .compteur {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .compteur input {
+    width: 84px;
+    text-align: center;
+    font-size: 1.15rem;
+    appearance: textfield;
+  }
+
+  .compteur input::-webkit-inner-spin-button,
+  .compteur input::-webkit-outer-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
+  .compteur button {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    padding: 0;
+    border: 2px solid var(--terracotta-light);
+    border-radius: 50%;
+    background: none;
+    color: var(--terracotta);
+    font: inherit;
+    font-weight: 800;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: background 0.2s, opacity 0.2s;
+  }
+
+  .compteur button:hover:not(:disabled) {
+    background: var(--cream-dark);
+  }
+
+  .compteur button:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  /* --- Récapitulatif : il suit le défilement sur ordinateur --- */
+  .recap {
+    position: sticky;
+    top: 24px;
+  }
+
+  .recap h2 {
+    margin-bottom: 16px;
+    font-size: 1.6rem;
+  }
+
+  .recap__offre {
+    font-weight: 900;
+    font-size: 1.05rem;
+  }
+
+  .recap__date {
+    font-weight: 800;
+  }
+
+  .recap__lieu {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--brown);
+  }
+
+  .recap__inclus {
+    display: grid;
+    gap: 6px;
+    margin: 16px 0;
+    padding: 16px 0 0;
+    border-top: 2px solid var(--cream-dark);
+    list-style: none;
+  }
+
+  .recap__inclus li {
+    position: relative;
+    padding-left: 20px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--brown);
+  }
+
+  .recap__inclus li::before {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 0.6em;
+    width: 7px;
+    height: 7px;
+    background: var(--terracotta);
+    transform: rotate(45deg);
+  }
+
+  .recap__ligne,
+  .recap__total {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .recap__ligne {
+    padding-top: 14px;
+    border-top: 2px solid var(--cream-dark);
+    font-weight: 700;
+  }
+
+  .recap__total {
+    margin: 10px 0 20px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .recap__total strong {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 2.2rem;
+    letter-spacing: 0.02em;
+  }
+
+  .recap__payer {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .recap__payer:disabled {
+    opacity: 0.6;
+    cursor: progress;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .recap__note {
+    margin-top: 12px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--brown);
+  }
+
+  /* --- Confirmation --- */
+  .confirmation {
+    max-width: 620px;
+    margin: 0 auto;
+    padding: 44px 34px;
+    text-align: center;
+    animation: fade-up 0.5s ease both;
+  }
+
+  .confirmation[hidden] {
+    display: none;
+  }
+
+  .confirmation:focus {
+    outline: none;
+  }
+
+  .confirmation__icone {
+    display: grid;
+    place-items: center;
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    color: var(--cream);
+    box-shadow: var(--elevation-2);
+  }
+
+  .confirmation__icone svg {
+    width: 40px;
+    height: 40px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .confirmation h2 {
+    font-size: clamp(2rem, 6vw, 2.8rem);
+  }
+
+  .confirmation__texte {
+    max-width: 44ch;
+    margin: 12px auto 24px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+
+  .confirmation__details {
+    display: grid;
+    gap: 10px;
+    max-width: 320px;
+    margin: 0 auto 8px;
+  }
+
+  .confirmation__details div {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 10px;
+    border-top: 2px solid var(--cream-dark);
+  }
+
+  .confirmation__details dt {
+    font-weight: 800;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brown);
+  }
+
+  .confirmation__details dd {
+    margin: 0;
+    font-weight: 800;
+  }
+
+  .confirmation .lum-pill-btn {
+    margin-top: 22px;
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 860px) {
+    .paiement {
+      grid-template-columns: 1fr;
+    }
+
+    .recap {
+      position: static;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .carte {
+      padding: 24px 20px;
+    }
+
+    .champs--deux {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

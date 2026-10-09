@@ -1,6 +1,12 @@
 ---
-// En-tête des pages intérieures, sur la terre cuite : logo et retour à
-// l'accueil.
+// En-tête des pages intérieures, sur la terre cuite : logo et retour.
+// Le retour mène à l'accueil, sauf si la page en indique un autre.
+
+interface Props {
+  retour?: string;
+}
+
+const { retour = '/' } = Astro.props;
 ---
 
 <header class="entete">
@@ -8,7 +14,7 @@
     LÜM
     <small>Vieux-Lille</small>
   </a>
-  <a class="retour" href="/">
+  <a class="retour" href={retour}>
     <span class="arrow">←</span> Retour
   </a>
 </header>

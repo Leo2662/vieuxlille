@@ -69,12 +69,14 @@ après un toucher sur mobile.
 src/
 ├── components/Entete.astro    # logo et retour, en tête des pages intérieures
 ├── components/Trinquer.astro  # deux verres qui trinquent, emblème de l'afterwork
+├── data/afterwork.ts          # prix et contenu de la formule afterwork
 ├── data/menu.ts               # contenu et prix du menu
 ├── layouts/BaseLayout.astro   # <head>, polices, réglages partagés
 ├── lib/qr.ts                  # cibles des QR codes et leur rendu SVG
 ├── pages/index.astro          # page d'accueil
 ├── pages/menu.astro           # le menu, selon le jour
 ├── pages/afterwork.astro      # page de vente de l'afterwork privatisé
+├── pages/afterwork/reservation.astro  # paiement factice, pour tester le parcours
 ├── pages/qr-code.astro        # les QR codes, à télécharger
 ├── pages/[slug].svg.ts        # un fichier .svg par QR, écrit au build
 └── styles/global.css          # variables de design et composants de base
@@ -109,16 +111,34 @@ s'affichent à la suite.
 ## Afterwork
 
 Sur l'accueil, une carte cliquable en tête de page mène à `/afterwork`, la
-page de vente de la privatisation : tous les jeudis, de 18h30 à 22h30.
-Accroche, trois atouts (20 personnes, un serveur dédié, le Vieux-Lille),
-déroulé en trois étapes, infos pratiques, puis un dernier appel à l'action.
+page de vente de la privatisation : tous les jeudis, de 18h30 à 22h30, à
+29 € par personne. Accroche, trois atouts (20 personnes, un serveur dédié, le
+Vieux-Lille), la carte de l'offre et ce qu'elle comprend, le déroulé en trois
+étapes, les infos pratiques, puis un dernier appel à l'action.
 
-Le site n'a pas de serveur : on réserve par téléphone ou en message privé
-Instagram (`ig.me/m/lum_vieuxlille`, qui ouvre la conversation directement).
+La page n'a qu'un appel à l'action, « Réserver maintenant », répété trois
+fois. Il mène à `/afterwork/reservation`.
 
-Le texte ne promet que ce qui est acquis — le créneau, l'adresse, 20
-personnes et un serveur dédié. Le tarif et le contenu de la soirée sont à
-faire confirmer par la boutique avant de les y écrire.
+Le prix, la capacité, le créneau et le contenu de la formule vivent dans
+`src/data/afterwork.ts`, lu par les deux pages : changer le prix là change
+aussi le total calculé au paiement.
+
+### ⚠️ La page de paiement est factice
+
+`/afterwork/reservation` simule tout le parcours — choix du jeudi, nombre de
+personnes, coordonnées, carte, confirmation avec une référence — sans rien
+envoyer :
+
+- le script intercepte l'envoi du formulaire et ne fait aucune requête ;
+- les champs de carte n'ont pas d'attribut `name` : même sans script, ils ne
+  partiraient pas avec le formulaire, et le bouton de paiement reste
+  désactivé tant que le script n'a pas pris la main ;
+- ils sont pré-remplis avec la carte de test 4242 4242 4242 4242, sans
+  autocomplétion, et un bandeau « Mode test » le dit en haut de page.
+
+La page est en `noindex` et hors du sitemap. **Avant la mise en production**,
+la remplacer par un vrai prestataire de paiement (Stripe Checkout, lien de
+paiement SumUp…) : c'est lui qui doit afficher la saisie de la carte.
 
 ## QR codes
 
@@ -180,9 +200,8 @@ recherche, donc une valeur inventée y coûte plus cher qu'un champ absent.
 - **Le menu.** Les articles et les prix reprennent la carte du 4 septembre,
   aux prix de Lille Centre. La formule brunch n'a encore ni composition ni
   prix. Le menu Canva de la boutique n'est plus lié depuis le site.
-- **L'afterwork.** La page `/afterwork` dit « on prépare la soirée avec
-  vous » et cite « boissons, de quoi grignoter » : à valider avec la boutique,
-  comme le numéro de téléphone pour les demandes de privatisation.
+- **Le paiement de l'afterwork** est factice (voir plus haut) : à remplacer
+  par un vrai prestataire avant toute mise en production.
 - **Le lien de réservation**, qui pointe sur un autre dépôt Pages : le build
   ne le vérifie pas. Les cartes braderie et complète restent dans
   l'historique git.

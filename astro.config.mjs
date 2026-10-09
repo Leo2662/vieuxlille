@@ -21,8 +21,10 @@ export default defineConfig({
       // /carte n'est qu'une redirection vers /menu, en noindex et canonique
       // vers la destination : l'annoncer aux moteurs les enverrait sur une
       // page qui leur dit aussitôt de ne pas la garder. /qr-code est une page
-      // outil, servie en noindex elle aussi.
-      filter: (page) => !['/carte', '/qr-code'].some((p) => page.includes(p)),
+      // outil, et /afterwork/reservation une étape du parcours de paiement :
+      // toutes deux servies en noindex elles aussi.
+      filter: (page) =>
+        !['/carte', '/qr-code', '/afterwork/reservation'].some((p) => page.includes(p)),
     }),
   ],
 });

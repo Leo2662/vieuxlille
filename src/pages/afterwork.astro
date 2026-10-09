@@ -2,6 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Entete from '../components/Entete.astro';
 import Trinquer from '../components/Trinquer.astro';
+import { PRIX_PAR_PERSONNE, inclus, euros } from '../data/afterwork';
+
+// L'unique appel à l'action de la page : il mène au paiement.
+const RESERVER = '/afterwork/reservation';
 
 // Même numéro que la fiche JSON-LD de BaseLayout et que llms.txt.
 const TELEPHONE = 'tel:+33642996242';
@@ -13,10 +17,9 @@ const ITINERAIRE =
   'https://www.google.com/maps/search/?api=1&query=' +
   encodeURIComponent('LÜM, 94 rue Saint-André, 59800 Lille');
 
-// ⚠️  Le texte ne promet que ce qui est acquis : le jeudi, 18h30 – 22h30,
-// l'adresse, 20 personnes et un serveur dédié. Le tarif et le contenu de la
-// soirée (boissons, à grignoter) restent à confirmer par la boutique avant
-// d'être écrits ici.
+// Le texte ne promet que ce que la boutique a confirmé : le jeudi,
+// 18h30 – 22h30, l'adresse, 20 personnes, un serveur dédié, 29 € par
+// personne, bière et trois planches.
 const atouts = [
   {
     titre: '20 personnes',
@@ -42,16 +45,16 @@ const atouts = [
 
 const etapes = [
   {
-    titre: 'Choisissez votre jeudi',
-    texte: 'Appelez-nous ou écrivez-nous : une date, un nombre de personnes, et c’est parti.',
+    titre: 'Réservez votre jeudi',
+    texte: 'Choisissez la date et le nombre de personnes, puis réglez en ligne.',
   },
   {
-    titre: 'On prépare tout ensemble',
-    texte: 'Boissons, de quoi grignoter, installation : on cale la soirée avec vous.',
+    titre: 'On s\u2019occupe de tout',
+    texte: 'Bière, planches apéro, dînatoire et dessert\u00a0: tout est prévu.',
   },
   {
-    titre: 'Vous n’avez plus qu’à venir',
-    texte: 'Rendez-vous à 18h30 au 94 rue Saint-André. On s’occupe du reste.',
+    titre: 'Vous n\u2019avez plus qu\u2019à venir',
+    texte: 'Rendez-vous à 18h30 au 94 rue Saint-André. On s\u2019occupe du reste.',
   },
 ];
 ---
@@ -63,7 +66,7 @@ const etapes = [
   <div class="page">
     <Entete />
 
-    <!-- Accroche : la promesse, le créneau, les deux façons de réserver -->
+    <!-- Accroche : la promesse, le créneau, le prix et l'unique bouton -->
     <section class="carte hero">
       <p class="chip">Afterwork privatisé</p>
 
@@ -92,14 +95,11 @@ const etapes = [
       </ul>
 
       <div class="actions">
-        <a class="lum-pill-btn lum-pill-btn--plein" href={TELEPHONE}>
-          Appeler le LÜM <span class="arrow">→</span>
-        </a>
-        <a class="lum-pill-btn" href={INSTAGRAM} target="_blank" rel="noopener noreferrer">
-          Écrire sur Instagram <span class="arrow">→</span>
+        <a class="lum-pill-btn lum-pill-btn--plein" href={RESERVER}>
+          Réserver maintenant <span class="arrow">→</span>
         </a>
       </div>
-      <p class="numero">ou au {TELEPHONE_LISIBLE}</p>
+      <p class="numero">{euros(PRIX_PAR_PERSONNE)} par personne</p>
     </section>
 
     <!-- Les raisons de choisir le lieu -->
@@ -120,6 +120,39 @@ const etapes = [
             </article>
           ))
         }
+      </div>
+    </section>
+
+    <!-- L'offre : un prix unique et ce qu'il comprend -->
+    <section class="section">
+      <h2 class="titre-section">Une formule, un prix</h2>
+
+      <div class="carte offre">
+        <p class="offre__prix">
+          <span class="offre__montant">{euros(PRIX_PAR_PERSONNE)}</span>
+          <span class="offre__unite">par personne</span>
+        </p>
+
+        <ul class="offre__inclus">
+          {
+            inclus.map((ligne) => (
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M7.5 12.3l3 3 6-6.3" />
+                </svg>
+                <div>
+                  <strong>{ligne.titre}</strong>
+                  <span>{ligne.texte}</span>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
+
+        <a class="lum-pill-btn lum-pill-btn--plein" href={RESERVER}>
+          Réserver maintenant <span class="arrow">→</span>
+        </a>
       </div>
     </section>
 
@@ -156,6 +189,10 @@ const etapes = [
           <dd>Jusqu'à 20 personnes, avec un serveur dédié</dd>
         </div>
         <div>
+          <dt>Prix</dt>
+          <dd>{euros(PRIX_PAR_PERSONNE)} par personne</dd>
+        </div>
+        <div>
           <dt>Où</dt>
           <dd>
             94 rue Saint-André, 59800 Lille
@@ -165,7 +202,7 @@ const etapes = [
           </dd>
         </div>
         <div>
-          <dt>Contact</dt>
+          <dt>Une question&nbsp;?</dt>
           <dd>
             <a href={TELEPHONE}>{TELEPHONE_LISIBLE}</a>
             <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer">
@@ -180,15 +217,11 @@ const etapes = [
     <section class="carte final">
       <h2>Un jeudi vous fait de l'œil&nbsp;?</h2>
       <p class="lede">
-        Dites-nous la date et le nombre de personnes&nbsp;: on revient vers vous pour caler votre
-        soirée.
+        Choisissez votre date, indiquez le nombre de personnes&nbsp;: votre soirée est réservée.
       </p>
       <div class="actions">
-        <a class="lum-pill-btn lum-pill-btn--plein" href={TELEPHONE}>
-          Appeler le LÜM <span class="arrow">→</span>
-        </a>
-        <a class="lum-pill-btn" href={INSTAGRAM} target="_blank" rel="noopener noreferrer">
-          Écrire sur Instagram <span class="arrow">→</span>
+        <a class="lum-pill-btn lum-pill-btn--plein" href={RESERVER}>
+          Réserver maintenant <span class="arrow">→</span>
         </a>
       </div>
     </section>
@@ -389,6 +422,74 @@ const etapes = [
     color: var(--brown);
   }
 
+  /* --- L'offre --- */
+  .offre__prix {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 26px;
+  }
+
+  .offre__montant {
+    font-family: var(--font-display);
+    font-size: clamp(3.6rem, 12vw, 5rem);
+    line-height: 1;
+    letter-spacing: 0.02em;
+  }
+
+  .offre__unite {
+    margin-top: 6px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--brown);
+  }
+
+  .offre__inclus {
+    display: grid;
+    gap: 16px;
+    max-width: 460px;
+    margin: 0 auto 30px;
+    padding: 24px 0 0;
+    border-top: 2px solid var(--cream-dark);
+    list-style: none;
+    text-align: left;
+  }
+
+  .offre__inclus li {
+    display: flex;
+    gap: 14px;
+  }
+
+  .offre__inclus svg {
+    width: 26px;
+    height: 26px;
+    flex: none;
+    margin-top: 1px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .offre__inclus div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .offre__inclus strong {
+    font-weight: 900;
+    font-size: 1.05rem;
+  }
+
+  .offre__inclus span {
+    font-size: 0.97rem;
+    line-height: 1.55;
+    color: var(--brown);
+  }
+
   /* --- Étapes --- */
   .etapes {
     display: grid;
@@ -534,13 +635,6 @@ const etapes = [
     .infos dl div {
       grid-template-columns: 1fr;
       gap: 4px;
-    }
-
-    /* Boutons resserrés : « Écrire sur Instagram » tient sur une ligne. */
-    .actions .lum-pill-btn {
-      padding: 12px 20px;
-      font-size: 0.9rem;
-      letter-spacing: 0.06em;
     }
   }
 </style>
