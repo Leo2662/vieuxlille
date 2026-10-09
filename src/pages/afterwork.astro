@@ -14,47 +14,30 @@ const ITINERAIRE =
   encodeURIComponent('LÜM, 94 rue Saint-André, 59800 Lille');
 
 // ⚠️  Le texte ne promet que ce qui est acquis : le jeudi, 18h30 – 22h30,
-// l'adresse et l'esprit du lieu. Capacité, tarif et contenu de la soirée
-// (boissons, à grignoter) restent à confirmer par la boutique avant d'être
-// écrits ici.
+// l'adresse, 20 personnes et un serveur dédié. Le tarif et le contenu de la
+// soirée (boissons, à grignoter) restent à confirmer par la boutique avant
+// d'être écrits ici.
 const atouts = [
   {
-    titre: "Rien qu'à vous",
-    texte:
-      'Pendant quatre heures, le café entier est réservé à votre groupe. Pas de voisins de table, pas d’autre bruit de fond que le vôtre.',
-    // Clé
-    trace: 'M12.5 8a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z M11.2 11.2 20 20 M16.5 16.5l2-2 M18.8 18.8l1.6-1.6',
+    titre: '20 personnes',
+    texte: 'Le café entier, privatisé pour votre groupe, jusqu\u2019à 20 personnes.',
+    // Deux silhouettes
+    trace:
+      'M12.5 7.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6 M16 4.6a3.2 3.2 0 0 1 0 6.3 M18 14.3c1.8.7 3 2.5 3 4.7',
+  },
+  {
+    titre: '1 serveur dédié',
+    texte: 'Un serveur s\u2019occupe de votre groupe, et de lui seul, toute la soirée. Vous, vous profitez.',
+    // Cloche de service
+    trace: 'M3 17h18 M5 17a7 7 0 0 1 14 0 M12 10V7.5 M10 7.5h4 M5 20.5h14',
   },
   {
     titre: 'En plein Vieux-Lille',
     texte:
-      'Au 94 rue Saint-André, au cœur du Vieux-Lille : de quoi donner envie de quitter le bureau à l’heure.',
+      'Au 94 rue Saint-André, au cœur du Vieux-Lille\u00a0: de quoi donner envie de quitter le bureau à l\u2019heure.',
     // Repère, comme l'adresse de l'accueil
     trace: 'M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z M14.6 10a2.6 2.6 0 1 1-5.2 0 2.6 2.6 0 0 1 5.2 0Z',
   },
-  {
-    titre: 'Une soirée à votre mesure',
-    texte:
-      'Ce qu’on sert, l’installation de la salle, le rythme de la soirée : on la prépare avec vous.',
-    // Étincelle
-    trace: 'M11 3l1.8 5.2L18 10l-5.2 1.8L11 17l-1.8-5.2L4 10l5.2-1.8Z M19 15v5 M16.5 17.5h5',
-  },
-  {
-    titre: "L'esprit LÜM",
-    texte:
-      'Healthy and local, même après 18h : le soin qu’on met dans nos journées, on le met dans votre soirée.',
-    // Feuille
-    trace: 'M5 19C5 11 11 5 19 5c0 8-6 14-14 14Z M5 19l8-8',
-  },
-];
-
-const occasions = [
-  'Pot de départ',
-  "Arrivée d'un collègue",
-  'Fin de projet',
-  'Soirée d’équipe',
-  'Séminaire qui se prolonge',
-  'Rencontre clients',
 ];
 
 const etapes = [
@@ -87,12 +70,9 @@ const etapes = [
       <span class="hero__icone"><Trinquer /></span>
 
       <h1>Le LÜM, rien que pour votre équipe</h1>
-      <p class="script">Le jeudi, on lüme tard&nbsp;!</p>
+      <p class="script">Le jeudi, on lüm tard&nbsp;!</p>
 
-      <p class="lede">
-        De 18h30 à 22h30, le café de la rue Saint-André devient le vôtre. Vos collègues, vos
-        verres, vos discussions — et personne d'autre.
-      </p>
+      <p class="lede">De 18h30 à 22h30, le café de la rue Saint-André devient le vôtre.</p>
 
       <ul class="reperes">
         <li>
@@ -143,17 +123,6 @@ const etapes = [
       </div>
     </section>
 
-    <!-- Les occasions : de simples étiquettes, rien de cliquable -->
-    <section class="section">
-      <h2 class="titre-section">Pour toutes vos occasions</h2>
-
-      <div class="carte carte--petite">
-        <ul class="occasions">
-          {occasions.map((occasion) => <li>{occasion}</li>)}
-        </ul>
-      </div>
-    </section>
-
     <!-- Le déroulé, en trois temps -->
     <section class="section">
       <h2 class="titre-section">Comment ça se passe&nbsp;?</h2>
@@ -181,6 +150,10 @@ const etapes = [
         <div>
           <dt>Quand</dt>
           <dd>Tous les jeudis, de 18h30 à 22h30</dd>
+        </div>
+        <div>
+          <dt>Groupe</dt>
+          <dd>Jusqu'à 20 personnes, avec un serveur dédié</dd>
         </div>
         <div>
           <dt>Où</dt>
@@ -365,7 +338,7 @@ const etapes = [
   /* --- Atouts --- */
   .atouts {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 22px;
   }
 
@@ -379,10 +352,6 @@ const etapes = [
 
   .atout:nth-child(3) {
     animation-delay: 0.16s;
-  }
-
-  .atout:nth-child(4) {
-    animation-delay: 0.24s;
   }
 
   .atout__icone {
@@ -418,25 +387,6 @@ const etapes = [
     font-size: 0.97rem;
     line-height: 1.6;
     color: var(--brown);
-  }
-
-  /* --- Occasions : des étiquettes, sans ombre ni survol --- */
-  .occasions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .occasions li {
-    padding: 7px 16px;
-    border: 2px solid var(--terracotta-light);
-    border-radius: 999px;
-    font-weight: 800;
-    font-size: 0.92rem;
   }
 
   /* --- Étapes --- */

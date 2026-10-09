@@ -110,15 +110,15 @@ s'affichent à la suite.
 
 Sur l'accueil, une carte cliquable en tête de page mène à `/afterwork`, la
 page de vente de la privatisation : tous les jeudis, de 18h30 à 22h30.
-Accroche, atouts du lieu, occasions, déroulé en trois étapes, infos
-pratiques, puis un dernier appel à l'action.
+Accroche, trois atouts (20 personnes, un serveur dédié, le Vieux-Lille),
+déroulé en trois étapes, infos pratiques, puis un dernier appel à l'action.
 
 Le site n'a pas de serveur : on réserve par téléphone ou en message privé
 Instagram (`ig.me/m/lum_vieuxlille`, qui ouvre la conversation directement).
 
-Le texte ne promet que ce qui est acquis — le créneau, l'adresse, l'esprit du
-lieu. La capacité, le tarif et le contenu de la soirée sont à faire confirmer
-par la boutique avant de les y écrire.
+Le texte ne promet que ce qui est acquis — le créneau, l'adresse, 20
+personnes et un serveur dédié. Le tarif et le contenu de la soirée sont à
+faire confirmer par la boutique avant de les y écrire.
 
 ## QR codes
 
