@@ -112,7 +112,8 @@ s'affichent à la suite.
 
 Sur l'accueil, une carte cliquable en tête de page mène à `/afterwork`, la
 page de vente de la privatisation : tous les jeudis, de 18h30 à 22h30, à
-29 € par personne. Accroche, trois atouts (20 personnes, un serveur dédié, le
+29 € par personne, pour un groupe de 20 personnes quoi qu'il arrive — soit
+580 € la soirée. Accroche, trois atouts (20 personnes, un serveur dédié, le
 Vieux-Lille), la carte de l'offre et ce qu'elle comprend, puis « Comment ça
 se passe ? » : une FAQ en accordéon qui porte le déroulé et les infos
 pratiques. L'accordéon est natif (`details`/`summary`) : il marche sans
@@ -127,9 +128,10 @@ aussi le total calculé au paiement.
 
 ### ⚠️ La page de paiement est factice
 
-`/afterwork/reservation` simule tout le parcours — choix du jeudi, nombre de
-personnes, coordonnées, carte, confirmation avec une référence — sans rien
-envoyer :
+`/afterwork/reservation` simule tout le parcours — choix du jeudi,
+coordonnées, carte, confirmation avec une référence — sans rien envoyer. Le
+groupe n'y est pas un champ : la formule est toujours pour 20 personnes, et le
+total toujours de 580 €. Rien ne part :
 
 - le script intercepte l'envoi du formulaire et ne fait aucune requête ;
 - les champs de carte n'ont pas d'attribut `name` : même sans script, ils ne

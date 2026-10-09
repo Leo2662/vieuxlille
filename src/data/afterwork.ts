@@ -3,9 +3,10 @@
 // Changer le prix ici change aussi le total calculé au paiement.
 
 export const PRIX_PAR_PERSONNE = 29;
-export const CAPACITE = 20;
-/** Nombre de personnes proposé d'emblée sur la page de paiement. */
-export const PERSONNES_PAR_DEFAUT = 10;
+/** La formule est toujours pour 20 personnes, quoi qu'il arrive. */
+export const PERSONNES = 20;
+/** Le prix de la soirée : la seule somme payée au moment de réserver. */
+export const TOTAL = PRIX_PAR_PERSONNE * PERSONNES;
 export const CRENEAU = '18h30 – 22h30';
 
 /** Ce que comprend le prix, dans l'ordre de la carte de l'offre. */

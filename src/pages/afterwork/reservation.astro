@@ -3,8 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import Entete from '../../components/Entete.astro';
 import {
   PRIX_PAR_PERSONNE,
-  CAPACITE,
-  PERSONNES_PAR_DEFAUT,
+  PERSONNES,
+  TOTAL,
   CRENEAU,
   inclus,
   euros,
@@ -19,7 +19,6 @@ import {
 // Avant la mise en production, remplacer cette page par un vrai
 // prestataire de paiement (Stripe Checkout, lien de paiement SumUp…), qui
 // affiche lui-même la saisie de la carte.
-const totalParDefaut = PERSONNES_PAR_DEFAUT * PRIX_PAR_PERSONNE;
 ---
 
 <BaseLayout
@@ -50,23 +49,11 @@ const totalParDefaut = PERSONNES_PAR_DEFAUT * PRIX_PAR_PERSONNE;
               </select>
             </label>
 
+            <!-- Le groupe ne se choisit pas : la formule est toujours pour 20. -->
             <div class="champ">
-              <span class="champ__libelle" id="personnes-libelle">Nombre de personnes</span>
-              <div class="compteur">
-                <button type="button" data-pas="-1" aria-label="Une personne de moins">−</button>
-                <input
-                  type="number"
-                  data-personnes
-                  min="1"
-                  max={CAPACITE}
-                  value={PERSONNES_PAR_DEFAUT}
-                  inputmode="numeric"
-                  required
-                  aria-labelledby="personnes-libelle"
-                />
-                <button type="button" data-pas="1" aria-label="Une personne de plus">+</button>
-              </div>
-              <span class="champ__aide">Jusqu'à {CAPACITE} personnes, {CRENEAU}.</span>
+              <span class="champ__libelle">Groupe</span>
+              <p class="groupe">{PERSONNES} personnes</p>
+              <span class="champ__aide">La formule est prévue pour {PERSONNES} personnes, {CRENEAU}.</span>
             </div>
           </div>
         </fieldset>
@@ -156,16 +143,16 @@ const totalParDefaut = PERSONNES_PAR_DEFAUT * PRIX_PAR_PERSONNE;
         </ul>
 
         <p class="recap__ligne">
-          <span><span data-recap-personnes>{PERSONNES_PAR_DEFAUT}</span> × {euros(PRIX_PAR_PERSONNE)}</span>
-          <span data-recap-sous-total>{euros(totalParDefaut)}</span>
+          <span>{PERSONNES} × {euros(PRIX_PAR_PERSONNE)}</span>
+          <span>{euros(TOTAL)}</span>
         </p>
         <p class="recap__total">
           <span>Total</span>
-          <strong data-recap-total>{euros(totalParDefaut)}</strong>
+          <strong>{euros(TOTAL)}</strong>
         </p>
 
         <button class="lum-pill-btn lum-pill-btn--plein recap__payer" type="submit" disabled data-payer>
-          <span data-payer-texte>Payer {euros(totalParDefaut)}</span>
+          <span data-payer-texte>Payer {euros(TOTAL)}</span>
           <span class="arrow" aria-hidden="true">→</span>
         </button>
         <p class="recap__note">Mode test&nbsp;: rien ne sera débité.</p>
@@ -182,7 +169,7 @@ const totalParDefaut = PERSONNES_PAR_DEFAUT * PRIX_PAR_PERSONNE;
       </span>
       <h2>C'est réservé&nbsp;!</h2>
       <p class="confirmation__texte">
-        <span data-conf-date></span>, de 18h30 à 22h30, pour <span data-conf-personnes></span>.
+        <span data-conf-date></span>, de 18h30 à 22h30, pour {PERSONNES} personnes.
         Rendez-vous au 94 rue Saint-André.
       </p>
       <dl class="confirmation__details">
@@ -192,7 +179,7 @@ const totalParDefaut = PERSONNES_PAR_DEFAUT * PRIX_PAR_PERSONNE;
         </div>
         <div>
           <dt>Montant</dt>
-          <dd data-conf-total></dd>
+          <dd>{euros(TOTAL)}</dd>
         </div>
       </dl>
       <p class="recap__note">
@@ -206,12 +193,8 @@ const totalParDefaut = PERSONNES_PAR_DEFAUT * PRIX_PAR_PERSONNE;
 </BaseLayout>
 
 <script>
-  import { PRIX_PAR_PERSONNE, CAPACITE, euros } from '../../data/afterwork';
-
   const form = document.querySelector<HTMLFormElement>('[data-paiement]')!;
   const date = form.querySelector<HTMLSelectElement>('[data-date]')!;
-  const personnes = form.querySelector<HTMLInputElement>('[data-personnes]')!;
-  const [moins, plus] = form.querySelectorAll<HTMLButtonElement>('[data-pas]');
   const payer = form.querySelector<HTMLButtonElement>('[data-payer]')!;
   const confirmation = document.querySelector<HTMLElement>('[data-confirmation]')!;
   const champ = (cle: string) => document.querySelector<HTMLElement>(`[data-${cle}]`)!;
@@ -251,35 +234,11 @@ const totalParDefaut = PERSONNES_PAR_DEFAUT * PRIX_PAR_PERSONNE;
     ),
   );
 
-  function nombre(): number {
-    const n = Math.round(Number(personnes.value));
-    return Number.isFinite(n) ? Math.min(Math.max(n, 1), CAPACITE) : 1;
-  }
-
-  // Le récapitulatif et le bouton suivent la date et le nombre de personnes.
+  // Le récapitulatif suit le jeudi choisi ; le prix, lui, ne bouge pas.
   function majRecap() {
-    const n = nombre();
-    const total = euros(n * PRIX_PAR_PERSONNE);
     champ('recap-date').textContent = date.selectedOptions[0]?.text ?? 'Jeudi à choisir';
-    champ('recap-personnes').textContent = String(n);
-    champ('recap-sous-total').textContent = total;
-    champ('recap-total').textContent = total;
-    champ('payer-texte').textContent = `Payer ${total}`;
-    moins.disabled = n <= 1;
-    plus.disabled = n >= CAPACITE;
   }
 
-  [moins, plus].forEach((bouton) =>
-    bouton.addEventListener('click', () => {
-      personnes.value = String(Math.min(Math.max(nombre() + Number(bouton.dataset.pas), 1), CAPACITE));
-      majRecap();
-    }),
-  );
-  personnes.addEventListener('input', majRecap);
-  personnes.addEventListener('change', () => {
-    personnes.value = String(nombre());
-    majRecap();
-  });
   date.addEventListener('change', majRecap);
 
   // Mise en forme pendant la frappe : 4242 4242…, MM/AA, chiffres seuls.
@@ -308,11 +267,8 @@ const totalParDefaut = PERSONNES_PAR_DEFAUT * PRIX_PAR_PERSONNE;
     champ('payer-texte').textContent = 'Paiement en cours…';
 
     setTimeout(() => {
-      const n = nombre();
       champ('conf-date').textContent = date.selectedOptions[0].text;
-      champ('conf-personnes').textContent = `${n} personne${n > 1 ? 's' : ''}`;
       champ('conf-ref').textContent = `LUM-${Math.floor(1000 + Math.random() * 9000)}`;
-      champ('conf-total').textContent = euros(n * PRIX_PAR_PERSONNE);
       form.hidden = true;
       confirmation.hidden = false;
       window.scrollTo({ top: 0 });
@@ -495,50 +451,10 @@ const totalParDefaut = PERSONNES_PAR_DEFAUT * PRIX_PAR_PERSONNE;
     box-shadow: 0 0 0 3px rgba(196, 113, 74, 0.3);
   }
 
-  /* --- Compteur de personnes --- */
-  .compteur {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .compteur input {
-    width: 84px;
-    text-align: center;
+  /* --- Groupe : une valeur fixe, pas un champ --- */
+  .groupe {
+    font-weight: 900;
     font-size: 1.15rem;
-    appearance: textfield;
-  }
-
-  .compteur input::-webkit-inner-spin-button,
-  .compteur input::-webkit-outer-spin-button {
-    appearance: none;
-    margin: 0;
-  }
-
-  .compteur button {
-    display: grid;
-    place-items: center;
-    width: 46px;
-    height: 46px;
-    padding: 0;
-    border: 2px solid var(--terracotta-light);
-    border-radius: 50%;
-    background: none;
-    color: var(--terracotta);
-    font: inherit;
-    font-weight: 800;
-    font-size: 1.4rem;
-    cursor: pointer;
-    transition: background 0.2s, opacity 0.2s;
-  }
-
-  .compteur button:hover:not(:disabled) {
-    background: var(--cream-dark);
-  }
-
-  .compteur button:disabled {
-    opacity: 0.35;
-    cursor: default;
   }
 
   /* --- Récapitulatif : il suit le défilement sur ordinateur --- */

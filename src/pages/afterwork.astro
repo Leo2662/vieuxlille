@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Entete from '../components/Entete.astro';
 import Trinquer from '../components/Trinquer.astro';
-import { PRIX_PAR_PERSONNE, CAPACITE, inclus, euros } from '../data/afterwork';
+import { PRIX_PAR_PERSONNE, PERSONNES, TOTAL, inclus, euros } from '../data/afterwork';
 
 // L'unique appel à l'action de la page : il mène au paiement.
 const RESERVER = '/afterwork/reservation';
@@ -22,8 +22,8 @@ const ITINERAIRE =
 // personne, bière et trois planches.
 const atouts = [
   {
-    titre: '20 personnes',
-    texte: 'Le café entier, privatisé pour votre groupe, jusqu\u2019à 20 personnes.',
+    titre: `${PERSONNES} personnes`,
+    texte: `Le café entier, privatisé pour votre groupe de ${PERSONNES} personnes.`,
     // Deux silhouettes
     trace:
       'M12.5 7.5a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6 M16 4.6a3.2 3.2 0 0 1 0 6.3 M18 14.3c1.8.7 3 2.5 3 4.7',
@@ -50,7 +50,7 @@ const faq = [
   {
     question: 'Comment réserver\u00a0?',
     reponse:
-      'Choisissez votre jeudi et le nombre de personnes, puis réglez en ligne. Votre soirée est réservée.',
+      'Choisissez votre jeudi, puis réglez en ligne. Votre soirée est réservée.',
   },
   {
     question: 'Qu\u2019est-ce qui est prévu pendant la soirée\u00a0?',
@@ -62,12 +62,12 @@ const faq = [
     reponse: 'Tous les jeudis, de 18h30 à 22h30. Rendez-vous à 18h30, on s\u2019occupe du reste.',
   },
   {
-    question: 'Combien de personnes peut-on être\u00a0?',
-    reponse: `Jusqu\u2019à ${CAPACITE} personnes\u00a0: le café entier est privatisé pour votre groupe.`,
+    question: 'Pour combien de personnes\u00a0?',
+    reponse: `${PERSONNES} personnes, quoi qu\u2019il arrive\u00a0: la formule est pensée pour un groupe de ${PERSONNES}, le café entier rien que pour vous.`,
   },
   {
     question: 'Combien ça coûte\u00a0?',
-    reponse: `${euros(PRIX_PAR_PERSONNE)} par personne. Le prix comprend la bière, les trois planches et le service.`,
+    reponse: `${euros(PRIX_PAR_PERSONNE)} par personne, soit ${euros(TOTAL)} pour le groupe de ${PERSONNES}. Le prix comprend la bière, les trois planches et le service.`,
   },
   {
     question: 'Où se trouve le LÜM\u00a0?',
@@ -152,6 +152,7 @@ const faq = [
         <p class="offre__prix">
           <span class="offre__montant">{euros(PRIX_PAR_PERSONNE)}</span>
           <span class="offre__unite">par personne</span>
+          <span class="offre__total">Soit {euros(TOTAL)} la soirée pour {PERSONNES} personnes</span>
         </p>
 
         <ul class="offre__inclus">
@@ -413,6 +414,15 @@ const faq = [
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--brown);
+  }
+
+  .offre__total {
+    margin-top: 10px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    background: var(--cream-dark);
+    font-weight: 800;
+    font-size: 0.9rem;
   }
 
   .offre__inclus {
