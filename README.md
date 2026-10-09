@@ -6,8 +6,9 @@ propre site : https://leo2662.github.io/lillecentre
 
 En ligne : https://lumvieuxlille.fr
 
-Une page d'accueil et une page `/menu`. `/carte` — qui portait la carte
-braderie — redirige vers `/menu`.
+Une page d'accueil, une page `/menu` et une page `/afterwork`, qui vend la
+privatisation du jeudi soir. `/carte` — qui portait la carte braderie —
+redirige vers `/menu`.
 
 ## Stack
 
@@ -67,11 +68,13 @@ après un toucher sur mobile.
 ```
 src/
 ├── components/Entete.astro    # logo et retour, en tête des pages intérieures
+├── components/Trinquer.astro  # deux verres qui trinquent, emblème de l'afterwork
 ├── data/menu.ts               # contenu et prix du menu
 ├── layouts/BaseLayout.astro   # <head>, polices, réglages partagés
 ├── lib/qr.ts                  # cibles des QR codes et leur rendu SVG
 ├── pages/index.astro          # page d'accueil
 ├── pages/menu.astro           # le menu, selon le jour
+├── pages/afterwork.astro      # page de vente de l'afterwork privatisé
 ├── pages/qr-code.astro        # les QR codes, à télécharger
 ├── pages/[slug].svg.ts        # un fichier .svg par QR, écrit au build
 └── styles/global.css          # variables de design et composants de base
@@ -102,6 +105,20 @@ Un lien sous la rubrique passe aux formules de l'autre moment. Chaque onglet a
 son ancre : `/menu#brunch` ouvre directement le brunch, même un jeudi. Sans
 JavaScript, les onglets restent des ancres et toutes les rubriques
 s'affichent à la suite.
+
+## Afterwork
+
+Sur l'accueil, une carte cliquable en tête de page mène à `/afterwork`, la
+page de vente de la privatisation : tous les jeudis, de 18h30 à 22h30.
+Accroche, atouts du lieu, occasions, déroulé en trois étapes, infos
+pratiques, puis un dernier appel à l'action.
+
+Le site n'a pas de serveur : on réserve par téléphone ou en message privé
+Instagram (`ig.me/m/lum_vieuxlille`, qui ouvre la conversation directement).
+
+Le texte ne promet que ce qui est acquis — le créneau, l'adresse, l'esprit du
+lieu. La capacité, le tarif et le contenu de la soirée sont à faire confirmer
+par la boutique avant de les y écrire.
 
 ## QR codes
 
@@ -163,6 +180,9 @@ recherche, donc une valeur inventée y coûte plus cher qu'un champ absent.
 - **Le menu.** Les articles et les prix reprennent la carte du 4 septembre,
   aux prix de Lille Centre. La formule brunch n'a encore ni composition ni
   prix. Le menu Canva de la boutique n'est plus lié depuis le site.
+- **L'afterwork.** La page `/afterwork` dit « on prépare la soirée avec
+  vous » et cite « boissons, de quoi grignoter » : à valider avec la boutique,
+  comme le numéro de téléphone pour les demandes de privatisation.
 - **Le lien de réservation**, qui pointe sur un autre dépôt Pages : le build
   ne le vérifie pas. Les cartes braderie et complète restent dans
   l'historique git.

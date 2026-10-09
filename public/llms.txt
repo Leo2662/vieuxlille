@@ -15,6 +15,10 @@ hébergée ailleurs.
 - [Menu](https://lumvieuxlille.fr/menu) : en semaine, formule petit déj de 10h à 11h et formule déjeuner toute la journée ; le week-end, brunch de 11h à 15h30 ; tous les jours, carte barista, boissons et à la carte (focaccias, pâtisseries). L'adresse `/carte` du site y redirige.
 - [Réservation](https://lumvieuxlille-hash.github.io/lum-vieuxlille/) : réserver une table.
 
+## Privatiser
+
+- [Afterwork privatisé](https://lumvieuxlille.fr/afterwork) : tous les jeudis, de 18h30 à 22h30, le café est privatisable pour un groupe. Réservation par téléphone ou sur Instagram.
+
 ## Suivre et donner son avis
 
 - [Instagram](https://www.instagram.com/lum_vieuxlille)

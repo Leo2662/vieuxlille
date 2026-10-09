@@ -1,0 +1,596 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Entete from '../components/Entete.astro';
+import Trinquer from '../components/Trinquer.astro';
+
+// Même numéro que la fiche JSON-LD de BaseLayout et que llms.txt.
+const TELEPHONE = 'tel:+33642996242';
+const TELEPHONE_LISIBLE = '06 42 99 62 42';
+// ig.me ouvre directement une conversation privée avec le compte, dans
+// l'application comme sur le web.
+const INSTAGRAM = 'https://ig.me/m/lum_vieuxlille';
+const ITINERAIRE =
+  'https://www.google.com/maps/search/?api=1&query=' +
+  encodeURIComponent('LÜM, 94 rue Saint-André, 59800 Lille');
+
+// ⚠️  Le texte ne promet que ce qui est acquis : le jeudi, 18h30 – 22h30,
+// l'adresse et l'esprit du lieu. Capacité, tarif et contenu de la soirée
+// (boissons, à grignoter) restent à confirmer par la boutique avant d'être
+// écrits ici.
+const atouts = [
+  {
+    titre: "Rien qu'à vous",
+    texte:
+      'Pendant quatre heures, le café entier est réservé à votre groupe. Pas de voisins de table, pas d’autre bruit de fond que le vôtre.',
+    // Clé
+    trace: 'M12.5 8a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z M11.2 11.2 20 20 M16.5 16.5l2-2 M18.8 18.8l1.6-1.6',
+  },
+  {
+    titre: 'En plein Vieux-Lille',
+    texte:
+      'Au 94 rue Saint-André, au cœur du Vieux-Lille : de quoi donner envie de quitter le bureau à l’heure.',
+    // Repère, comme l'adresse de l'accueil
+    trace: 'M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z M14.6 10a2.6 2.6 0 1 1-5.2 0 2.6 2.6 0 0 1 5.2 0Z',
+  },
+  {
+    titre: 'Une soirée à votre mesure',
+    texte:
+      'Ce qu’on sert, l’installation de la salle, le rythme de la soirée : on la prépare avec vous.',
+    // Étincelle
+    trace: 'M11 3l1.8 5.2L18 10l-5.2 1.8L11 17l-1.8-5.2L4 10l5.2-1.8Z M19 15v5 M16.5 17.5h5',
+  },
+  {
+    titre: "L'esprit LÜM",
+    texte:
+      'Healthy and local, même après 18h : le soin qu’on met dans nos journées, on le met dans votre soirée.',
+    // Feuille
+    trace: 'M5 19C5 11 11 5 19 5c0 8-6 14-14 14Z M5 19l8-8',
+  },
+];
+
+const occasions = [
+  'Pot de départ',
+  "Arrivée d'un collègue",
+  'Fin de projet',
+  'Soirée d’équipe',
+  'Séminaire qui se prolonge',
+  'Rencontre clients',
+];
+
+const etapes = [
+  {
+    titre: 'Choisissez votre jeudi',
+    texte: 'Appelez-nous ou écrivez-nous : une date, un nombre de personnes, et c’est parti.',
+  },
+  {
+    titre: 'On prépare tout ensemble',
+    texte: 'Boissons, de quoi grignoter, installation : on cale la soirée avec vous.',
+  },
+  {
+    titre: 'Vous n’avez plus qu’à venir',
+    texte: 'Rendez-vous à 18h30 au 94 rue Saint-André. On s’occupe du reste.',
+  },
+];
+---
+
+<BaseLayout
+  title="Afterwork privatisé — LÜM Vieux-Lille"
+  description="Privatisez le LÜM pour votre afterwork : tous les jeudis de 18h30 à 22h30, le café du 94 rue Saint-André, dans le Vieux-Lille, rien que pour votre équipe."
+>
+  <div class="page">
+    <Entete />
+
+    <!-- Accroche : la promesse, le créneau, les deux façons de réserver -->
+    <section class="carte hero">
+      <p class="chip">Afterwork privatisé</p>
+
+      <span class="hero__icone"><Trinquer /></span>
+
+      <h1>Le LÜM, rien que pour votre équipe</h1>
+      <p class="script">Le jeudi, on lüme tard&nbsp;!</p>
+
+      <p class="lede">
+        De 18h30 à 22h30, le café de la rue Saint-André devient le vôtre. Vos collègues, vos
+        verres, vos discussions — et personne d'autre.
+      </p>
+
+      <ul class="reperes">
+        <li>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5.2l3.4 2" />
+          </svg>
+          Tous les jeudis, 18h30 – 22h30
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" />
+            <circle cx="12" cy="10" r="2.6" />
+          </svg>
+          94 rue Saint-André, Lille
+        </li>
+      </ul>
+
+      <div class="actions">
+        <a class="lum-pill-btn lum-pill-btn--plein" href={TELEPHONE}>
+          Appeler le LÜM <span class="arrow">→</span>
+        </a>
+        <a class="lum-pill-btn" href={INSTAGRAM} target="_blank" rel="noopener noreferrer">
+          Écrire sur Instagram <span class="arrow">→</span>
+        </a>
+      </div>
+      <p class="numero">ou au {TELEPHONE_LISIBLE}</p>
+    </section>
+
+    <!-- Les raisons de choisir le lieu -->
+    <section class="section">
+      <h2 class="titre-section">Pourquoi le LÜM&nbsp;?</h2>
+
+      <div class="atouts">
+        {
+          atouts.map((atout) => (
+            <article class="carte carte--petite atout">
+              <span class="atout__icone">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d={atout.trace} />
+                </svg>
+              </span>
+              <h3>{atout.titre}</h3>
+              <p>{atout.texte}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- Les occasions : de simples étiquettes, rien de cliquable -->
+    <section class="section">
+      <h2 class="titre-section">Pour toutes vos occasions</h2>
+
+      <div class="carte carte--petite">
+        <ul class="occasions">
+          {occasions.map((occasion) => <li>{occasion}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <!-- Le déroulé, en trois temps -->
+    <section class="section">
+      <h2 class="titre-section">Comment ça se passe&nbsp;?</h2>
+
+      <ol class="etapes">
+        {
+          etapes.map((etape, i) => (
+            <li class="carte carte--petite etape">
+              <span class="etape__numero" aria-hidden="true">
+                {i + 1}
+              </span>
+              <h3>{etape.titre}</h3>
+              <p>{etape.texte}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <!-- Infos pratiques -->
+    <section class="carte infos">
+      <h2>Infos pratiques</h2>
+
+      <dl>
+        <div>
+          <dt>Quand</dt>
+          <dd>Tous les jeudis, de 18h30 à 22h30</dd>
+        </div>
+        <div>
+          <dt>Où</dt>
+          <dd>
+            94 rue Saint-André, 59800 Lille
+            <a href={ITINERAIRE} target="_blank" rel="noopener noreferrer">
+              Itinéraire <span class="arrow">→</span>
+            </a>
+          </dd>
+        </div>
+        <div>
+          <dt>Contact</dt>
+          <dd>
+            <a href={TELEPHONE}>{TELEPHONE_LISIBLE}</a>
+            <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer">
+              Instagram <span class="arrow">→</span>
+            </a>
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- Dernier appel -->
+    <section class="carte final">
+      <h2>Un jeudi vous fait de l'œil&nbsp;?</h2>
+      <p class="lede">
+        Dites-nous la date et le nombre de personnes&nbsp;: on revient vers vous pour caler votre
+        soirée.
+      </p>
+      <div class="actions">
+        <a class="lum-pill-btn lum-pill-btn--plein" href={TELEPHONE}>
+          Appeler le LÜM <span class="arrow">→</span>
+        </a>
+        <a class="lum-pill-btn" href={INSTAGRAM} target="_blank" rel="noopener noreferrer">
+          Écrire sur Instagram <span class="arrow">→</span>
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 28px var(--gutter) 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+  }
+
+  /* --- Cartes crème qui flottent sur la terre cuite --- */
+  .carte {
+    position: relative;
+    padding: 40px;
+    border-radius: var(--radius-lg);
+    background: var(--cream);
+    box-shadow: var(--edge-light), var(--elevation-3);
+    text-align: center;
+    animation: fade-up 0.5s ease both;
+  }
+
+  /* Les petites cartes, plus nombreuses, flottent un cran plus bas. */
+  .carte--petite {
+    padding: 28px 26px;
+    box-shadow: var(--edge-light), var(--elevation-2);
+  }
+
+  .carte h2 {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+  }
+
+  .titre-section {
+    margin-bottom: 26px;
+    text-align: center;
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    color: var(--cream);
+  }
+
+  .lede {
+    max-width: 52ch;
+    margin: 0 auto;
+    font-weight: 700;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    text-wrap: balance;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 28px;
+  }
+
+  /* --- Accroche --- */
+  .hero {
+    margin-top: 30px;
+    padding: 70px 40px 40px;
+  }
+
+  /* Le cartouche chevauche le bord de la carte, comme sur l'accueil. */
+  .chip {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: max-content;
+    max-width: calc(100% - 40px);
+    padding: 9px 26px;
+    border: 3px solid var(--terracotta-light);
+    border-radius: var(--radius);
+    background: var(--cream);
+    box-shadow: var(--elevation-2);
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .hero__icone {
+    display: block;
+    width: 104px;
+    height: 104px;
+    margin: 0 auto 18px;
+  }
+
+  .hero h1 {
+    max-width: 16ch;
+    margin: 0 auto;
+    font-size: clamp(2.3rem, 7vw, 3.6rem);
+    text-wrap: balance;
+  }
+
+  .script {
+    margin: 10px 0 18px;
+    font-family: var(--font-script);
+    font-size: 1.7rem;
+    line-height: 1.2;
+  }
+
+  .reperes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 24px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .reperes li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    background: var(--cream-dark);
+    font-weight: 800;
+    font-size: 0.9rem;
+  }
+
+  .reperes svg {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .numero {
+    margin-top: 14px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--brown);
+  }
+
+  /* --- Atouts --- */
+  .atouts {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+  }
+
+  .atout {
+    text-align: left;
+  }
+
+  .atout:nth-child(2) {
+    animation-delay: 0.08s;
+  }
+
+  .atout:nth-child(3) {
+    animation-delay: 0.16s;
+  }
+
+  .atout:nth-child(4) {
+    animation-delay: 0.24s;
+  }
+
+  .atout__icone {
+    display: grid;
+    place-items: center;
+    width: 50px;
+    height: 50px;
+    margin-bottom: 16px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    color: var(--cream);
+    box-shadow: var(--elevation-1);
+  }
+
+  .atout__icone svg {
+    width: 25px;
+    height: 25px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .atout h3,
+  .etape h3 {
+    margin-bottom: 8px;
+    font-size: 1.35rem;
+  }
+
+  .atout p,
+  .etape p {
+    font-size: 0.97rem;
+    line-height: 1.6;
+    color: var(--brown);
+  }
+
+  /* --- Occasions : des étiquettes, sans ombre ni survol --- */
+  .occasions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .occasions li {
+    padding: 7px 16px;
+    border: 2px solid var(--terracotta-light);
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 0.92rem;
+  }
+
+  /* --- Étapes --- */
+  .etapes {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Double classe : ce padding haut nul doit primer sur celui des
+     petites cartes, y compris sur mobile. */
+  .carte.etape {
+    padding-top: 0;
+    margin-top: 24px;
+  }
+
+  .etape:nth-child(2) {
+    animation-delay: 0.08s;
+  }
+
+  .etape:nth-child(3) {
+    animation-delay: 0.16s;
+  }
+
+  /* Le numéro chevauche le haut de la carte, comme les cartouches. */
+  .etape__numero {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    margin: -26px auto 16px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    color: var(--cream);
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    line-height: 1;
+    box-shadow: var(--elevation-2);
+  }
+
+  /* --- Infos pratiques --- */
+  .infos {
+    text-align: left;
+  }
+
+  .infos h2 {
+    margin-bottom: 20px;
+  }
+
+  .infos dl {
+    display: grid;
+    gap: 14px;
+    margin: 0;
+  }
+
+  .infos dl div {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 16px;
+    padding-top: 14px;
+    border-top: 2px solid var(--cream-dark);
+  }
+
+  .infos dt {
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--brown);
+  }
+
+  .infos dd {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 18px;
+    margin: 0;
+    font-weight: 800;
+  }
+
+  .infos a {
+    border-bottom: 2px solid var(--terracotta-light);
+    transition: border-color 0.2s;
+  }
+
+  .infos a:hover,
+  .infos a:focus-visible {
+    border-bottom-color: var(--terracotta);
+  }
+
+  .infos .arrow {
+    display: inline-block;
+    transition: transform 0.2s;
+  }
+
+  .infos a:hover .arrow {
+    transform: translateX(3px);
+  }
+
+  /* --- Dernier appel --- */
+  .final h2 {
+    margin-bottom: 12px;
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .page {
+      gap: 46px;
+    }
+
+    .carte {
+      padding: 32px 22px;
+    }
+
+    .hero {
+      padding: 60px 22px 32px;
+    }
+
+    .carte--petite {
+      padding: 24px 22px;
+    }
+
+    .atouts,
+    .etapes {
+      grid-template-columns: 1fr;
+    }
+
+    .etapes {
+      gap: 34px;
+    }
+
+    .infos dl div {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+
+    /* Boutons resserrés : « Écrire sur Instagram » tient sur une ligne. */
+    .actions .lum-pill-btn {
+      padding: 12px 20px;
+      font-size: 0.9rem;
+      letter-spacing: 0.06em;
+    }
+  }
+</style>
