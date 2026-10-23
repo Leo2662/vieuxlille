@@ -6,8 +6,8 @@ propre site : https://leo2662.github.io/lillecentre
 
 En ligne : https://lumvieuxlille.fr
 
-Une page d'accueil. Le menu est hébergé sur Canva, et `/carte` — qui portait
-la carte braderie — y redirige.
+Une page d'accueil et une page `/brunch`, la formule du week-end. Le menu est
+hébergé sur Canva, et `/carte` — qui portait la carte braderie — y redirige.
 
 ## Stack
 
@@ -50,6 +50,7 @@ src/
 ├── layouts/BaseLayout.astro   # <head>, polices, réglages partagés
 ├── lib/qr.ts                  # cibles des QR codes et leur rendu SVG
 ├── pages/index.astro          # page d'accueil
+├── pages/brunch.astro         # la formule brunch du week-end
 ├── pages/qr-code.astro        # les QR codes, à télécharger
 ├── pages/[slug].svg.ts        # un fichier .svg par QR, écrit au build
 └── styles/global.css          # variables de design et composants de base
@@ -102,7 +103,8 @@ outil servie en `noindex` via la propriété du même nom de `BaseLayout`.
 liens utiles, pour les modèles de langage. C'est une convention proposée, pas
 un standard — Google a annoncé ne pas s'en servir. Le fichier redit l'adresse
 et les horaires déjà présents dans `index.astro` et dans le JSON-LD de
-`BaseLayout` : les trois sont à modifier ensemble.
+`BaseLayout` : les trois sont à modifier ensemble. Il redit aussi le prix, les
+horaires et la composition du brunch : à modifier avec `brunch.astro`.
 
 `BaseLayout.astro` émet une fiche JSON-LD `CafeOrCoffeeShop` : nom, adresse,
 coordonnées GPS, téléphone, fourchette de prix, horaires, menu et réseaux.
