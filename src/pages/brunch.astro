@@ -4,8 +4,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const RESERVATION = 'https://lumvieuxlille-hash.github.io/lum-vieuxlille/';
 
 // Une formule à prix unique : on choisit une option dans chaque bloc.
-// Prix, horaires et options sont redits dans public/llms.txt : à modifier
-// ensemble.
+// Prix, horaires, options et espaces sont redits dans public/llms.txt : à
+// modifier ensemble.
 const blocs = [
   {
     titre: 'Salé',
@@ -32,11 +32,35 @@ const blocs = [
     options: ['Citron pressé', 'Jus de pomme', 'Orange pressée'],
   },
 ];
+
+// Les trois endroits où bruncher, chacun avec son pictogramme au trait.
+const espaces = [
+  {
+    titre: 'En terrasse',
+    texte: 'Pour bruncher dehors.',
+    // Parasol et sa table
+    trace:
+      'M6 22C6 12.6 14 6 24 6s18 6.6 18 16 M6 22c3-2.2 6-2.2 9 0s6 2.2 9 0 6-2.2 9 0 6 2.2 9 0 M24 22v20 M24 6V3 M14 32h20 M17 42h14',
+  },
+  {
+    titre: 'En intérieur',
+    texte: 'Dans la salle du coffee\u00a0shop.',
+    // Suspension au-dessus d'une table
+    trace: 'M24 3v8 M15 19l4-8h10l4 8z M10 30h28 M14 30v12 M34 30v12',
+  },
+  {
+    titre: 'En cave voûtée',
+    texte: 'Naturellement climatisée.',
+    // Voûte de pierre, ses claveaux et le sol
+    trace:
+      'M7 43V24a17 17 0 0 1 34 0v19 M15 43V24a9 9 0 0 1 18 0v19 M24 7v8 M12 12l5.7 5.7 M36 12l-5.7 5.7 M3 43h42',
+  },
+];
 ---
 
 <BaseLayout
-  title="Brunch — LÜM Vieux-Lille"
-  description="Le brunch de LÜM Vieux-Lille, à composer à ton goût : un salé, un sucré, une boisson chaude et une boisson froide pour 25 €. Le week-end, de 11h à 15h30."
+  title="Brunch Vieux-Lille — LÜM, terrasse et cave voûtée"
+  description="Brunch dans le Vieux-Lille chez LÜM : 25 €, le week-end de 11h à 15h30. En terrasse, en intérieur ou dans une cave voûtée naturellement climatisée."
 >
   <div class="page">
     <header class="entete">
@@ -50,8 +74,9 @@ const blocs = [
     </header>
 
     <section class="panel">
+      <!-- Le titre porte la requête visée : « brunch Vieux-Lille ». -->
       <div class="chip">
-        <h1>Le Brunch</h1>
+        <h1>Brunch <span class="chip__lieu">Vieux-Lille</span></h1>
       </div>
 
       <p class="script">Compose ton brunch à ton goût</p>
@@ -78,6 +103,17 @@ const blocs = [
       <p class="prix">25&nbsp;€</p>
 
       <p class="lede">Un salé, un sucré, une&nbsp;boisson&nbsp;chaude et une&nbsp;boisson&nbsp;froide.</p>
+
+      <p class="adresse">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" />
+            <circle cx="12" cy="10" r="2.6" />
+          </g>
+        </svg>
+        <span>94 rue Saint-André,</span>
+        <span>Vieux-Lille</span>
+      </p>
 
       <p class="horaires">
         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -116,6 +152,38 @@ const blocs = [
         ))
       }
     </div>
+
+    <section class="bloc lieux">
+      <div class="chip">
+        <h2>Bruncher dans le Vieux-Lille</h2>
+      </div>
+
+      <p class="lieux__intro">
+        Chez LÜM, au 94 rue Saint-André, le brunch se savoure en terrasse, en intérieur ou dans
+        notre cave voûtée naturellement climatisée.
+      </p>
+
+      <ul class="espaces">
+        {
+          espaces.map((espace) => (
+            <li class="espace">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <path
+                  d={espace.trace}
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <h3>{espace.titre}</h3>
+              <p>{espace.texte}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
 
     <p class="note">Prix en euros, taxes comprises.</p>
   </div>
@@ -185,8 +253,8 @@ const blocs = [
   /* --- Panneau d'ouverture : la formule, son prix et ses horaires --- */
   .panel {
     position: relative;
-    margin-top: 34px;
-    padding: 88px 40px 56px;
+    margin-top: 44px;
+    padding: 100px 40px 56px;
     border-radius: var(--radius-lg);
     background: var(--cream);
     box-shadow: var(--shadow);
@@ -210,6 +278,18 @@ const blocs = [
 
   h1 {
     font-size: clamp(2rem, 6vw, 3.4rem);
+  }
+
+  /* « Vieux-Lille » sous « Brunch », comme sous le logo LÜM. L'espace de
+     la source reste dans le texte du titre : « Brunch Vieux-Lille ». */
+  .chip__lieu {
+    display: block;
+    margin: 6px -0.3em 0 0; /* compense l'interlettrage après le dernier « e » */
+    font-family: var(--font-body);
+    font-weight: 800;
+    font-size: clamp(0.8rem, 2.2vw, 1rem);
+    line-height: 1;
+    letter-spacing: 0.3em;
   }
 
   .script {
@@ -240,27 +320,37 @@ const blocs = [
     text-wrap: balance;
   }
 
-  /* Sur mobile, l'heure passe à la ligne d'un bloc, sans couper le
+  /* Sur mobile, la fin de ligne passe dessous d'un bloc, sans couper le
      « week-end » ni détacher l'icône du texte. */
+  .adresse,
   .horaires {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
     gap: 0 0.3em; /* entre les deux morceaux, l'équivalent d'une espace */
-    margin-bottom: 30px;
     font-weight: 800;
     font-size: 0.95rem;
     letter-spacing: 0.03em;
+  }
+
+  .adresse {
+    margin-bottom: 6px;
+  }
+
+  .horaires {
+    margin-bottom: 30px;
     color: var(--brown);
   }
 
+  .adresse svg,
   .horaires svg {
     width: 19px;
     height: 19px;
     margin-right: 3px;
     flex: none;
   }
+
   /* Bouton plein : c'est l'unique action de la page. */
   .panel .lum-pill-btn {
     background: var(--terracotta);
@@ -349,6 +439,62 @@ const blocs = [
     color: var(--brown);
   }
 
+  /* --- Les espaces où bruncher --- */
+  .lieux {
+    margin-top: 24px;
+    padding: 62px 34px 40px;
+    animation-delay: 0.4s;
+  }
+
+  /* Titre plus long que ceux des blocs : il peut passer sur deux lignes. */
+  .lieux h2 {
+    white-space: normal;
+    text-wrap: balance;
+  }
+
+  .lieux__intro {
+    max-width: 52ch;
+    margin: 0 auto 30px;
+    font-weight: 700;
+    font-size: 1.02rem;
+    line-height: 1.6;
+    text-wrap: balance;
+  }
+
+  .espaces {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+  }
+
+  .espace {
+    padding: 22px 16px 24px;
+    border: 3px solid var(--terracotta-light);
+    border-radius: var(--radius);
+  }
+
+  .espace svg {
+    display: block;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 10px;
+  }
+
+  .espace h3 {
+    font-size: 1.3rem;
+  }
+
+  .espace p {
+    margin-top: 4px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--brown);
+  }
+
   .note {
     text-align: center;
     color: var(--cream);
@@ -370,7 +516,7 @@ const blocs = [
 
   @media (max-width: 768px) {
     .panel {
-      padding: 74px 22px 44px;
+      padding: 84px 22px 44px;
     }
 
     .chip {
@@ -385,6 +531,15 @@ const blocs = [
 
     .bloc {
       padding: 46px 20px 28px;
+    }
+
+    .lieux {
+      padding: 58px 20px 28px;
+    }
+
+    .espaces {
+      grid-template-columns: 1fr;
+      gap: 14px;
     }
   }
 </style>
