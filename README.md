@@ -6,8 +6,9 @@ propre site : https://leo2662.github.io/lillecentre
 
 En ligne : https://lumvieuxlille.fr
 
-Une page d'accueil et une page `/brunch`, la formule du week-end. Le menu est
-hébergé sur Canva, et `/carte` — qui portait la carte braderie — y redirige.
+Une page d'accueil et une page `/brunch`, la formule du week-end, en français
+et en anglais (sous `/en/`). Le menu est hébergé sur Canva, et `/carte` — qui
+portait la carte braderie — y redirige.
 
 ## Stack
 
@@ -47,10 +48,15 @@ illustrations au trait.
 
 ```
 src/
+├── components/Accueil.astro   # page d'accueil, dans les deux langues
+├── components/Brunch.astro    # la formule brunch du week-end, idem
+├── components/ChoixLangue.astro # sélecteur FR | EN
+├── i18n.ts                    # langues et adresses des pages traduites
 ├── layouts/BaseLayout.astro   # <head>, polices, réglages partagés
 ├── lib/qr.ts                  # cibles des QR codes et leur rendu SVG
-├── pages/index.astro          # page d'accueil
-├── pages/brunch.astro         # la formule brunch du week-end
+├── pages/index.astro          # / : l'accueil en français
+├── pages/brunch.astro         # /brunch/ : le brunch en français
+├── pages/en/                  # /en/ et /en/brunch/ : les mêmes en anglais
 ├── pages/qr-code.astro        # les QR codes, à télécharger
 ├── pages/[slug].svg.ts        # un fichier .svg par QR, écrit au build
 └── styles/global.css          # variables de design et composants de base
@@ -58,6 +64,23 @@ src/
 
 `public/` porte les fichiers recopiés tels quels dans `dist/` : le favicon, le
 `CNAME` du domaine et le `robots.txt`.
+
+## Langues
+
+Le français est à la racine, l'anglais sous `/en/`. Chaque page traduite est
+un composant de `src/components/` qui reçoit la langue et porte ses textes dans
+les deux, côte à côte : modifier un texte, c'est modifier ses deux versions au
+même endroit. Les fichiers de `src/pages/` ne font qu'appeler le composant.
+
+Le sélecteur FR | EN, en haut à droite, mène en un clic à la même page dans
+l'autre langue. Les deux versions s'annoncent l'une l'autre aux moteurs de
+recherche, par des balises `hreflang` dans le `<head>` et dans le sitemap ; le
+français est la version par défaut (`x-default`).
+
+Ajouter une page traduite : un composant qui prend `langue`, puis un fichier
+dans `src/pages/` et un dans `src/pages/en/`. `/qr-code`, page outil, reste en
+français seulement. Le menu Canva, la réservation et le site de Lille Centre
+sont hébergés ailleurs et restent en français.
 
 ## QR codes
 
@@ -102,10 +125,10 @@ outil servie en `noindex` via la propriété du même nom de `BaseLayout`.
 `public/llms.txt` suit la convention du même nom : un résumé du lieu et les
 liens utiles, pour les modèles de langage. C'est une convention proposée, pas
 un standard — Google a annoncé ne pas s'en servir. Le fichier redit l'adresse
-et les horaires déjà présents dans `index.astro` et dans le JSON-LD de
+et les horaires déjà présents dans `components/Accueil.astro` et dans le JSON-LD de
 `BaseLayout` : les trois sont à modifier ensemble. Il redit aussi le prix, les
 horaires, la composition et les espaces du brunch : à modifier avec
-`brunch.astro`.
+`components/Brunch.astro`.
 
 `BaseLayout.astro` émet une fiche JSON-LD `CafeOrCoffeeShop` : nom, adresse,
 coordonnées GPS, téléphone, fourchette de prix, horaires, menu et réseaux.

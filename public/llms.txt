@@ -9,8 +9,8 @@ Téléphone : +33 6 42 99 62 42.
 
 Brunch dans le Vieux-Lille le week-end uniquement, de 11h à 15h30 : 25 €.
 
-Le site tient en deux pages, l'accueil et le brunch ; le menu et la
-réservation sont hébergés ailleurs.
+Le site tient en deux pages, l'accueil et le brunch, en français et en
+anglais ; le menu et la réservation sont hébergés ailleurs.
 
 ## Commander
 
@@ -23,6 +23,11 @@ réservation sont hébergés ailleurs.
 - [Instagram](https://www.instagram.com/lum_vieuxlille)
 - [TikTok](https://www.tiktok.com/@lum_vieuxlille)
 - [Avis Google](https://search.google.com/local/writereview?placeid=ChIJzXLWKBcrw0cRI0DdWOWtaRM) : laisser un avis sur la fiche du lieu.
+
+## English
+
+- [Home](https://lumvieuxlille.fr/en/) : l'accueil en anglais.
+- [Brunch](https://lumvieuxlille.fr/en/brunch/) : le brunch en anglais.
 
 ## Optionnel
 

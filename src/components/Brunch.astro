@@ -1,0 +1,618 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ChoixLangue from './ChoixLangue.astro';
+import { chemins, type Langue } from '../i18n';
+
+interface Props {
+  langue: Langue;
+}
+
+const { langue } = Astro.props;
+
+const RESERVATION = 'https://lumvieuxlille-hash.github.io/lum-vieuxlille/';
+
+const adresses = chemins('brunch/');
+const accueil = chemins('')[langue];
+
+// Pictogrammes au trait des trois espaces, communs aux deux langues.
+const TRACES = {
+  // Parasol et sa table
+  terrasse:
+    'M6 22C6 12.6 14 6 24 6s18 6.6 18 16 M6 22c3-2.2 6-2.2 9 0s6 2.2 9 0 6-2.2 9 0 6 2.2 9 0 M24 22v20 M24 6V3 M14 32h20 M17 42h14',
+  // Suspension au-dessus d'une table
+  interieur: 'M24 3v8 M15 19l4-8h10l4 8z M10 30h28 M14 30v12 M34 30v12',
+  // Voûte de pierre, ses claveaux et le sol
+  cave: 'M7 43V24a17 17 0 0 1 34 0v19 M15 43V24a9 9 0 0 1 18 0v19 M24 7v8 M12 12l5.7 5.7 M36 12l-5.7 5.7 M3 43h42',
+};
+
+// Une formule à prix unique : on choisit une option dans chaque bloc.
+// Prix, horaires, options et espaces sont redits dans public/llms.txt : à
+// modifier ensemble, dans les deux langues. Les espaces insécables ( )
+// évitent qu'un mot reste seul en fin de ligne.
+const textes = {
+  fr: {
+    titre: 'Brunch Vieux-Lille — LÜM, terrasse et cave voûtée',
+    description:
+      'Brunch dans le Vieux-Lille chez LÜM : 25 €, le week-end de 11h à 15h30. En terrasse, en intérieur ou dans une cave voûtée naturellement climatisée.',
+    retour: 'Retour',
+    accroche: 'Compose ton brunch à ton goût',
+    bagel: 'Bagel garni',
+    prix: '25 €',
+    formule: 'Un salé, un sucré, une boisson chaude et une boisson froide.',
+    horaires: ['Uniquement le week-end,', '11h – 15h30'],
+    reserver: 'Réserver',
+    auChoix: 'au choix',
+    blocs: [
+      {
+        titre: 'Salé',
+        options: ['Bagel Océan', 'Bagel Soleil'],
+        accompagnement: 'Servi avec une bonne salade composée',
+      },
+      {
+        titre: 'Sucré',
+        options: ['Cookie', 'Cinnamon roll', 'Granola bowl', 'Flan'],
+      },
+      {
+        titre: 'Boisson chaude',
+        options: [
+          'Espresso',
+          'Allongé',
+          'Double espresso',
+          'Cappuccino',
+          'Thé / infusion',
+          'Chocolat chaud',
+        ],
+      },
+      {
+        titre: 'Boisson froide',
+        options: ['Citron pressé', 'Jus de pomme', 'Orange pressée'],
+      },
+    ],
+    lieux: 'Bruncher dans le Vieux-Lille',
+    lieuxIntro:
+      'Chez LÜM, au 94 rue Saint-André, le brunch se savoure en terrasse, en intérieur ou dans notre cave voûtée naturellement climatisée.',
+    espaces: [
+      { titre: 'En terrasse', texte: 'Pour bruncher dehors.', trace: TRACES.terrasse },
+      { titre: 'En intérieur', texte: 'Dans la salle du coffee shop.', trace: TRACES.interieur },
+      { titre: 'En cave voûtée', texte: 'Naturellement climatisée.', trace: TRACES.cave },
+    ],
+    note: 'Prix en euros, taxes comprises.',
+  },
+  en: {
+    titre: 'Brunch in Vieux-Lille — LÜM, terrace & vaulted cellar',
+    description:
+      'Brunch in Vieux-Lille (Old Lille) at LÜM: €25, weekends from 11am to 3:30pm. On the terrace, indoors or in our naturally cool vaulted cellar.',
+    retour: 'Back',
+    accroche: 'Build your brunch, your way',
+    bagel: 'Filled bagel',
+    prix: '€25',
+    formule: 'Something savoury, something sweet, a hot drink and a cold drink.',
+    horaires: ['Weekends only,', '11am – 3:30pm'],
+    reserver: 'Book a table',
+    auChoix: 'pick one',
+    blocs: [
+      {
+        titre: 'Savoury',
+        options: ['Bagel Océan', 'Bagel Soleil'],
+        accompagnement: 'Served with a generous mixed salad',
+      },
+      {
+        titre: 'Sweet',
+        options: ['Cookie', 'Cinnamon roll', 'Granola bowl', 'Flan'],
+      },
+      {
+        titre: 'Hot drink',
+        options: [
+          'Espresso',
+          'Americano',
+          'Double espresso',
+          'Cappuccino',
+          'Tea / herbal tea',
+          'Hot chocolate',
+        ],
+      },
+      {
+        titre: 'Cold drink',
+        options: ['Fresh lemon juice', 'Apple juice', 'Fresh orange juice'],
+      },
+    ],
+    lieux: 'Brunch in Vieux-Lille',
+    lieuxIntro:
+      'At LÜM, 94 rue Saint-André, enjoy your brunch on the terrace, indoors or in our naturally cool vaulted cellar.',
+    espaces: [
+      { titre: 'On the terrace', texte: 'Brunch outdoors.', trace: TRACES.terrasse },
+      { titre: 'Indoors', texte: 'Inside the coffee shop.', trace: TRACES.interieur },
+      { titre: 'In the vaulted cellar', texte: 'Naturally cool.', trace: TRACES.cave },
+    ],
+    note: 'Prices in euros, taxes included.',
+  },
+}[langue];
+---
+
+<BaseLayout title={textes.titre} description={textes.description} langue={langue} chemins={adresses}>
+  <div class="page">
+    <header class="entete">
+      <a class="logo" href={accueil}>
+        LÜM
+        <small>Vieux-Lille</small>
+      </a>
+      <div class="entete__droite">
+        <ChoixLangue langue={langue} chemins={adresses} />
+        <a class="retour" href={accueil}>
+          <span class="arrow">←</span> {textes.retour}
+        </a>
+      </div>
+    </header>
+
+    <section class="panel">
+      <!-- Le titre porte la requête visée : « brunch Vieux-Lille ». -->
+      <div class="chip">
+        <h1>Brunch <span class="chip__lieu">Vieux-Lille</span></h1>
+      </div>
+
+      <p class="script">{textes.accroche}</p>
+
+      <svg class="bagel" viewBox="0 0 120 84" role="img" aria-label={textes.bagel}>
+        <g
+          fill="none"
+          stroke="currentColor"
+          stroke-width="4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <!-- Moitié du dessus, son trou et ses graines de sésame -->
+          <ellipse cx="60" cy="26" rx="48" ry="20" />
+          <path d="M12 26v6c0 11 21.5 20 48 20s48-9 48-20v-6" />
+          <ellipse cx="60" cy="25" rx="13" ry="5.5" />
+          <path d="M35 19.5l3-1 M80 15l3 1 M46 36l3 .6 M80 34.5l2.6-1.4 M58 12h3 M25 28l2.6 1.4 M93 25l2 2" />
+          <!-- Feuille de salade qui dépasse, puis moitié du dessous -->
+          <path d="M111 40 L110.4 43.8 L108.5 46.2 L105.4 50.9 L101.3 51.8 L96.1 57 L90 56.2 L83.2 61.4 L75.8 59 L68 63.7 L60 60 L52 63.7 L44.2 59 L36.8 61.4 L30 56.2 L23.9 57 L18.7 51.8 L14.6 50.9 L11.5 46.2 L9.6 43.8 L9 40" />
+          <path d="M13 50v5c0 11 21 20 47 20s47-9 47-20v-5" />
+        </g>
+      </svg>
+
+      <p class="prix">{textes.prix}</p>
+
+      <p class="lede">{textes.formule}</p>
+
+      <p class="adresse">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" />
+            <circle cx="12" cy="10" r="2.6" />
+          </g>
+        </svg>
+        <span>94 rue Saint-André,</span>
+        <span>Vieux-Lille</span>
+      </p>
+
+      <p class="horaires">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7v5.2l3.4 2" />
+          </g>
+        </svg>
+        {textes.horaires.map((morceau) => <span>{morceau}</span>)}
+      </p>
+
+      <a class="lum-pill-btn" href={RESERVATION} target="_blank" rel="noopener noreferrer">
+        {textes.reserver} <span class="arrow">→</span>
+      </a>
+    </section>
+
+    <div class="blocs">
+      {
+        textes.blocs.map((bloc) => (
+          <section class="bloc">
+            <div class="chip">
+              <h2>{bloc.titre}</h2>
+            </div>
+
+            <p class="bloc__choix">{textes.auChoix}</p>
+
+            <ul class="options">
+              {bloc.options.map((option) => (
+                <li class="option">{option}</li>
+              ))}
+            </ul>
+
+            {bloc.accompagnement && <p class="bloc__avec">{bloc.accompagnement}</p>}
+          </section>
+        ))
+      }
+    </div>
+
+    <section class="bloc lieux">
+      <div class="chip">
+        <h2>{textes.lieux}</h2>
+      </div>
+
+      <p class="lieux__intro">{textes.lieuxIntro}</p>
+
+      <ul class="espaces">
+        {
+          textes.espaces.map((espace) => (
+            <li class="espace">
+              <svg viewBox="0 0 48 48" aria-hidden="true">
+                <path
+                  d={espace.trace}
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <h3>{espace.titre}</h3>
+              <p>{espace.texte}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <p class="note">{textes.note}</p>
+  </div>
+</BaseLayout>
+
+<style>
+  /* Même largeur de contenu que les panneaux de l'accueil. */
+  .page {
+    max-width: calc(820px + 2 * var(--gutter));
+    margin: 0 auto;
+    padding: 28px var(--gutter) 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+  }
+
+  /* --- En-tête, sur la terre cuite --- */
+  .entete {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    color: var(--cream);
+  }
+
+  .logo {
+    font-family: var(--font-display);
+    font-size: 1.7rem;
+    line-height: 1;
+    letter-spacing: 0.06em;
+  }
+
+  .logo small {
+    display: block;
+    margin-top: 3px;
+    font-family: var(--font-body);
+    font-weight: 800;
+    font-size: 0.55rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .entete__droite {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .retour {
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 2px solid rgba(249, 241, 230, 0.45);
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
+  }
+
+  .retour:hover,
+  .retour:focus-visible {
+    border-bottom-color: var(--cream);
+  }
+
+  .retour .arrow {
+    display: inline-block;
+    transition: transform 0.2s;
+  }
+
+  .retour:hover .arrow {
+    transform: translateX(-3px);
+  }
+
+  /* --- Panneau d'ouverture : la formule, son prix et ses horaires --- */
+  .panel {
+    position: relative;
+    margin-top: 44px;
+    padding: 100px 40px 56px;
+    border-radius: var(--radius-lg);
+    background: var(--cream);
+    box-shadow: var(--shadow);
+    text-align: center;
+    animation: fade-up 0.5s ease both;
+  }
+
+  /* Le cartouche du titre chevauche le bord du bloc, comme sur l'affiche */
+  .chip {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: max-content;
+    max-width: calc(100% - 40px);
+    padding: 14px 34px;
+    border: 3px solid var(--terracotta-light);
+    border-radius: var(--radius);
+    background: var(--cream);
+  }
+
+  h1 {
+    font-size: clamp(2rem, 6vw, 3.4rem);
+  }
+
+  /* « Vieux-Lille » sous « Brunch », comme sous le logo LÜM. L'espace de
+     la source reste dans le texte du titre : « Brunch Vieux-Lille ». */
+  .chip__lieu {
+    display: block;
+    margin: 6px -0.3em 0 0; /* compense l'interlettrage après le dernier « e » */
+    font-family: var(--font-body);
+    font-weight: 800;
+    font-size: clamp(0.8rem, 2.2vw, 1rem);
+    line-height: 1;
+    letter-spacing: 0.3em;
+  }
+
+  .script {
+    font-family: var(--font-script);
+    font-size: 1.6rem;
+    line-height: 1.2;
+  }
+
+  .bagel {
+    display: block;
+    width: 140px;
+    margin: 26px auto 14px;
+    color: var(--terracotta);
+  }
+
+  .prix {
+    font-family: var(--font-display);
+    font-size: clamp(2.6rem, 8vw, 3.6rem);
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+  }
+
+  .lede {
+    max-width: 46ch;
+    margin: 6px auto 20px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-wrap: balance;
+  }
+
+  /* Sur mobile, la fin de ligne passe dessous d'un bloc, sans couper le
+     « week-end » ni détacher l'icône du texte. */
+  .adresse,
+  .horaires {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0 0.3em; /* entre les deux morceaux, l'équivalent d'une espace */
+    font-weight: 800;
+    font-size: 0.95rem;
+    letter-spacing: 0.03em;
+  }
+
+  .adresse {
+    margin-bottom: 6px;
+  }
+
+  .horaires {
+    margin-bottom: 30px;
+    color: var(--brown);
+  }
+
+  .adresse svg,
+  .horaires svg {
+    width: 19px;
+    height: 19px;
+    margin-right: 3px;
+    flex: none;
+  }
+
+  /* Bouton plein : c'est l'unique action de la page. */
+  .panel .lum-pill-btn {
+    background: var(--terracotta);
+    color: var(--cream);
+  }
+
+  .panel .lum-pill-btn:hover,
+  .panel .lum-pill-btn:focus-visible {
+    background: var(--terracotta-dark);
+    border-color: var(--terracotta-dark);
+  }
+
+  /* --- Un bloc par choix à faire --- */
+  .blocs {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* L'écart vertical laisse la place aux cartouches qui débordent. */
+    gap: 58px 28px;
+    margin-top: 28px;
+  }
+
+  .bloc {
+    position: relative;
+    padding: 50px 26px 32px;
+    border-radius: var(--radius-lg);
+    background: var(--cream);
+    box-shadow: var(--shadow);
+    text-align: center;
+    animation: fade-up 0.5s ease both;
+  }
+
+  .bloc:nth-child(2) {
+    animation-delay: 0.1s;
+  }
+
+  .bloc:nth-child(3) {
+    animation-delay: 0.2s;
+  }
+
+  .bloc:nth-child(4) {
+    animation-delay: 0.3s;
+  }
+
+  .bloc .chip {
+    padding: 11px 28px;
+  }
+
+  .bloc h2 {
+    font-size: clamp(1.3rem, 3.4vw, 1.75rem);
+    white-space: nowrap;
+  }
+
+  .bloc__choix {
+    margin-bottom: 14px;
+    font-family: var(--font-script);
+    font-size: 1.35rem;
+    line-height: 1.2;
+    color: var(--brown);
+  }
+
+  /* Les options en pastilles : on en prend une. */
+  .options {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .option {
+    padding: 7px 18px;
+    border: 2.5px solid var(--terracotta-light);
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 0.98rem;
+    line-height: 1.35;
+  }
+
+  .bloc__avec {
+    margin-top: 16px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--brown);
+  }
+
+  /* --- Les espaces où bruncher --- */
+  .lieux {
+    margin-top: 24px;
+    padding: 62px 34px 40px;
+    animation-delay: 0.4s;
+  }
+
+  /* Titre plus long que ceux des blocs : il peut passer sur deux lignes. */
+  .lieux h2 {
+    white-space: normal;
+    text-wrap: balance;
+  }
+
+  .lieux__intro {
+    max-width: 52ch;
+    margin: 0 auto 30px;
+    font-weight: 700;
+    font-size: 1.02rem;
+    line-height: 1.6;
+    text-wrap: balance;
+  }
+
+  .espaces {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+  }
+
+  .espace {
+    padding: 22px 16px 24px;
+    border: 3px solid var(--terracotta-light);
+    border-radius: var(--radius);
+  }
+
+  .espace svg {
+    display: block;
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 10px;
+  }
+
+  .espace h3 {
+    font-size: 1.3rem;
+  }
+
+  .espace p {
+    margin-top: 4px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--brown);
+  }
+
+  .note {
+    text-align: center;
+    color: var(--cream);
+    font-size: 0.85rem;
+    font-weight: 700;
+    opacity: 0.75;
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .panel {
+      padding: 84px 22px 44px;
+    }
+
+    .chip {
+      max-width: calc(100% - 32px);
+      padding: 12px 22px;
+    }
+
+    .blocs {
+      grid-template-columns: 1fr;
+      gap: 52px;
+    }
+
+    .bloc {
+      padding: 46px 20px 28px;
+    }
+
+    .lieux {
+      padding: 58px 20px 28px;
+    }
+
+    .espaces {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+  }
+</style>

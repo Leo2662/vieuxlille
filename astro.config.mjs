@@ -23,6 +23,12 @@ export default defineConfig({
       // page qui leur dit aussitôt de ne pas la garder. /qr-code est une page
       // outil, servie en noindex elle aussi.
       filter: (page) => !['/carte', '/qr-code'].some((p) => page.includes(p)),
+      // Chaque page y renvoie à sa traduction : le français à la racine,
+      // l'anglais sous /en/ (voir src/i18n.ts).
+      i18n: {
+        defaultLocale: 'fr',
+        locales: { fr: 'fr', en: 'en' },
+      },
     }),
   ],
 });
