@@ -7,7 +7,7 @@
 Ouvert du mercredi au lundi, de 10h à 18h. Fermé le mardi.
 Téléphone : +33 6 42 99 62 42.
 
-Brunch le week-end uniquement, de 11h à 15h30 : 25 €.
+Brunch dans le Vieux-Lille le week-end uniquement, de 11h à 15h30 : 25 €.
 
 Le site tient en deux pages, l'accueil et le brunch ; le menu et la
 réservation sont hébergés ailleurs.
@@ -16,7 +16,7 @@ réservation sont hébergés ailleurs.
 
 - [Menu](https://xn--lm-xka.my.canva.site/l-m/menu) : la carte, hébergée sur Canva. L'adresse `/carte` du site y redirige.
 - [Réservation](https://lumvieuxlille-hash.github.io/lum-vieuxlille/) : réserver une table.
-- [Brunch](https://lumvieuxlille.fr/brunch/) : la formule du week-end à 25 €, de 11h à 15h30. Un salé (bagel Océan ou Soleil, servi avec une salade composée), un sucré (cookie, cinnamon roll, granola bowl ou flan), une boisson chaude et une boisson froide au choix.
+- [Brunch](https://lumvieuxlille.fr/brunch/) : la formule du week-end à 25 €, de 11h à 15h30. Un salé (bagel Océan ou Soleil, servi avec une salade composée), un sucré (cookie, cinnamon roll, granola bowl ou flan), une boisson chaude et une boisson froide au choix. En terrasse, en intérieur ou dans la cave voûtée naturellement climatisée.
 
 ## Suivre et donner son avis
 
