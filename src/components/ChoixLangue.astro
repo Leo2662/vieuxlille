@@ -1,0 +1,64 @@
+---
+import { langues, type Langue } from '../i18n';
+
+interface Props {
+  langue: Langue;
+  /** La même page dans chaque langue. */
+  chemins: Record<Langue, string>;
+}
+
+const { langue, chemins } = Astro.props;
+
+// Nom complet lu par les lecteurs d'écran, chacun dans sa propre langue.
+const noms: Record<Langue, string> = { fr: 'Français', en: 'English' };
+---
+
+<!-- Un clic sur l'autre langue mène à la même page, traduite. -->
+<nav class="langues" aria-label={langue === 'fr' ? 'Langue' : 'Language'}>
+  {
+    langues.map((l) =>
+      l === langue ? (
+        <span class="langue langue--active" lang={l} aria-current="true">
+          {l.toUpperCase()}
+        </span>
+      ) : (
+        <a class="langue" href={chemins[l]} hreflang={l} lang={l} aria-label={noms[l]}>
+          {l.toUpperCase()}
+        </a>
+      ),
+    )
+  }
+</nav>
+
+<style>
+  /* Pilule à contour crème, comme les liens réseaux : elle vit sur la
+     terre cuite. La langue affichée est pleine, l'autre est le lien. */
+  .langues {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    border: 2.5px solid var(--cream);
+    border-radius: 999px;
+  }
+
+  .langue {
+    padding: 4px 12px;
+    border-radius: 999px;
+    color: var(--cream);
+    font-weight: 800;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .langue--active {
+    background: var(--cream);
+    color: var(--terracotta);
+  }
+
+  a.langue:hover,
+  a.langue:focus-visible {
+    background: rgba(249, 241, 230, 0.2);
+  }
+</style>
