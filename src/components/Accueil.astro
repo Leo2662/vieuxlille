@@ -23,8 +23,11 @@ const brunch = chemins('brunch/')[langue];
 // L'accroche manuscrite joue sur « allumer » : l'anglais garde le verbe
 // inventé plutôt que de le traduire. Les \u00a0 sont les espaces insécables
 // de la typographie française, avant « ? » et « : ».
+// Le titre de l'onglet vise les deux requêtes de l'accueil : « coffee shop »
+// et « brunch Vieux-Lille ». Le brunch a sa page et son propre titre.
 const textes = {
   fr: {
+    titre: 'Coffee Shop et Brunch au cœur du Vieux-Lille — LÜM',
     accroche: 'On va lümer\u00a0?',
     tasse: 'Tasse de café',
     baseline: 'Coffee Shop & Brunch Healthy',
@@ -38,6 +41,7 @@ const textes = {
     secondLieu: 'Notre second lieu\u00a0: ',
   },
   en: {
+    titre: 'Coffee Shop & Brunch in the Heart of Vieux-Lille — LÜM',
     accroche: 'Shall we lüm?',
     tasse: 'Cup of coffee',
     baseline: 'Coffee Shop & Healthy Brunch',
@@ -73,7 +77,7 @@ const liens = [
 ];
 ---
 
-<BaseLayout langue={langue} chemins={adresses}>
+<BaseLayout title={textes.titre} langue={langue} chemins={adresses}>
   <main class="stage">
     <div class="stage__langues">
       <ChoixLangue langue={langue} chemins={adresses} />
