@@ -145,11 +145,23 @@ recherche, donc une valeur inventée y coûte plus cher qu'un champ absent.
   autre dépôt Pages : ni l'un ni l'autre n'est vérifié par le build. Les
   cartes braderie et complète restent dans l'historique git.
 
-## Déploiement
+## Branches et déploiement
 
-Chaque push sur `claude/lum-vieux-lille-site-fczgat` déclenche
-`.github/workflows/deploy.yml`, qui construit le site et le publie sur
-GitHub Pages, servi sur `lumvieuxlille.fr`.
+Deux branches, deux environnements :
+
+| Branche | Environnement | Hébergement |
+|---|---|---|
+| `main` | **prod** — https://lumvieuxlille.fr | GitHub Pages, via GitHub Actions |
+| `dev` | **dev** — https://vieuxlille.vercel.app | Vercel (branche de production du projet `vieuxlille`) |
+
+On travaille sur `dev` (ou sur une branche courte tirée de `dev`), on vérifie
+sur vieuxlille.vercel.app, puis on fusionne `dev` dans `main` pour mettre en
+ligne. Une correction faite directement sur `main` se refusionne aussitôt dans
+`dev`, pour que les deux ne divergent plus.
+
+Chaque push sur `main` déclenche `.github/workflows/deploy.yml`, qui construit
+le site et le publie sur GitHub Pages, servi sur `lumvieuxlille.fr`. Vercel ne
+construit pas `main` : la prod n'a qu'un seul hébergeur.
 
 Le domaine tient à `public/CNAME` : Astro recopie ce fichier dans `dist/`, et
 c'est lui qui conserve le domaine personnalisé d'un déploiement à l'autre. Le
