@@ -2,7 +2,7 @@ name: Déploiement GitHub Pages
 
 on:
   push:
-    branches: [claude/lum-vieux-lille-site-fczgat]
+    branches: [main]
   workflow_dispatch:
 
 # Autorise le workflow à publier sur Pages
