@@ -7,13 +7,16 @@
 Ouvert du mercredi au lundi, de 10h à 18h. Fermé le mardi.
 Téléphone : +33 6 42 99 62 42.
 
-Le site tient en deux pages, l'accueil et le menu ; la réservation est
-hébergée ailleurs.
+Brunch dans le Vieux-Lille le week-end uniquement, de 11h à 15h30 : 25 €.
+
+Le site tient en quatre pages, l'accueil, le brunch (en français et en
+anglais), le menu et l'afterwork ; la réservation est hébergée ailleurs.
 
 ## Commander
 
 - [Menu](https://lumvieuxlille.fr/menu) : en semaine, formule petit déj de 10h à 11h et formule déjeuner toute la journée ; le week-end, brunch de 11h à 15h30 ; tous les jours, carte barista, boissons et à la carte (focaccias, pâtisseries). L'adresse `/carte` du site y redirige.
 - [Réservation](https://lumvieuxlille-hash.github.io/lum-vieuxlille/) : réserver une table.
+- [Brunch](https://lumvieuxlille.fr/brunch/) : la formule du week-end à 25 €, de 11h à 15h30. Un salé (bagel Océan ou Soleil, servi avec une salade composée), un sucré (cookie, cinnamon roll, granola bowl ou flan), une boisson chaude et une boisson froide au choix. En terrasse, en intérieur ou dans la cave voûtée naturellement climatisée.
 
 ## Privatiser
 
@@ -24,6 +27,11 @@ hébergée ailleurs.
 - [Instagram](https://www.instagram.com/lum_vieuxlille)
 - [TikTok](https://www.tiktok.com/@lum_vieuxlille)
 - [Avis Google](https://search.google.com/local/writereview?placeid=ChIJzXLWKBcrw0cRI0DdWOWtaRM) : laisser un avis sur la fiche du lieu.
+
+## English
+
+- [Home](https://lumvieuxlille.fr/en/) : l'accueil en anglais.
+- [Brunch](https://lumvieuxlille.fr/en/brunch/) : le brunch en anglais.
 
 ## Optionnel
 

@@ -6,9 +6,10 @@ propre site : https://leo2662.github.io/lillecentre
 
 En ligne : https://lumvieuxlille.fr
 
-Une page d'accueil, une page `/menu` et une page `/afterwork`, qui vend la
-privatisation du jeudi soir. `/carte` — qui portait la carte braderie —
-redirige vers `/menu`.
+Une page d'accueil, une page `/brunch` (la formule du week-end), une page
+`/menu` et une page `/afterwork`, qui vend la privatisation du jeudi soir.
+L'accueil et le brunch existent aussi en anglais (sous `/en/`). `/carte` — qui
+portait la carte braderie — redirige vers `/menu`.
 
 ## Stack
 
@@ -67,14 +68,20 @@ après un toucher sur mobile.
 
 ```
 src/
+├── components/Accueil.astro   # page d'accueil, dans les deux langues
+├── components/Brunch.astro    # la formule brunch du week-end, idem
+├── components/ChoixLangue.astro # sélecteur FR | EN
 ├── components/Entete.astro    # logo et retour, en tête des pages intérieures
 ├── components/Trinquer.astro  # deux verres qui trinquent, emblème de l'afterwork
 ├── data/afterwork.ts          # prix et contenu de la formule afterwork
 ├── data/menu.ts               # contenu et prix du menu
+├── i18n.ts                    # langues et adresses des pages traduites
 ├── layouts/BaseLayout.astro   # <head>, polices, réglages partagés
 ├── lib/qr.ts                  # cibles des QR codes et leur rendu SVG
-├── pages/index.astro          # page d'accueil
-├── pages/menu.astro           # le menu, selon le jour
+├── pages/index.astro          # / : l'accueil en français
+├── pages/brunch.astro         # /brunch/ : le brunch en français
+├── pages/en/                  # /en/ et /en/brunch/ : les mêmes en anglais
+├── pages/menu.astro           # le menu, selon le jour (français seulement)
 ├── pages/afterwork.astro      # page de vente de l'afterwork privatisé
 ├── pages/afterwork/reservation.astro  # paiement factice, pour tester le parcours
 ├── pages/qr-code.astro        # les QR codes, à télécharger
@@ -144,6 +151,24 @@ La page est en `noindex` et hors du sitemap. **Avant la mise en production**,
 la remplacer par un vrai prestataire de paiement (Stripe Checkout, lien de
 paiement SumUp…) : c'est lui qui doit afficher la saisie de la carte.
 
+## Langues
+
+Le français est à la racine, l'anglais sous `/en/`. Chaque page traduite est
+un composant de `src/components/` qui reçoit la langue et porte ses textes dans
+les deux, côte à côte : modifier un texte, c'est modifier ses deux versions au
+même endroit. Les fichiers de `src/pages/` ne font qu'appeler le composant.
+
+Le sélecteur FR | EN, en haut à droite, mène en un clic à la même page dans
+l'autre langue. Les deux versions s'annoncent l'une l'autre aux moteurs de
+recherche, par des balises `hreflang` dans le `<head>` et dans le sitemap ; le
+français est la version par défaut (`x-default`).
+
+Ajouter une page traduite : un composant qui prend `langue`, puis un fichier
+dans `src/pages/` et un dans `src/pages/en/`. `/qr-code`, page outil, reste en
+français seulement, comme `/menu` et `/afterwork` (la carte afterwork de
+l'accueil n'apparaît que sur la version française). La réservation et le site
+de Lille Centre sont hébergés ailleurs et restent en français.
+
 ## QR codes
 
 `/qr-code` affiche les codes et propose leur téléchargement. Image affichée et
@@ -187,8 +212,10 @@ outil servie en `noindex` via la propriété du même nom de `BaseLayout`.
 `public/llms.txt` suit la convention du même nom : un résumé du lieu et les
 liens utiles, pour les modèles de langage. C'est une convention proposée, pas
 un standard — Google a annoncé ne pas s'en servir. Le fichier redit l'adresse
-et les horaires déjà présents dans `index.astro` et dans le JSON-LD de
-`BaseLayout` : les trois sont à modifier ensemble.
+et les horaires déjà présents dans `components/Accueil.astro` et dans le JSON-LD de
+`BaseLayout` : les trois sont à modifier ensemble. Il redit aussi le prix, les
+horaires, la composition et les espaces du brunch : à modifier avec
+`components/Brunch.astro`.
 
 `BaseLayout.astro` émet une fiche JSON-LD `CafeOrCoffeeShop` : nom, adresse,
 coordonnées GPS, téléphone, fourchette de prix, horaires, menu et réseaux.

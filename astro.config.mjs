@@ -25,6 +25,12 @@ export default defineConfig({
       // toutes deux servies en noindex elles aussi.
       filter: (page) =>
         !['/carte', '/qr-code', '/afterwork/reservation'].some((p) => page.includes(p)),
+      // Chaque page y renvoie à sa traduction : le français à la racine,
+      // l'anglais sous /en/ (voir src/i18n.ts).
+      i18n: {
+        defaultLocale: 'fr',
+        locales: { fr: 'fr', en: 'en' },
+      },
     }),
   ],
 });
