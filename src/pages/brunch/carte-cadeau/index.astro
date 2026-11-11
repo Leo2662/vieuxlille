@@ -1,13 +1,16 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Entete from '../../../components/Entete.astro';
+import { PRIX_CENTIMES, QUANTITE_MAX } from '../../../../api/_lib/config.ts';
 
 // Commande d'une carte cadeau brunch. Le formulaire part vers la fonction
 // Vercel /api/carte-cadeau/commander, qui crée la commande chez Square et
 // renvoie vers la page de paiement Square. Au retour, /brunch/carte-cadeau/merci/
 // fait vérifier le paiement et envoyer la carte en PDF par e-mail.
 //
-// Mêmes limites que api/_lib/config.ts (LIMITES) : le serveur les revérifie.
+// Prix et quantité maximale viennent de api/_lib/config.ts, comme pour le
+// serveur ; les longueurs de champs y sont redites (LIMITES) et revérifiées.
+const prix = PRIX_CENTIMES / 100;
 
 // Tant que Square tourne en bac à sable, la page le dit (variable lue au build).
 const test = import.meta.env.PUBLIC_SQUARE_ENV !== 'production';
@@ -17,7 +20,7 @@ const inclus = ['Un salé', 'Un sucré', 'Une boisson chaude', 'Une boisson froi
 
 <BaseLayout
   title="Offrir le brunch — Carte cadeau LÜM Vieux-Lille"
-  description="Offrez un brunch au LÜM Vieux-Lille : une carte cadeau de 25 €, envoyée par e-mail en PDF avec votre petit mot, valable un an."
+  description="Offrez un ou plusieurs brunchs au LÜM Vieux-Lille : une carte cadeau à 25 € le brunch, envoyée par e-mail en PDF avec votre petit mot, valable un an."
 >
   <div class="page">
     <Entete retour="/brunch/" />
@@ -36,7 +39,7 @@ const inclus = ['Un salé', 'Un sucré', 'Une boisson chaude', 'Une boisson froi
       <p class="script">Une carte cadeau, et ton petit mot dessus</p>
     </div>
 
-    <form class="commande" method="post" action="/api/carte-cadeau/commander" data-commande>
+    <form class="commande" method="post" action="/api/carte-cadeau/commander" data-commande data-prix={prix}>
       <div class="blocs">
         <fieldset class="carte bloc">
           <legend><span class="num" aria-hidden="true">1</span> Tes coordonnées</legend>
@@ -95,19 +98,40 @@ const inclus = ['Un salé', 'Un sucré', 'Une boisson chaude', 'Une boisson froi
           {inclus.map((ligne) => <li>{ligne}</li>)}
         </ul>
 
+        <!-- Sans script, le champ numérique suffit ; les boutons − et + ne
+             font que l'incrémenter. -->
+        <div class="quantite">
+          <label class="champ__libelle" for="quantite">Brunchs offerts</label>
+          <div class="stepper">
+            <button type="button" class="stepper__btn" data-moins aria-label="Un brunch de moins">−</button>
+            <input
+              id="quantite"
+              name="quantite"
+              type="number"
+              inputmode="numeric"
+              min="1"
+              max={QUANTITE_MAX}
+              value="1"
+              required
+              data-quantite
+            />
+            <button type="button" class="stepper__btn" data-plus aria-label="Un brunch de plus">+</button>
+          </div>
+        </div>
+
         <p class="recap__ligne">
-          <span>1 formule brunch</span>
-          <span>25&nbsp;€</span>
+          <span data-detail>1 × {prix}&nbsp;€</span>
+          <span data-sous-total>{prix}&nbsp;€</span>
         </p>
         <p class="recap__total">
           <span>Total</span>
-          <strong>25&nbsp;€</strong>
+          <strong data-total>{prix}&nbsp;€</strong>
         </p>
 
         <p class="erreur" role="alert" data-erreur hidden></p>
 
         <button class="lum-pill-btn lum-pill-btn--plein recap__payer" type="submit" data-payer>
-          <span data-payer-texte>Payer 25&nbsp;€</span>
+          <span data-payer-texte>Payer {prix}&nbsp;€</span>
           <span class="arrow" aria-hidden="true">→</span>
         </button>
         <p class="recap__note">
@@ -132,7 +156,44 @@ const inclus = ['Un salé', 'Un sucré', 'Une boisson chaude', 'Une boisson froi
   mot.addEventListener('input', majCompteur);
   majCompteur();
 
-  const texteInitial = payerTexte.textContent;
+  // Quantité : boutons − et +, total et bouton de paiement suivent.
+  const prix = Number(form.dataset.prix);
+  const quantite = form.querySelector<HTMLInputElement>('[data-quantite]')!;
+  const moins = form.querySelector<HTMLButtonElement>('[data-moins]')!;
+  const plus = form.querySelector<HTMLButtonElement>('[data-plus]')!;
+  const min = Number(quantite.min);
+  const max = Number(quantite.max);
+  const euros = (n: number) => `${n}\u00a0€`;
+
+  function lireQuantite(): number {
+    const n = Math.round(Number(quantite.value));
+    return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : min;
+  }
+
+  function majMontant() {
+    const n = lireQuantite();
+    form.querySelector('[data-detail]')!.textContent = `${n} × ${euros(prix)}`;
+    form.querySelector('[data-sous-total]')!.textContent = euros(n * prix);
+    form.querySelector('[data-total]')!.textContent = euros(n * prix);
+    payerTexte.textContent = `Payer ${euros(n * prix)}`;
+    moins.disabled = n <= min;
+    plus.disabled = n >= max;
+  }
+
+  function changer(delta: number) {
+    quantite.value = String(lireQuantite() + delta);
+    majMontant();
+  }
+
+  moins.addEventListener('click', () => changer(-1));
+  plus.addEventListener('click', () => changer(1));
+  quantite.addEventListener('input', majMontant);
+  // En quittant le champ, une saisie hors bornes est ramenée entre 1 et le max.
+  quantite.addEventListener('change', () => {
+    quantite.value = String(lireQuantite());
+    majMontant();
+  });
+  majMontant();
 
   // Sans script, le formulaire part tel quel et la fonction redirige vers
   // Square. Avec, on reste sur la page pour afficher une erreur éventuelle.
@@ -158,14 +219,14 @@ const inclus = ['Un salé', 'Un sucré', 'Une boisson chaude', 'Une boisson froi
           : 'Connexion impossible. Vérifie ta connexion et réessaie.';
       erreur.hidden = false;
       payer.disabled = false;
-      payerTexte.textContent = texteInitial;
+      majMontant();
     }
   });
 
   // Retour arrière depuis Square : la page sort du cache avec le bouton figé.
   window.addEventListener('pageshow', () => {
     payer.disabled = false;
-    payerTexte.textContent = texteInitial;
+    majMontant();
   });
 </script>
 
@@ -412,6 +473,80 @@ const inclus = ['Un salé', 'Un sucré', 'Une boisson chaude', 'Une boisson froi
     transform: rotate(45deg);
   }
 
+  /* --- Quantité : − [n] + --- */
+  .quantite {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 14px;
+    margin-bottom: 14px;
+    border-top: 2px solid var(--cream-dark);
+  }
+
+  .stepper {
+    display: inline-flex;
+    align-items: center;
+    border: 2px solid var(--terracotta-light);
+    border-radius: 999px;
+    background: #fffaf3;
+  }
+
+  .stepper__btn {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--terracotta);
+    font: inherit;
+    font-weight: 800;
+    font-size: 1.35rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .stepper__btn:hover:not(:disabled) {
+    background: var(--terracotta);
+    color: var(--cream);
+  }
+
+  .stepper__btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .stepper input {
+    width: 3ch;
+    padding: 6px 0;
+    border: 0;
+    background: none;
+    text-align: center;
+    font-weight: 900;
+    font-size: 1.2rem;
+    box-shadow: none;
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  .stepper input::-webkit-outer-spin-button,
+  .stepper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .stepper input:focus {
+    box-shadow: none;
+  }
+
+  .stepper:focus-within {
+    border-color: var(--terracotta);
+    box-shadow: 0 0 0 3px rgba(196, 113, 74, 0.3);
+  }
+
   .recap__ligne,
   .recap__total {
     display: flex;
@@ -421,8 +556,6 @@ const inclus = ['Un salé', 'Un sucré', 'Une boisson chaude', 'Une boisson froi
   }
 
   .recap__ligne {
-    padding-top: 14px;
-    border-top: 2px solid var(--cream-dark);
     font-weight: 700;
   }
 

@@ -156,8 +156,8 @@ paiement SumUp…) : c'est lui qui doit afficher la saisie de la carte.
 
 Sur `/brunch` (et `/en/brunch`), l'encart « Offrir le brunch » mène à
 `/brunch/carte-cadeau/` : prénom, nom, e-mail, téléphone, puis pour qui
-(facultatif) et un petit mot (facultatif, 250 caractères). Le client paie
-25 € chez Square et reçoit la carte en PDF par e-mail, avec un code du type
+(facultatif), un petit mot (facultatif, 250 caractères) et le nombre de
+brunchs (1 à 10, sélecteur − / +). Le client paie 25 € par brunch chez Square et reçoit la carte en PDF par e-mail, avec un code du type
 `BR-7KQ2-M9XD`, valable un an à compter du paiement.
 
 C'est la seule partie du site qui tourne côté serveur : trois **fonctions

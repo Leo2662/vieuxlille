@@ -45,6 +45,7 @@ export async function creerLienDePaiement(c: Coordonnees, retour: string): Promi
       telephone: c.telephone,
       pour: c.pour,
       mot: c.mot,
+      quantite: String(c.quantite),
     }).filter(([, v]) => v),
   );
 
@@ -65,7 +66,7 @@ export async function creerLienDePaiement(c: Coordonnees, retour: string): Promi
           line_items: [
             {
               name: PRODUIT,
-              quantity: '1',
+              quantity: String(c.quantite),
               note: `Code ${code}${c.pour ? ` — pour ${c.pour}` : ''} — de ${c.prenom} ${c.nom}`.slice(0, 2000),
               base_price_money: { amount: PRIX_CENTIMES, currency: DEVISE },
             },
@@ -127,16 +128,19 @@ export async function commandePayee(orderId: string): Promise<CartePayee | null>
   const m = commande.metadata ?? {};
   if (commande.location_id !== env('SQUARE_LOCATION_ID') || m.source !== SOURCE || !m.code) return null;
 
-  // Payée = chaque paiement rattaché est COMPLETED, et ils couvrent le prix.
+  // Payée = les paiements rattachés sont COMPLETED et couvrent le prix.
   const paiements = await Promise.all(
     (commande.tenders ?? [])
       .map((t) => t.payment_id)
       .filter((id): id is string => Boolean(id))
       .map((id) => square<{ payment: Paiement }>(`/v2/payments/${id}`).then((r) => r.payment)),
   );
+  // Une commande d'avant l'arrivée de la quantité n'en porte pas : 1 brunch.
+  const quantite = Number(m.quantite ?? 1);
+  if (!Number.isInteger(quantite) || quantite < 1) return null;
   const reussis = paiements.filter((p) => p.status === 'COMPLETED' && p.amount_money.currency === DEVISE);
   const encaisse = reussis.reduce((somme, p) => somme + p.amount_money.amount, 0);
-  if (!reussis.length || encaisse < PRIX_CENTIMES) return null;
+  if (!reussis.length || encaisse < PRIX_CENTIMES * quantite) return null;
 
   const payeeLe = new Date(reussis[0].created_at);
   const valableJusquau = new Date(payeeLe);
@@ -151,6 +155,7 @@ export async function commandePayee(orderId: string): Promise<CartePayee | null>
     telephone: m.telephone ?? '',
     pour: m.pour ?? '',
     mot: m.mot ?? '',
+    quantite,
     payeeLe,
     valableJusquau,
   };

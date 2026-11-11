@@ -1,5 +1,5 @@
 import { randomInt } from 'node:crypto';
-import { LIMITES } from './config.js';
+import { LIMITES, QUANTITE_MAX } from './config.js';
 
 /** Ce que le client saisit dans le formulaire. */
 export interface Coordonnees {
@@ -11,6 +11,8 @@ export interface Coordonnees {
   pour: string;
   /** Petit mot imprimé sur la carte, facultatif. */
   mot: string;
+  /** Nombre de brunchs offerts par la carte. */
+  quantite: number;
 }
 
 /** Une commande payée, prête à devenir une carte. */
@@ -44,6 +46,7 @@ export function lireFormulaire(
     telephone: propre(brut.telephone),
     pour: propre(brut.pour),
     mot: propre(brut.mot, true),
+    quantite: Number(brut.quantite ?? 1),
   };
 
   if (!c.prenom) return { ok: false, erreur: 'Indique ton prénom.' };
@@ -52,8 +55,11 @@ export function lireFormulaire(
   if (!TELEPHONE.test(c.telephone) || c.telephone.replace(/\D/g, '').length < 6) {
     return { ok: false, erreur: 'Ce numéro de téléphone ne semble pas valide.' };
   }
+  if (!Number.isInteger(c.quantite) || c.quantite < 1 || c.quantite > QUANTITE_MAX) {
+    return { ok: false, erreur: `Choisis entre 1 et ${QUANTITE_MAX} brunchs.` };
+  }
   for (const [champ, max] of Object.entries(LIMITES)) {
-    if (c[champ as keyof Coordonnees].length > max) {
+    if (c[champ as keyof typeof LIMITES].length > max) {
       return { ok: false, erreur: `Le champ « ${champ} » dépasse ${max} caractères.` };
     }
   }
@@ -79,6 +85,15 @@ const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
 export function nouveauCode(): string {
   const bloc = () => Array.from({ length: 4 }, () => ALPHABET[randomInt(ALPHABET.length)]).join('');
   return `BR-${bloc()}-${bloc()}`;
+}
+
+const NOMBRES = ['', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix'];
+
+/** « Un brunch », « Deux brunchs »… en toutes lettres, comme sur une carte. */
+export function brunchs(quantite: number, majuscule = true): string {
+  const nombre = NOMBRES[quantite] ?? String(quantite);
+  const texte = `${nombre} brunch${quantite > 1 ? 's' : ''}`;
+  return majuscule ? texte.charAt(0).toUpperCase() + texte.slice(1) : texte;
 }
 
 export function dateLongue(date: Date): string {

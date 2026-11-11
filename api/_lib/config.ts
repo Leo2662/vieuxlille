@@ -3,8 +3,11 @@
 // Les fichiers et dossiers de /api qui commencent par « _ » ne deviennent pas
 // des routes sur Vercel : ce dossier n'est que du code partagé.
 
-/** Prix de la carte : celui de la formule brunch (voir src/components/Brunch.astro). */
+/** Prix d'un brunch : celui de la formule (voir src/components/Brunch.astro). */
 export const PRIX_CENTIMES = 2500;
+
+/** Une carte vaut de 1 à QUANTITE_MAX brunchs, payés ensemble. */
+export const QUANTITE_MAX = 10;
 export const DEVISE = 'EUR';
 
 /** Libellé de la ligne de commande, tel qu'il apparaît dans Square. */

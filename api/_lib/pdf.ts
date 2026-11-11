@@ -6,7 +6,7 @@
 import { readFileSync } from 'node:fs';
 import fontkit from '@pdf-lib/fontkit';
 import { LineCapStyle, PDFDocument, rgb, type PDFFont, type PDFPage } from 'pdf-lib';
-import { dateLongue, type CartePayee } from './commande.js';
+import { brunchs, dateLongue, type CartePayee } from './commande.js';
 
 const hex = (h: string) =>
   rgb(parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255);
@@ -138,7 +138,7 @@ export async function genererCarte(carte: CartePayee): Promise<Uint8Array> {
 
   texte(page, 'CARTE CADEAU', { x: g, y: 286, font: anton, taille: 44, couleur: C.terracotta, espacement: 0.8 });
 
-  const accroche = carte.pour ? `Un brunch pour ${carte.pour}` : 'Un brunch à savourer';
+  const accroche = `${brunchs(carte.quantite)} ${carte.pour ? `pour ${carte.pour}` : 'à savourer'}`;
   let tailleAccroche = 26;
   while (tailleAccroche > 16 && caveat.widthOfTextAtSize(accroche, tailleAccroche) > largeurGauche) tailleAccroche--;
   texte(page, accroche, { x: g, y: 254, font: caveat, taille: tailleAccroche, couleur: C.terracotta });
@@ -192,7 +192,8 @@ export async function genererCarte(carte: CartePayee): Promise<Uint8Array> {
     });
   }
 
-  texte(page, 'LA FORMULE BRUNCH', { x: centre, y: 220, font: anton, taille: 19, couleur: C.terracotta, espacement: 0.4, aligne: 'centre' });
+  const titreFormule = carte.quantite > 1 ? `${carte.quantite} FORMULES BRUNCH` : 'LA FORMULE BRUNCH';
+  texte(page, titreFormule, { x: centre, y: 220, font: anton, taille: 19, couleur: C.terracotta, espacement: 0.4, aligne: 'centre' });
   let yDroite = 202;
   for (const ligne of couper('Un salé, un sucré, une boisson chaude et une boisson froide, au choix.', nunito7, 9.5, 170)) {
     texte(page, ligne, { x: centre, y: yDroite, font: nunito7, taille: 9.5, couleur: C.brun, aligne: 'centre' });

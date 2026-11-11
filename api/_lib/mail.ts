@@ -1,7 +1,7 @@
 // Envoi de la carte par e-mail, via l'API Resend (sans SDK).
 
 import { EMAIL_EQUIPE, EXPEDITEUR, PRIX_CENTIMES, env } from './config.js';
-import { dateLongue, type CartePayee } from './commande.js';
+import { brunchs, dateLongue, type CartePayee } from './commande.js';
 
 const echapper = (t: string) =>
   t.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -9,6 +9,7 @@ const echapper = (t: string) =>
 function contenu(carte: CartePayee) {
   const pour = carte.pour ? ` pour ${carte.pour}` : '';
   const valable = dateLongue(carte.valableJusquau);
+  const formules = carte.quantite > 1 ? `${brunchs(carte.quantite, false)} (${carte.quantite} formules)` : 'une formule brunch';
 
   const texte = [
     `Merci ${carte.prenom} !`,
@@ -16,7 +17,7 @@ function contenu(carte: CartePayee) {
     `Ta carte cadeau brunch${pour} est en pièce jointe, en PDF : à imprimer ou à transférer.`,
     '',
     `Code : ${carte.code}`,
-    `Valable jusqu'au ${valable}, pour une formule brunch (un salé, un sucré, une boisson chaude et une boisson froide).`,
+    `Valable jusqu'au ${valable}, pour ${formules} : chacune avec un salé, un sucré, une boisson chaude et une boisson froide.`,
     'Le week-end, de 11h à 15h30, au 94 rue Saint-André, Vieux-Lille.',
     'Réservation conseillée au 06 42 99 62 42.',
     '',
@@ -46,7 +47,7 @@ function contenu(carte: CartePayee) {
           </table>
           <p style="margin:0 0 6px;font-size:15px;line-height:1.6;font-weight:800;">Valable jusqu'au ${valable}</p>
           <p style="margin:0 0 22px;font-size:14px;line-height:1.6;font-weight:700;color:#5c3d2e;">
-            Pour une formule brunch&nbsp;: un salé, un sucré, une boisson chaude et une boisson froide.<br>
+            Pour ${formules}&nbsp;: chacune avec un salé, un sucré, une boisson chaude et une boisson froide.<br>
             Le week-end, de 11h à 15h30, au 94 rue Saint-André, Vieux-Lille.<br>
             Réservation conseillée au <a href="tel:+33642996242" style="color:#944826;">06 42 99 62 42</a>.
           </p>
@@ -105,7 +106,7 @@ export async function envoyerCarte(carte: CartePayee, pdf: Uint8Array): Promise<
  */
 export async function notifierEquipe(carte: CartePayee, pdf: Uint8Array): Promise<void> {
   const lignes = [
-    `Nouvelle carte cadeau brunch vendue : ${(PRIX_CENTIMES / 100).toFixed(0)} €.`,
+    `Nouvelle carte cadeau vendue : ${brunchs(carte.quantite, false)}, ${((PRIX_CENTIMES * carte.quantite) / 100).toFixed(0)} €.`,
     '',
     `Code : ${carte.code}`,
     `Valable jusqu'au : ${dateLongue(carte.valableJusquau)}`,
