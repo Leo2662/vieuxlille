@@ -43,24 +43,34 @@ const textes = {
       'Brunch dans le Vieux-Lille chez LÜM : 25 €, le week-end de 11h à 15h30. En terrasse, en intérieur ou dans une cave voûtée naturellement climatisée.',
     retour: 'Retour',
     accroche: 'Compose ton brunch à ton goût',
-    bagel: 'Bagel garni',
+    illustration: 'Œufs cocotte',
     prix: '25 €',
     formule: 'Un salé, un sucré, une boisson chaude et une boisson froide.',
     horaires: ['Uniquement le week-end,', '11h – 15h30'],
     reserver: 'Réserver',
-    auChoix: 'au choix',
+    menu: 'Le menu',
+    menuIntro: 'Une option dans chaque bloc.',
     blocs: [
       {
-        titre: 'Salé',
-        options: ['Bagel Océan', 'Bagel Soleil'],
-        accompagnement: 'Servi avec une bonne salade composée',
+        titre: 'Ta douceur salée',
+        resume: '2 recettes',
+        texte: 'Des œufs cocotte accompagnés de tartines, en deux recettes au choix :',
+        options: [
+          'Chèvre, miel, pommes et noix',
+          'Cream cheese, moutarde, effiloché de canard et oignons caramélisés',
+        ],
+        recettes: true,
       },
       {
-        titre: 'Sucré',
+        titre: 'Ta douceur sucrée',
+        resume: '4 au choix',
+        texte: 'Un dessert au choix :',
         options: ['Cookie', 'Cinnamon roll', 'Granola bowl', 'Flan'],
       },
       {
-        titre: 'Boisson chaude',
+        titre: 'Ta boisson chaude',
+        resume: '6 au choix',
+        texte: 'Une boisson au choix :',
         options: [
           'Espresso',
           'Allongé',
@@ -71,7 +81,9 @@ const textes = {
         ],
       },
       {
-        titre: 'Boisson froide',
+        titre: 'Ta boisson froide',
+        resume: '3 au choix',
+        texte: 'Une boisson au choix :',
         options: ['Citron pressé', 'Jus de pomme', 'Orange pressée'],
       },
     ],
@@ -98,24 +110,34 @@ const textes = {
       'Brunch in Vieux-Lille (Old Lille) at LÜM: €25, weekends from 11am to 3:30pm. On the terrace, indoors or in our naturally cool vaulted cellar.',
     retour: 'Back',
     accroche: 'Build your brunch, your way',
-    bagel: 'Filled bagel',
+    illustration: 'Baked eggs',
     prix: '€25',
     formule: 'Something savoury, something sweet, a hot drink and a cold drink.',
     horaires: ['Weekends only,', '11am – 3:30pm'],
     reserver: 'Book a table',
-    auChoix: 'pick one',
+    menu: 'The menu',
+    menuIntro: 'Pick one option from each part.',
     blocs: [
       {
-        titre: 'Savoury',
-        options: ['Bagel Océan', 'Bagel Soleil'],
-        accompagnement: 'Served with a generous mixed salad',
+        titre: 'Your savoury treat',
+        resume: '2 recipes',
+        texte: 'Baked eggs (œufs cocotte) served with tartines, in two recipes:',
+        options: [
+          'Goat cheese, honey, apple and walnuts',
+          'Cream cheese, mustard, pulled duck and caramelised onions',
+        ],
+        recettes: true,
       },
       {
-        titre: 'Sweet',
+        titre: 'Your sweet treat',
+        resume: 'pick 1 of 4',
+        texte: 'A dessert of your choice:',
         options: ['Cookie', 'Cinnamon roll', 'Granola bowl', 'Flan'],
       },
       {
-        titre: 'Hot drink',
+        titre: 'Your hot drink',
+        resume: 'pick 1 of 6',
+        texte: 'A drink of your choice:',
         options: [
           'Espresso',
           'Americano',
@@ -126,7 +148,9 @@ const textes = {
         ],
       },
       {
-        titre: 'Cold drink',
+        titre: 'Your cold drink',
+        resume: 'pick 1 of 3',
+        texte: 'A drink of your choice:',
         options: ['Fresh lemon juice', 'Apple juice', 'Fresh orange juice'],
       },
     ],
@@ -173,7 +197,10 @@ const textes = {
 
       <p class="script">{textes.accroche}</p>
 
-      <svg class="bagel" viewBox="0 0 120 84" role="img" aria-label={textes.bagel}>
+      <!-- Un œuf cocotte au trait : ramequin cannelé, jaune et ciboulette, un
+           peu de vapeur. Repris tel quel dans le PDF de la carte cadeau
+           (api/_lib/pdf.ts) : à modifier ensemble. -->
+      <svg class="illustration" viewBox="0 0 120 84" role="img" aria-label={textes.illustration}>
         <g
           fill="none"
           stroke="currentColor"
@@ -181,14 +208,13 @@ const textes = {
           stroke-linecap="round"
           stroke-linejoin="round"
         >
-          <!-- Moitié du dessus, son trou et ses graines de sésame -->
-          <ellipse cx="60" cy="26" rx="48" ry="20" />
-          <path d="M12 26v6c0 11 21.5 20 48 20s48-9 48-20v-6" />
-          <ellipse cx="60" cy="25" rx="13" ry="5.5" />
-          <path d="M35 19.5l3-1 M80 15l3 1 M46 36l3 .6 M80 34.5l2.6-1.4 M58 12h3 M25 28l2.6 1.4 M93 25l2 2" />
-          <!-- Feuille de salade qui dépasse, puis moitié du dessous -->
-          <path d="M111 40 L110.4 43.8 L108.5 46.2 L105.4 50.9 L101.3 51.8 L96.1 57 L90 56.2 L83.2 61.4 L75.8 59 L68 63.7 L60 60 L52 63.7 L44.2 59 L36.8 61.4 L30 56.2 L23.9 57 L18.7 51.8 L14.6 50.9 L11.5 46.2 L9.6 43.8 L9 40" />
-          <path d="M13 50v5c0 11 21 20 47 20s47-9 47-20v-5" />
+          <path d="M48 16c-3-3.5 3-6.5 0-10 M60 14c-3-3.5 3-6.5 0-10 M72 16c-3-3.5 3-6.5 0-10" />
+          <ellipse cx="60" cy="34" rx="46" ry="13" />
+          <ellipse cx="60" cy="34" rx="37" ry="8.5" />
+          <ellipse cx="62" cy="33.5" rx="9" ry="4.5" />
+          <path d="M37 33l3-1.2 M80 36.5l2.8.8 M44 37.5l2.6.6 M78 29.5l2.4-.6" />
+          <path d="M14 34v6c0 8 3 20 8 26 6 7 21 11 38 11s32-4 38-11c5-6 8-18 8-26v-6" />
+          <path d="M30 50l1.5 16 M45 52l.8 19 M60 53v20 M75 52l-.8 19 M90 50l-1.5 16" />
         </g>
       </svg>
 
@@ -222,27 +248,38 @@ const textes = {
       </a>
     </section>
 
-    <div class="blocs">
-      {
-        textes.blocs.map((bloc) => (
-          <section class="bloc">
-            <div class="chip">
-              <h2>{bloc.titre}</h2>
-            </div>
+    <!-- Le menu en accordéon : un pli par choix à faire. Le contenu des plis
+         fermés reste dans la page (lu par les moteurs et les lecteurs
+         d'écran). « name » n'en laisse qu'un ouvert à la fois. -->
+    <section class="bloc menu" aria-labelledby="menu-titre">
+      <div class="chip">
+        <h2 id="menu-titre">{textes.menu}</h2>
+      </div>
 
-            <p class="bloc__choix">{textes.auChoix}</p>
+      <p class="menu__intro">{textes.menuIntro}</p>
 
-            <ul class="options">
-              {bloc.options.map((option) => (
-                <li class="option">{option}</li>
-              ))}
-            </ul>
-
-            {bloc.accompagnement && <p class="bloc__avec">{bloc.accompagnement}</p>}
-          </section>
-        ))
-      }
-    </div>
+      <div class="accordeon">
+        {
+          textes.blocs.map((bloc, i) => (
+            <details class="pli" name="menu-brunch" open={i === 0}>
+              <summary>
+                <span class="pli__titre">{bloc.titre}</span>
+                <span class="pli__resume">{bloc.resume}</span>
+                <span class="pli__signe" aria-hidden="true" />
+              </summary>
+              <div class="pli__contenu">
+                <p class="pli__texte">{bloc.texte}</p>
+                <ul class:list={['options', { 'options--recettes': bloc.recettes }]}>
+                  {bloc.options.map((option) => (
+                    <li class="option">{option}</li>
+                  ))}
+                </ul>
+              </div>
+            </details>
+          ))
+        }
+      </div>
+    </section>
 
     <section class="bloc cadeau">
       <div class="chip">
@@ -416,7 +453,7 @@ const textes = {
     line-height: 1.2;
   }
 
-  .bagel {
+  .illustration {
     display: block;
     width: 140px;
     margin: 26px auto 14px;
@@ -481,35 +518,16 @@ const textes = {
     border-color: var(--terracotta-dark);
   }
 
-  /* --- Un bloc par choix à faire --- */
-  .blocs {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    /* L'écart vertical laisse la place aux cartouches qui débordent. */
-    gap: 58px 28px;
-    margin-top: 28px;
-  }
-
+  /* --- Blocs crème à cartouche : menu, carte cadeau, espaces --- */
   .bloc {
     position: relative;
-    padding: 50px 26px 32px;
+    margin-top: 24px;
+    padding: 62px 34px 40px;
     border-radius: var(--radius-lg);
     background: var(--cream);
     box-shadow: var(--shadow);
     text-align: center;
     animation: fade-up 0.5s ease both;
-  }
-
-  .bloc:nth-child(2) {
-    animation-delay: 0.1s;
-  }
-
-  .bloc:nth-child(3) {
-    animation-delay: 0.2s;
-  }
-
-  .bloc:nth-child(4) {
-    animation-delay: 0.3s;
   }
 
   .bloc .chip {
@@ -518,14 +536,132 @@ const textes = {
 
   .bloc h2 {
     font-size: clamp(1.3rem, 3.4vw, 1.75rem);
+    white-space: normal;
+    text-wrap: balance;
+  }
+
+  /* --- Le menu, en accordéon --- */
+  .menu {
+    padding-bottom: 26px;
+    animation-delay: 0.1s;
+  }
+
+  .menu__intro {
+    margin-bottom: 18px;
+    font-family: var(--font-script);
+    font-size: 1.4rem;
+    line-height: 1.2;
+    color: var(--brown);
+  }
+
+  .accordeon {
+    /* Permet d'animer la hauteur jusqu'à « auto » là où c'est pris en charge. */
+    interpolate-size: allow-keywords;
+    text-align: left;
+  }
+
+  .pli + .pli {
+    border-top: 2px solid rgba(196, 113, 74, 0.35);
+  }
+
+  .pli summary {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 4px;
+    cursor: pointer;
+    list-style: none;
+    border-radius: var(--radius);
+  }
+
+  .pli summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .pli summary:focus-visible {
+    outline: 3px solid var(--terracotta-light);
+    outline-offset: 2px;
+  }
+
+  .pli__titre {
+    flex: 1;
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    line-height: 1.15;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .pli__resume {
+    font-family: var(--font-script);
+    font-size: 1.25rem;
+    line-height: 1;
+    color: var(--brown);
     white-space: nowrap;
   }
 
-  .bloc__choix {
+  /* Un « + » cerclé qui devient « − » à l'ouverture. */
+  .pli__signe {
+    position: relative;
+    flex: none;
+    width: 34px;
+    height: 34px;
+    border: 2.5px solid var(--terracotta-light);
+    border-radius: 50%;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .pli__signe::before,
+  .pli__signe::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 13px;
+    height: 2.5px;
+    margin: -1.25px 0 0 -6.5px;
+    border-radius: 2px;
+    background: currentColor;
+    transition: transform 0.3s ease;
+  }
+
+  .pli__signe::after {
+    transform: rotate(90deg);
+  }
+
+  .pli[open] .pli__signe::after {
+    transform: rotate(0deg);
+  }
+
+  .pli summary:hover .pli__signe,
+  .pli[open] .pli__signe {
+    background: var(--terracotta);
+    border-color: var(--terracotta);
+    color: var(--cream);
+  }
+
+  /* Ouverture en douceur (navigateurs récents ; ailleurs, sans animation). */
+  .pli::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition:
+      block-size 0.35s ease,
+      content-visibility 0.35s allow-discrete;
+  }
+
+  .pli[open]::details-content {
+    block-size: auto;
+  }
+
+  .pli__contenu {
+    padding: 0 4px 22px;
+  }
+
+  .pli__texte {
     margin-bottom: 14px;
-    font-family: var(--font-script);
-    font-size: 1.35rem;
-    line-height: 1.2;
+    font-weight: 700;
+    font-size: 1.02rem;
+    line-height: 1.6;
     color: var(--brown);
   }
 
@@ -536,7 +672,6 @@ const textes = {
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     gap: 10px;
   }
 
@@ -549,24 +684,29 @@ const textes = {
     line-height: 1.35;
   }
 
-  .bloc__avec {
-    margin-top: 16px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    color: var(--brown);
+  /* Les recettes, plus longues, passent sur plusieurs lignes : une par ligne,
+     en cartouche plutôt qu'en pilule. */
+  .options--recettes {
+    flex-direction: column;
+  }
+
+  .options--recettes .option {
+    border-radius: var(--radius);
+    padding: 12px 18px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pli::details-content,
+    .pli__signe,
+    .pli__signe::before,
+    .pli__signe::after {
+      transition: none;
+    }
   }
 
   /* --- Offrir le brunch : la carte cadeau --- */
   .cadeau {
-    margin-top: 24px;
-    padding: 62px 34px 40px;
-    animation-delay: 0.35s;
-  }
-
-  .cadeau h2 {
-    white-space: normal;
-    text-wrap: balance;
+    animation-delay: 0.2s;
   }
 
   .cadeau__icone {
@@ -595,15 +735,7 @@ const textes = {
 
   /* --- Les espaces où bruncher --- */
   .lieux {
-    margin-top: 24px;
-    padding: 62px 34px 40px;
-    animation-delay: 0.4s;
-  }
-
-  /* Titre plus long que ceux des blocs : il peut passer sur deux lignes. */
-  .lieux h2 {
-    white-space: normal;
-    text-wrap: balance;
+    animation-delay: 0.3s;
   }
 
   .lieux__intro {
@@ -678,18 +810,20 @@ const textes = {
       padding: 12px 22px;
     }
 
-    .blocs {
-      grid-template-columns: 1fr;
-      gap: 52px;
-    }
-
     .bloc {
-      padding: 46px 20px 28px;
+      padding: 58px 20px 28px;
     }
 
-    .lieux,
-    .cadeau {
-      padding: 58px 20px 28px;
+    .menu {
+      padding-bottom: 14px;
+    }
+
+    .pli summary {
+      gap: 10px;
+    }
+
+    .pli__resume {
+      font-size: 1.1rem;
     }
 
     .espaces {

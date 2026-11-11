@@ -1,7 +1,7 @@
 // La carte cadeau en PDF : un A5 à l'italienne, à imprimer ou à transférer.
 // Même grammaire que le site : fond terre cuite, carte crème aux angles
 // arrondis, titres Anton, texte Nunito, accents manuscrits Caveat, et le
-// bagel au trait de la page brunch.
+// œuf cocotte au trait de la page brunch.
 
 import { readFileSync } from 'node:fs';
 import fontkit from '@pdf-lib/fontkit';
@@ -31,19 +31,20 @@ function rectArrondi(w: number, h: number, r: number): string {
   return `M${r} 0H${w - r}A${r} ${r} 0 0 1 ${w} ${r}V${h - r}A${r} ${r} 0 0 1 ${w - r} ${h}H${r}A${r} ${r} 0 0 1 0 ${h - r}V${r}A${r} ${r} 0 0 1 ${r} 0Z`;
 }
 
-/** Ellipse en chemin SVG, pour reprendre le bagel tel qu'il est dessiné sur le site. */
+/** Ellipse en chemin SVG, pour reprendre l'œuf cocotte tel qu'il est dessiné sur le site. */
 function ellipse(cx: number, cy: number, rx: number, ry: number): string {
   return `M${cx - rx} ${cy}A${rx} ${ry} 0 1 0 ${cx + rx} ${cy}A${rx} ${ry} 0 1 0 ${cx - rx} ${cy}Z`;
 }
 
-// Le bagel de src/components/Brunch.astro (viewBox 120 × 84).
-const BAGEL = [
-  ellipse(60, 26, 48, 20),
-  'M12 26v6c0 11 21.5 20 48 20s48-9 48-20v-6',
-  ellipse(60, 25, 13, 5.5),
-  'M35 19.5l3-1 M80 15l3 1 M46 36l3 .6 M80 34.5l2.6-1.4 M58 12h3 M25 28l2.6 1.4 M93 25l2 2',
-  'M111 40 L110.4 43.8 L108.5 46.2 L105.4 50.9 L101.3 51.8 L96.1 57 L90 56.2 L83.2 61.4 L75.8 59 L68 63.7 L60 60 L52 63.7 L44.2 59 L36.8 61.4 L30 56.2 L23.9 57 L18.7 51.8 L14.6 50.9 L11.5 46.2 L9.6 43.8 L9 40',
-  'M13 50v5c0 11 21 20 47 20s47-9 47-20v-5',
+// L'œuf cocotte de src/components/Brunch.astro (viewBox 120 × 84).
+const COCOTTE = [
+  'M48 16c-3-3.5 3-6.5 0-10 M60 14c-3-3.5 3-6.5 0-10 M72 16c-3-3.5 3-6.5 0-10',
+  ellipse(60, 34, 46, 13),
+  ellipse(60, 34, 37, 8.5),
+  ellipse(62, 33.5, 9, 4.5),
+  'M37 33l3-1.2 M80 36.5l2.8.8 M44 37.5l2.6.6 M78 29.5l2.4-.6',
+  'M14 34v6c0 8 3 20 8 26 6 7 21 11 38 11s32-4 38-11c5-6 8-18 8-26v-6',
+  'M30 50l1.5 16 M45 52l.8 19 M60 53v20 M75 52l-.8 19 M90 50l-1.5 16',
 ];
 
 /** Largeur d'un texte interlettré. */
@@ -178,10 +179,10 @@ export async function genererCarte(carte: CartePayee): Promise<Uint8Array> {
     y -= interligne;
   }
 
-  // --- Colonne de droite : le bagel et ce que la carte offre -----------
+  // --- Colonne de droite : l'œuf cocotte et ce que la carte offre -----------
   const centre = 452;
   const echelle = 1.3;
-  for (const trace of BAGEL) {
+  for (const trace of COCOTTE) {
     page.drawSvgPath(trace, {
       x: centre - 60 * echelle,
       y: 362,
