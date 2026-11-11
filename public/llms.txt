@@ -17,6 +17,7 @@ anglais), le menu et l'afterwork ; la réservation est hébergée ailleurs.
 - [Menu](https://lumvieuxlille.fr/menu) : en semaine, formule petit déj de 10h à 11h et formule déjeuner toute la journée ; le week-end, brunch de 11h à 15h30 ; tous les jours, carte barista, boissons et à la carte (focaccias, pâtisseries). L'adresse `/carte` du site y redirige.
 - [Réservation](https://lumvieuxlille-hash.github.io/lum-vieuxlille/) : réserver une table.
 - [Brunch](https://lumvieuxlille.fr/brunch/) : la formule du week-end à 25 €, de 11h à 15h30. Un salé (bagel Océan ou Soleil, servi avec une salade composée), un sucré (cookie, cinnamon roll, granola bowl ou flan), une boisson chaude et une boisson froide au choix. En terrasse, en intérieur ou dans la cave voûtée naturellement climatisée.
+- [Carte cadeau brunch](https://lumvieuxlille.fr/brunch/carte-cadeau/) : offrir une formule brunch, 25 €, payée en ligne et envoyée par e-mail en PDF avec un petit mot. Valable un an.
 
 ## Privatiser
 

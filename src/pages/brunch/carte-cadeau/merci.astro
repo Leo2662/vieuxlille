@@ -1,0 +1,246 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Entete from '../../../components/Entete.astro';
+
+// Retour du paiement Square, qui ajoute ?orderId=… à l'adresse. La page
+// demande à /api/carte-cadeau/confirmer de vérifier le paiement et
+// d'envoyer la carte. Si Square n'a pas encore validé, on réessaie un peu ;
+// passé ce délai, la notification Square (webhook) prendra le relais.
+---
+
+<BaseLayout
+  title="Merci — Carte cadeau LÜM Vieux-Lille"
+  description="Votre carte cadeau brunch LÜM Vieux-Lille."
+  noindex
+>
+  <div class="page">
+    <Entete retour="/brunch/" />
+
+    <section class="carte" aria-live="polite">
+      <div data-etat="attente">
+        <span class="icone icone--attente" aria-hidden="true"></span>
+        <h1>Un instant…</h1>
+        <p class="texte">On vérifie ton paiement auprès de Square.</p>
+      </div>
+
+      <div data-etat="envoyee" hidden>
+        <span class="icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" /></svg>
+        </span>
+        <h1>Merci&nbsp;!</h1>
+        <p class="texte">
+          Ta carte cadeau brunch<span data-pour></span> est partie à
+          <strong data-email></strong>, en PDF&nbsp;: à imprimer ou à transférer.
+        </p>
+        <p class="code">
+          <span>Code</span>
+          <strong data-code></strong>
+        </p>
+        <p class="aide">Rien reçu d'ici quelques minutes&nbsp;? Regarde dans les indésirables, ou appelle-nous au <a href="tel:+33642996242">06&nbsp;42&nbsp;99&nbsp;62&nbsp;42</a>.</p>
+      </div>
+
+      <div data-etat="en-attente" hidden>
+        <span class="icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5v5l3 1.8" /></svg>
+        </span>
+        <h1>Paiement en cours</h1>
+        <p class="texte">
+          Square n'a pas encore confirmé ton paiement. Dès qu'il le fera, ta carte partira par e-mail&nbsp;:
+          inutile de payer une seconde fois.
+        </p>
+        <p class="aide">Une question&nbsp;? Appelle-nous au <a href="tel:+33642996242">06&nbsp;42&nbsp;99&nbsp;62&nbsp;42</a>.</p>
+      </div>
+
+      <div data-etat="erreur" hidden>
+        <span class="icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 7v6.5 M12 17h.01" /></svg>
+        </span>
+        <h1>Oups</h1>
+        <p class="texte">
+          On n'a pas pu retrouver cette commande. Si tu as payé, pas d'inquiétude&nbsp;: appelle-nous au&nbsp;<a href="tel:+33642996242">06&nbsp;42&nbsp;99&nbsp;62&nbsp;42</a> et on t'envoie ta carte.
+        </p>
+      </div>
+
+      <a class="lum-pill-btn lum-pill-btn--plein" href="/brunch/">
+        Voir le brunch <span class="arrow">→</span>
+      </a>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  type Reponse =
+    | { statut: 'envoyee'; email: string; code: string; pour: string }
+    | { statut: 'en-attente' | 'erreur' };
+
+  const montrer = (etat: string) => {
+    document.querySelectorAll<HTMLElement>('[data-etat]').forEach((bloc) => {
+      bloc.hidden = bloc.dataset.etat !== etat;
+    });
+  };
+  const remplir = (cle: string, valeur: string) => {
+    document.querySelector<HTMLElement>(`[data-${cle}]`)!.textContent = valeur;
+  };
+
+  const orderId = new URLSearchParams(location.search).get('orderId');
+
+  async function confirmer(essai = 1): Promise<void> {
+    let resultat: Reponse;
+    try {
+      const reponse = await fetch('/api/carte-cadeau/confirmer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId }),
+      });
+      resultat = (await reponse.json()) as Reponse;
+    } catch {
+      resultat = { statut: 'erreur' };
+    }
+
+    if (resultat.statut === 'envoyee') {
+      remplir('email', resultat.email);
+      remplir('code', resultat.code);
+      remplir('pour', resultat.pour ? ` pour ${resultat.pour}` : '');
+      montrer('envoyee');
+    } else if (essai < 6) {
+      // Square peut mettre quelques secondes à valider : on réessaie.
+      setTimeout(() => confirmer(essai + 1), 2500);
+    } else {
+      montrer(resultat.statut === 'erreur' ? 'erreur' : 'en-attente');
+    }
+  }
+
+  if (orderId) confirmer();
+  else montrer('erreur');
+</script>
+
+<style>
+  .page {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 28px var(--gutter) 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .carte {
+    padding: 44px 34px;
+    border-radius: var(--radius-lg);
+    background: var(--cream);
+    box-shadow: var(--edge-light), var(--elevation-3);
+    text-align: center;
+    animation: fade-up 0.5s ease both;
+  }
+
+  [data-etat][hidden] {
+    display: none;
+  }
+
+  .icone {
+    display: grid;
+    place-items: center;
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    color: var(--cream);
+    box-shadow: var(--elevation-2);
+  }
+
+  .icone svg {
+    width: 40px;
+    height: 40px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* Pendant la vérification : un anneau qui tourne. */
+  .icone--attente {
+    background: none;
+    box-shadow: none;
+    border: 6px solid var(--cream-dark);
+    border-top-color: var(--terracotta);
+    animation: tourne 0.9s linear infinite;
+  }
+
+  h1 {
+    font-size: clamp(2rem, 6vw, 2.8rem);
+  }
+
+  .texte {
+    max-width: 44ch;
+    margin: 12px auto 22px;
+    font-weight: 700;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+
+  .texte a,
+  .aide a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .code {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding: 10px 24px;
+    border-radius: 999px;
+    background: var(--terracotta);
+    color: var(--cream);
+    box-shadow: var(--elevation-1);
+  }
+
+  .code span {
+    font-weight: 800;
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .code strong {
+    font-weight: 800;
+    font-size: 1.15rem;
+    letter-spacing: 0.1em;
+  }
+
+  .aide {
+    max-width: 44ch;
+    margin: 0 auto 26px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--brown);
+  }
+
+  @keyframes tourne {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .carte {
+      padding: 36px 20px;
+    }
+  }
+</style>

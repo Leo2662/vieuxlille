@@ -80,6 +80,7 @@ src/
 ├── lib/qr.ts                  # cibles des QR codes et leur rendu SVG
 ├── pages/index.astro          # / : l'accueil en français
 ├── pages/brunch.astro         # /brunch/ : le brunch en français
+├── pages/brunch/carte-cadeau/ # commande d'une carte cadeau brunch, et son retour
 ├── pages/en/                  # /en/ et /en/brunch/ : les mêmes en anglais
 ├── pages/menu.astro           # le menu, selon le jour (français seulement)
 ├── pages/afterwork.astro      # page de vente de l'afterwork privatisé
@@ -150,6 +151,58 @@ total toujours de 580 €. Rien ne part :
 La page est en `noindex` et hors du sitemap. **Avant la mise en production**,
 la remplacer par un vrai prestataire de paiement (Stripe Checkout, lien de
 paiement SumUp…) : c'est lui qui doit afficher la saisie de la carte.
+
+## Carte cadeau brunch
+
+Sur `/brunch` (et `/en/brunch`), l'encart « Offrir le brunch » mène à
+`/brunch/carte-cadeau/` : prénom, nom, e-mail, téléphone, puis pour qui
+(facultatif) et un petit mot (facultatif, 250 caractères). Le client paie
+25 € chez Square et reçoit la carte en PDF par e-mail, avec un code du type
+`BR-7KQ2-M9XD`, valable un an à compter du paiement.
+
+C'est la seule partie du site qui tourne côté serveur : trois **fonctions
+Vercel** dans `api/` (hors Astro, qui reste statique).
+
+| Fonction | Rôle |
+|---|---|
+| `api/carte-cadeau/commander` | valide le formulaire, crée la commande et son lien de paiement Square, renvoie le client vers Square |
+| `api/carte-cadeau/confirmer` | appelée par `/brunch/carte-cadeau/merci/` au retour de Square : vérifie le paiement, fabrique le PDF, l'envoie |
+| `api/carte-cadeau/webhook` | même livraison, déclenchée par la notification Square `payment.updated` — au cas où le client ferme l'onglet avant le retour |
+
+- **Pas de base de données** : un lien de paiement est créé par commande, et
+  la commande Square porte dans ses métadonnées le code, les coordonnées et le
+  mot. La carte n'est livrée que si Square confirme que les paiements
+  rattachés sont `COMPLETED` et couvrent 25 €.
+- **Au comptoir**, le code se retrouve dans Square : il est la référence de
+  la commande et figure dans la note de la ligne. L'équipe reçoit aussi une
+  notification par carte vendue (code, acheteur, mot, PDF joint) sur
+  lum.vieuxlille@gmail.com, qui reçoit également les réponses des clients.
+- **Un seul e-mail** même si la page de retour et la notification arrivent
+  toutes deux : l'envoi Resend porte une clé d'idempotence par commande.
+- Le PDF (`api/_lib/pdf.ts`, pdf-lib) reprend la charte du site avec des
+  versions statiques des polices, dans `api/_fonts/` (voir son `LISEZMOI.md`).
+- La page de commande n'existe qu'en français ; l'encart anglais le précise.
+
+### Variables d'environnement (Vercel)
+
+| Variable | Valeur |
+|---|---|
+| `SQUARE_ENV` / `PUBLIC_SQUARE_ENV` | `sandbox` ou `production` — la seconde, lue au build, affiche le bandeau « Mode test » |
+| `SQUARE_ACCESS_TOKEN` | jeton d'accès Square (sandbox ou production, selon `SQUARE_ENV`) |
+| `SQUARE_LOCATION_ID` | identifiant du point de vente Square |
+| `SQUARE_WEBHOOK_SIGNATURE_KEY` | clé de signature de l'abonnement webhook ; sans elle, le webhook répond 503 |
+| `SQUARE_WEBHOOK_URL` | facultatif : l'URL exacte déclarée chez Square, si elle diffère de celle reçue |
+| `RESEND_API_KEY` | clé d'API Resend |
+| `MAIL_FROM` | facultatif, par défaut `LÜM Vieux-Lille <cadeau@lumvieuxlille.fr>` (domaine à vérifier chez Resend) |
+| `MAIL_REPLY_TO`, `CARTE_CADEAU_COPIE` | facultatifs : remplacent lum.vieuxlille@gmail.com comme adresse de réponse et destinataire des notifications (`api/_lib/config.ts`) |
+
+### ⚠️ GitHub Pages ne sert pas `api/`
+
+La production (`main`) est publiée par GitHub Pages, qui ne sert que des
+fichiers statiques : sur lumvieuxlille.fr, le formulaire n'aurait pas de
+fonction à appeler. Avant de fusionner dans `main`, il faut soit passer la
+production sur Vercel, soit faire pointer le formulaire vers les fonctions
+hébergées sur Vercel.
 
 ## Langues
 
