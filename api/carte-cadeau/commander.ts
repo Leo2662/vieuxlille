@@ -24,13 +24,13 @@ export async function POST(request: Request): Promise<Response> {
       : new Response(lu.erreur, { status: 422, headers: { 'content-type': 'text/plain; charset=utf-8' } });
   }
 
-  // Square ajoute ?orderId=… à cette adresse au retour du paiement.
+  // creerLienDePaiement y ajoute ?orderId=… une fois la commande créée.
   const origine = process.env.SITE_URL ?? new URL(request.url).origin;
   const retour = `${origine}/brunch/carte-cadeau/merci/`;
 
   try {
-    const url = await creerLienDePaiement(lu.valeur, retour);
-    return enJson ? Response.json({ url }) : Response.redirect(url, 303);
+    const { url, orderId } = await creerLienDePaiement(lu.valeur, retour);
+    return enJson ? Response.json({ url, orderId }) : Response.redirect(url, 303);
   } catch (erreur) {
     console.error('[carte-cadeau] création du lien Square', erreur);
     const message = 'Le paiement est indisponible pour le moment. Réessaie dans un instant, ou appelle-nous au 06 42 99 62 42.';

@@ -30,8 +30,21 @@ async function square<T>(chemin: string, init: RequestInit = {}): Promise<T> {
   return corps;
 }
 
-/** Crée le lien de paiement Square d'une carte. Renvoie l'adresse où envoyer le client. */
-export async function creerLienDePaiement(c: Coordonnees, retour: string): Promise<string> {
+interface LienDePaiement {
+  id: string;
+  version: number;
+  url: string;
+  order_id: string;
+}
+
+/**
+ * Crée le lien de paiement Square d'une carte. Renvoie l'adresse où envoyer
+ * le client et le numéro de la commande.
+ */
+export async function creerLienDePaiement(
+  c: Coordonnees,
+  retour: string,
+): Promise<{ url: string; orderId: string }> {
   const code = nouveauCode();
 
   // Une valeur de métadonnée vide est refusée : on n'envoie que les champs remplis.
@@ -52,7 +65,7 @@ export async function creerLienDePaiement(c: Coordonnees, retour: string): Promi
   const telephone = telephoneE164(c.telephone);
 
   const creer = (preRemplir: boolean) =>
-    square<{ payment_link: { url: string } }>('/v2/online-checkout/payment-links', {
+    square<{ payment_link: LienDePaiement }>('/v2/online-checkout/payment-links', {
       method: 'POST',
       body: JSON.stringify({
         idempotency_key: randomUUID(),
@@ -89,12 +102,39 @@ export async function creerLienDePaiement(c: Coordonnees, retour: string): Promi
 
   // Square est plus strict que nous sur l'e-mail et le téléphone : s'il en
   // refuse un, on crée le lien sans pré-remplissage plutôt que d'échouer.
+  let lien: LienDePaiement;
   try {
-    return (await creer(true)).payment_link.url;
+    lien = (await creer(true)).payment_link;
   } catch (erreur) {
     if (!/INVALID_(EMAIL|PHONE)/.test(String(erreur))) throw erreur;
-    return (await creer(false)).payment_link.url;
+    lien = (await creer(false)).payment_link;
   }
+
+  // Square n'ajoute pas le numéro de commande à l'adresse de retour (constaté
+  // en bac à sable le 2026-11-11) : on l'y inscrit nous-mêmes, une fois la
+  // commande créée. En cas d'échec, la page de retour se rabat sur le numéro
+  // gardé par le navigateur, et le webhook livre de toute façon.
+  try {
+    const retourAvecCommande = new URL(retour);
+    retourAvecCommande.searchParams.set('orderId', lien.order_id);
+    await square(`/v2/online-checkout/payment-links/${lien.id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        payment_link: {
+          version: lien.version,
+          checkout_options: {
+            redirect_url: retourAvecCommande.href,
+            allow_tipping: false,
+            ask_for_shipping_address: false,
+          },
+        },
+      }),
+    });
+  } catch (erreur) {
+    console.error('[carte-cadeau] adresse de retour', lien.order_id, erreur);
+  }
+
+  return { url: lien.url, orderId: lien.order_id };
 }
 
 interface Commande {

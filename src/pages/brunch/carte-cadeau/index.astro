@@ -209,8 +209,13 @@ const inclus = ['Un salé', 'Un sucré', 'Une boisson chaude', 'Une boisson froi
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(Object.fromEntries(new FormData(form))),
       });
-      const resultat = (await reponse.json()) as { url?: string; erreur?: string };
+      const resultat = (await reponse.json()) as { url?: string; orderId?: string; erreur?: string };
       if (!resultat.url) throw new Error(resultat.erreur ?? 'Une erreur est survenue.');
+      // Secours pour la page de retour, si l'adresse revient de Square sans
+      // numéro de commande : le paiement se fait dans le même onglet.
+      try {
+        if (resultat.orderId) sessionStorage.setItem('lum-carte-cadeau-commande', resultat.orderId);
+      } catch {}
       window.location.href = resultat.url;
     } catch (e) {
       erreur.textContent =

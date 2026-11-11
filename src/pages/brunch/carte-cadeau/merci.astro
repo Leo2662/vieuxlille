@@ -2,7 +2,7 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import Entete from '../../../components/Entete.astro';
 
-// Retour du paiement Square, qui ajoute ?orderId=… à l'adresse. La page
+// Retour du paiement Square, sur ?orderId=… (inscrit par commander). La page
 // demande à /api/carte-cadeau/confirmer de vérifier le paiement et
 // d'envoyer la carte. Si Square n'a pas encore validé, on réessaie un peu ;
 // passé ce délai, la notification Square (webhook) prendra le relais.
@@ -19,8 +19,8 @@ import Entete from '../../../components/Entete.astro';
     <section class="carte" aria-live="polite">
       <div data-etat="attente">
         <span class="icone icone--attente" aria-hidden="true"></span>
-        <h1>Un instant…</h1>
-        <p class="texte">On vérifie ton paiement auprès de Square.</p>
+        <h1>Merci&nbsp;!</h1>
+        <p class="texte">On prépare ta carte cadeau…</p>
       </div>
 
       <div data-etat="envoyee" hidden>
@@ -29,8 +29,8 @@ import Entete from '../../../components/Entete.astro';
         </span>
         <h1>Merci&nbsp;!</h1>
         <p class="texte">
-          Ta carte cadeau brunch<span data-pour></span> est partie à
-          <strong data-email></strong>, en PDF&nbsp;: à imprimer ou à transférer.
+          Tu recevras très bientôt ta carte cadeau brunch<span data-pour></span> dans ta boîte mail,
+          à <strong data-email></strong>, en PDF&nbsp;: à imprimer ou à transférer.
         </p>
         <p class="code">
           <span>Code</span>
@@ -43,10 +43,10 @@ import Entete from '../../../components/Entete.astro';
         <span class="icone" aria-hidden="true">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5v5l3 1.8" /></svg>
         </span>
-        <h1>Paiement en cours</h1>
+        <h1>Merci&nbsp;!</h1>
         <p class="texte">
-          Square n'a pas encore confirmé ton paiement. Dès qu'il le fera, ta carte partira par e-mail&nbsp;:
-          inutile de payer une seconde fois.
+          Tu recevras bientôt ta carte cadeau dans ta boîte mail, dès que Square aura confirmé ton
+          paiement&nbsp;: inutile de payer une seconde fois.
         </p>
         <p class="aide">Une question&nbsp;? Appelle-nous au <a href="tel:+33642996242">06&nbsp;42&nbsp;99&nbsp;62&nbsp;42</a>.</p>
       </div>
@@ -55,10 +55,11 @@ import Entete from '../../../components/Entete.astro';
         <span class="icone" aria-hidden="true">
           <svg viewBox="0 0 24 24"><path d="M12 7v6.5 M12 17h.01" /></svg>
         </span>
-        <h1>Oups</h1>
+        <h1>Merci&nbsp;!</h1>
         <p class="texte">
-          On n'a pas pu retrouver cette commande. Si tu as payé, pas d'inquiétude&nbsp;: appelle-nous au&nbsp;<a href="tel:+33642996242">06&nbsp;42&nbsp;99&nbsp;62&nbsp;42</a> et on t'envoie ta carte.
+          Si ton paiement est passé, tu recevras bientôt ta carte cadeau dans ta boîte mail.
         </p>
+        <p class="aide">Rien reçu d'ici quelques minutes&nbsp;? Regarde dans les indésirables, ou appelle-nous au <a href="tel:+33642996242">06&nbsp;42&nbsp;99&nbsp;62&nbsp;42</a> et on t'envoie ta carte.</p>
       </div>
 
       <a class="lum-pill-btn lum-pill-btn--plein" href="/brunch/">
@@ -82,7 +83,14 @@ import Entete from '../../../components/Entete.astro';
     document.querySelector<HTMLElement>(`[data-${cle}]`)!.textContent = valeur;
   };
 
-  const orderId = new URLSearchParams(location.search).get('orderId');
+  const lireSecours = () => {
+    try {
+      return sessionStorage.getItem('lum-carte-cadeau-commande');
+    } catch {
+      return null;
+    }
+  };
+  const orderId = new URLSearchParams(location.search).get('orderId') ?? lireSecours();
 
   async function confirmer(essai = 1): Promise<void> {
     let resultat: Reponse;
