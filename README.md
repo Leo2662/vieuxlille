@@ -196,13 +196,19 @@ Vercel** dans `api/` (hors Astro, qui reste statique).
 | `MAIL_FROM` | facultatif, par défaut `LÜM Vieux-Lille <cadeau@lumvieuxlille.fr>` (domaine à vérifier chez Resend) |
 | `MAIL_REPLY_TO`, `CARTE_CADEAU_COPIE` | facultatifs : remplacent lum.vieuxlille@gmail.com comme adresse de réponse et destinataire des notifications (`api/_lib/config.ts`) |
 
-### ⚠️ GitHub Pages ne sert pas `api/`
+### Hébergement : deux projets Vercel
 
-La production (`main`) est publiée par GitHub Pages, qui ne sert que des
-fichiers statiques : sur lumvieuxlille.fr, le formulaire n'aurait pas de
-fonction à appeler. Avant de fusionner dans `main`, il faut soit passer la
-production sur Vercel, soit faire pointer le formulaire vers les fonctions
-hébergées sur Vercel.
+Le dépôt alimente deux projets Vercel, chacun limité à sa branche par sa
+commande d'ignore (Settings → Git → Ignored Build Step) :
+
+| Projet | Branche | Adresse | Square |
+|---|---|---|---|
+| `lumvieuxlille` | `main` | https://lumvieuxlille.fr (`www` redirige) | production |
+| `vieuxlille` | `dev` | https://vieuxlille.vercel.app | bac à sable |
+
+Les variables d'environnement sont propres à chaque projet. Le workflow
+GitHub Pages (`.github/workflows/deploy.yml`) et `public/CNAME` datent de
+l'hébergement précédent : à retirer une fois le DNS basculé sur Vercel.
 
 ## Langues
 
