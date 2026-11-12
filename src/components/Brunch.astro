@@ -134,6 +134,7 @@ const textes = {
         },
       ],
       faqTitre: 'Questions fréquentes',
+      faqResume: 'questions',
       faq: [
         {
           question: "Comment j'offre la carte cadeau ?",
@@ -255,6 +256,7 @@ const textes = {
         },
       ],
       faqTitre: 'Frequently asked questions',
+      faqResume: 'questions',
       faq: [
         {
           question: 'How do I give the gift card?',
@@ -456,21 +458,33 @@ const faqJsonLd = {
         </details>
       </div>
 
-      <h3 class="groupe">{textes.cadeau.faqTitre}</h3>
-      <div class="accordeon">
-        {
-          textes.cadeau.faq.map((q) => (
-            <details class="pli" name="faq">
-              <summary>
-                <span class="pli__titre pli__titre--court">{q.question}</span>
-                <span class="pli__signe" aria-hidden="true" />
-              </summary>
-              <div class="pli__contenu">
-                <p class="pli__texte">{q.reponse}</p>
-              </div>
-            </details>
-          ))
-        }
+      <div class="accordeon groupe-plie groupe-plie--suite">
+        <details class="pli">
+          <summary>
+            <span class="pli__titre">{textes.cadeau.faqTitre}</span>
+            <span class="pli__resume">
+              {textes.cadeau.faq.length} {textes.cadeau.faqResume}
+            </span>
+            <span class="pli__signe" aria-hidden="true" />
+          </summary>
+          <div class="pli__contenu">
+            <div class="accordeon accordeon--imbrique">
+              {
+                textes.cadeau.faq.map((q) => (
+                  <details class="pli" name="faq">
+                    <summary>
+                      <span class="pli__titre pli__titre--court">{q.question}</span>
+                      <span class="pli__signe" aria-hidden="true" />
+                    </summary>
+                    <div class="pli__contenu">
+                      <p class="pli__texte">{q.reponse}</p>
+                    </div>
+                  </details>
+                ))
+              }
+            </div>
+          </div>
+        </details>
       </div>
     </section>
 
@@ -913,21 +927,15 @@ const faqJsonLd = {
     margin: 0 auto 18px;
   }
 
-  /* Intertitres des deux accordéons de la carte cadeau. */
-  .groupe {
-    margin: 38px 0 6px;
-    font-size: clamp(1.15rem, 3vw, 1.4rem);
-    text-wrap: balance;
-  }
-
-  .groupe + .accordeon .pli:first-child {
-    border-top: 2px solid rgba(196, 113, 74, 0.35);
-  }
-
-  /* Le pli qui regroupe les occasions, entre deux filets. */
+  /* Les plis qui regroupent occasions et questions, entre filets. */
   .groupe-plie {
     margin-top: 32px;
     border-block: 2px solid rgba(196, 113, 74, 0.35);
+  }
+
+  .groupe-plie--suite {
+    margin-top: 0;
+    border-top: 0;
   }
 
   .groupe-plie > .pli > summary .pli__titre {
