@@ -27,6 +27,22 @@
   --shadow: 0 4px 20px rgba(148, 72, 38, 0.16);
   --shadow-hover: 0 10px 32px rgba(148, 72, 38, 0.28);
 
+  /* Élévation des pages de la carte cadeau : une ombre de contact et une
+     ombre diffuse, teinte brun très foncé. */
+  --shadow-color: 18deg 60% 9%;
+  --elevation-1:
+    0 1px 2px hsl(var(--shadow-color) / 0.2),
+    0 3px 6px hsl(var(--shadow-color) / 0.16);
+  --elevation-2:
+    0 1px 2px hsl(var(--shadow-color) / 0.16),
+    0 4px 8px hsl(var(--shadow-color) / 0.18),
+    0 10px 22px hsl(var(--shadow-color) / 0.2);
+  --elevation-3:
+    0 2px 4px hsl(var(--shadow-color) / 0.14),
+    0 8px 16px hsl(var(--shadow-color) / 0.18),
+    0 22px 44px hsl(var(--shadow-color) / 0.26);
+  --edge-light: inset 0 1px 0 rgb(255 255 255 / 0.7);
+
   /* --- Rythme --------------------------------------------------------- */
   --page-max: 1200px;
   --gutter: 24px;
@@ -103,6 +119,19 @@ img {
 .lum-pill-btn:hover {
   background: var(--terracotta);
   color: var(--cream);
+}
+
+/* Bouton plein : l'action principale d'un bloc. */
+.lum-pill-btn--plein {
+  background: var(--terracotta);
+  color: var(--cream);
+  box-shadow: var(--elevation-1);
+}
+
+.lum-pill-btn--plein:hover,
+.lum-pill-btn--plein:focus-visible {
+  background: var(--terracotta-dark);
+  border-color: var(--terracotta-dark);
 }
 
 .lum-pill-btn .arrow {
