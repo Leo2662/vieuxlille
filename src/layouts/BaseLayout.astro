@@ -107,6 +107,7 @@ const jsonLd = {
     {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
     <title>{title}</title>
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
+    <slot name="head" />
   </head>
   <body>
     <slot />

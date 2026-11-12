@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ChoixLangue from './ChoixLangue.astro';
 import { chemins, type Langue } from '../i18n';
+import { QUANTITE_MAX } from '../../api/_lib/config.ts';
 
 interface Props {
   langue: Langue;
@@ -91,16 +92,72 @@ const textes = {
     lieuxIntro:
       'Chez LÜM, au 94 rue Saint-André, le brunch se savoure en terrasse, en intérieur ou dans notre cave voûtée naturellement climatisée.',
     espaces: [
-      { titre: 'En terrasse', texte: 'Pour bruncher dehors.', trace: TRACES.terrasse },
-      { titre: 'En intérieur', texte: 'Dans la salle du coffee shop.', trace: TRACES.interieur },
-      { titre: 'En cave voûtée', texte: 'Naturellement climatisée.', trace: TRACES.cave },
+      { titre: 'En terrasse', texte: 'Pour bruncher dehors, rue Saint-André, au cœur du Vieux-Lille.', trace: TRACES.terrasse },
+      { titre: 'En intérieur', texte: 'Dans la salle du coffee shop, à deux pas du comptoir.', trace: TRACES.interieur },
+      {
+        titre: 'En cave voûtée',
+        texte: 'Notre cave voûtée est naturellement climatisée : on y brunche au frais, même en plein été.',
+        trace: TRACES.cave,
+      },
     ],
+    // Les intitulés des occasions portent les recherches visées
+    // (« offrir un brunch pour Noël », « carte cadeau brunch »…).
     cadeau: {
-      titre: 'Offrir le brunch',
-      texte:
-        'Une carte cadeau pour un ou plusieurs brunchs, avec ton petit mot dessus. Envoyée par e-mail en PDF, à imprimer ou à transférer, et valable un an.',
-      bouton: 'Offrir le brunch',
+      titre: 'Offrir un brunch',
+      bouton: 'Offrir la carte',
       precision: '',
+      occasionsTitre: 'Une carte cadeau brunch pour chaque occasion',
+      occasions: [
+        {
+          titre: 'Offrir un brunch pour Noël',
+          texte:
+            "Une idée cadeau de Noël qui se savoure : la carte arrive tout de suite par e-mail, en PDF, même commandée le 24 au soir. À glisser sous le sapin, imprimée ou transférée, pour un brunch dans le Vieux-Lille quand on veut dans l'année.",
+        },
+        {
+          titre: 'Offrir un brunch pour un anniversaire',
+          texte: `Un cadeau d'anniversaire à partager : offre un brunch pour deux, ou pour toute la bande (jusqu'à ${QUANTITE_MAX} sur une même carte), avec ton petit mot imprimé dessus.`,
+        },
+        {
+          titre: 'Offrir un brunch pour la Saint-Valentin',
+          texte:
+            'Deux brunchs, un mot doux sur la carte, et un week-end à deux au cœur du Vieux-Lille : en terrasse, en salle ou dans notre cave voûtée.',
+        },
+        {
+          titre: 'Offrir un brunch pour la fête des mères ou des pères',
+          texte: "Un week-end en famille autour d'une bonne table : choisis le nombre de brunchs, chacun compose le sien.",
+        },
+        {
+          titre: 'Offrir un brunch pour dire merci',
+          texte:
+            "Pour une collègue qui s'en va, un voisin serviable ou une nounou adorée : un cadeau simple, qui fait toujours plaisir.",
+        },
+      ],
+      faqTitre: 'Questions fréquentes',
+      faq: [
+        {
+          question: "Comment j'offre la carte cadeau ?",
+          reponse:
+            "Clique sur « Offrir la carte », choisis le nombre de brunchs, ajoute le prénom de la personne et ton petit mot, puis paie en ligne par carte bancaire, en toute sécurité avec Square. Tu reçois aussitôt la carte cadeau en PDF par e-mail : imprime-la ou transfère-la à la personne.",
+        },
+        {
+          question: 'Quelle est la date de validité ?',
+          reponse: "La carte est valable un an à partir de l'achat. La date limite est écrite dessus.",
+        },
+        {
+          question: 'Comment utiliser la carte ?',
+          reponse:
+            'Viens le week-end, entre 11h et 15h30, au 94 rue Saint-André, et montre la carte au comptoir, imprimée ou sur ton téléphone. Pense à réserver : 06 42 99 62 42.',
+        },
+        {
+          question: 'Combien coûte une carte cadeau brunch ?',
+          reponse: `25 € par brunch, de 1 à ${QUANTITE_MAX} brunchs sur une même carte. Chaque brunch comprend une douceur salée, une douceur sucrée, une boisson chaude et une boisson froide.`,
+        },
+        {
+          question: "Je n'ai pas reçu l'e-mail, que faire ?",
+          reponse:
+            'Regarde dans tes courriers indésirables. Toujours rien ? Appelle-nous au 06 42 99 62 42 et on te la renvoie.',
+        },
+      ],
     },
     note: 'Prix en euros, taxes comprises.',
   },
@@ -158,23 +215,87 @@ const textes = {
     lieuxIntro:
       'At LÜM, 94 rue Saint-André, enjoy your brunch on the terrace, indoors or in our naturally cool vaulted cellar.',
     espaces: [
-      { titre: 'On the terrace', texte: 'Brunch outdoors.', trace: TRACES.terrasse },
-      { titre: 'Indoors', texte: 'Inside the coffee shop.', trace: TRACES.interieur },
-      { titre: 'In the vaulted cellar', texte: 'Naturally cool.', trace: TRACES.cave },
+      { titre: 'On the terrace', texte: 'Brunch outdoors, on rue Saint-André, in the heart of Vieux-Lille.', trace: TRACES.terrasse },
+      { titre: 'Indoors', texte: "In the coffee shop's dining room, right by the counter.", trace: TRACES.interieur },
+      {
+        titre: 'In the vaulted cellar',
+        texte: 'Our vaulted cellar is naturally cool: the perfect spot to brunch, even in the height of summer.',
+        trace: TRACES.cave,
+      },
     ],
     cadeau: {
       titre: 'Give brunch as a gift',
-      texte:
-        'A gift card for one or more brunches, with your own message on it. Sent by e-mail as a PDF to print or forward, and valid for one year.',
-      bouton: 'Give a brunch',
+      bouton: 'Give the gift card',
       precision: 'Order form in French',
+      occasionsTitre: 'A brunch gift card for every occasion',
+      occasions: [
+        {
+          titre: 'Give brunch for Christmas',
+          texte:
+            'A Christmas gift you can taste: the card arrives instantly by e-mail as a PDF, even if you order on Christmas Eve. Print it or forward it, for a brunch in Vieux-Lille any time within the year.',
+        },
+        {
+          titre: 'Give brunch for a birthday',
+          texte: `A birthday gift to share: give brunch for two, or for the whole gang (up to ${QUANTITE_MAX} on one card), with your own message printed on it.`,
+        },
+        {
+          titre: "Give brunch for Valentine's Day",
+          texte: 'Two brunches, a sweet note on the card, and a weekend for two in the heart of Vieux-Lille.',
+        },
+        {
+          titre: "Give brunch for Mother's or Father's Day",
+          texte: 'A family weekend around a good table: choose how many brunches, and everyone builds their own.',
+        },
+        {
+          titre: 'Give brunch to say thank you',
+          texte:
+            "For a colleague who's leaving, a helpful neighbour or a much-loved nanny: a simple gift that always goes down well.",
+        },
+      ],
+      faqTitre: 'Frequently asked questions',
+      faq: [
+        {
+          question: 'How do I give the gift card?',
+          reponse:
+            "Click “Give the gift card”, choose the number of brunches, add the recipient's name and your message, then pay online by card, securely with Square. The gift card arrives straight away by e-mail as a PDF: print it or forward it. The order form is in French.",
+        },
+        {
+          question: 'How long is it valid?',
+          reponse: 'One year from purchase. The expiry date is printed on the card.',
+        },
+        {
+          question: 'How do I use it?',
+          reponse:
+            'Come at the weekend, between 11am and 3:30pm, to 94 rue Saint-André, and show the card at the counter, printed or on your phone. Booking recommended: +33 6 42 99 62 42.',
+        },
+        {
+          question: 'How much does a brunch gift card cost?',
+          reponse: `€25 per brunch, from 1 to ${QUANTITE_MAX} brunches on one card. Each brunch includes a savoury treat, a sweet treat, a hot drink and a cold drink.`,
+        },
+        {
+          question: "I didn't get the e-mail, what now?",
+          reponse: "Check your spam folder. Still nothing? Call us on +33 6 42 99 62 42 and we'll resend it.",
+        },
+      ],
     },
     note: 'Prices in euros, taxes included.',
   },
 }[langue];
+
+// La FAQ de la carte cadeau, redite pour les moteurs de recherche.
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: textes.cadeau.faq.map((q) => ({
+    '@type': 'Question',
+    name: q.question,
+    acceptedAnswer: { '@type': 'Answer', text: q.reponse },
+  })),
+};
 ---
 
 <BaseLayout title={textes.titre} description={textes.description} langue={langue} chemins={adresses}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} is:inline />
   <div class="page">
     <header class="entete">
       <a class="logo" href={accueil}>
@@ -297,12 +418,44 @@ const textes = {
         />
       </svg>
 
-      <p class="cadeau__texte">{textes.cadeau.texte}</p>
-
       <a class="lum-pill-btn" href={CARTE_CADEAU} hreflang={langue === 'fr' ? undefined : 'fr'}>
         {textes.cadeau.bouton} <span class="arrow">→</span>
       </a>
       {textes.cadeau.precision && <p class="cadeau__precision">{textes.cadeau.precision}</p>}
+
+      <h3 class="groupe">{textes.cadeau.occasionsTitre}</h3>
+      <div class="accordeon">
+        {
+          textes.cadeau.occasions.map((occasion) => (
+            <details class="pli" name="occasions">
+              <summary>
+                <span class="pli__titre pli__titre--court">{occasion.titre}</span>
+                <span class="pli__signe" aria-hidden="true" />
+              </summary>
+              <div class="pli__contenu">
+                <p class="pli__texte">{occasion.texte}</p>
+              </div>
+            </details>
+          ))
+        }
+      </div>
+
+      <h3 class="groupe">{textes.cadeau.faqTitre}</h3>
+      <div class="accordeon">
+        {
+          textes.cadeau.faq.map((q) => (
+            <details class="pli" name="faq">
+              <summary>
+                <span class="pli__titre pli__titre--court">{q.question}</span>
+                <span class="pli__signe" aria-hidden="true" />
+              </summary>
+              <div class="pli__contenu">
+                <p class="pli__texte">{q.reponse}</p>
+              </div>
+            </details>
+          ))
+        }
+      </div>
     </section>
 
     <section class="bloc lieux">
@@ -312,26 +465,31 @@ const textes = {
 
       <p class="lieux__intro">{textes.lieuxIntro}</p>
 
-      <ul class="espaces">
+      <div class="accordeon">
         {
           textes.espaces.map((espace) => (
-            <li class="espace">
-              <svg viewBox="0 0 48 48" aria-hidden="true">
-                <path
-                  d={espace.trace}
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2.6"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-              <h3>{espace.titre}</h3>
-              <p>{espace.texte}</p>
-            </li>
+            <details class="pli" name="espaces">
+              <summary>
+                <svg class="pli__icone" viewBox="0 0 48 48" aria-hidden="true">
+                  <path
+                    d={espace.trace}
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <span class="pli__titre">{espace.titre}</span>
+                <span class="pli__signe" aria-hidden="true" />
+              </summary>
+              <div class="pli__contenu">
+                <p class="pli__texte">{espace.texte}</p>
+              </div>
+            </details>
           ))
         }
-      </ul>
+      </div>
     </section>
 
     <p class="note">{textes.note}</p>
@@ -592,6 +750,22 @@ const textes = {
     text-transform: uppercase;
   }
 
+  /* Intitulés longs (occasions, questions) : en texte gras plutôt qu'en capitales. */
+  .pli__titre--court {
+    font-family: var(--font-body);
+    font-weight: 800;
+    font-size: 1.05rem;
+    line-height: 1.35;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  .pli__icone {
+    flex: none;
+    width: 40px;
+    height: 40px;
+  }
+
   .pli__resume {
     font-family: var(--font-script);
     font-size: 1.25rem;
@@ -659,6 +833,13 @@ const textes = {
 
   .pli__texte {
     margin-bottom: 14px;
+  }
+
+  .pli__texte:last-child {
+    margin-bottom: 0;
+  }
+
+  .pli__texte {
     font-weight: 700;
     font-size: 1.02rem;
     line-height: 1.6;
@@ -713,16 +894,18 @@ const textes = {
     display: block;
     width: 64px;
     height: 64px;
-    margin: 0 auto 14px;
+    margin: 0 auto 18px;
   }
 
-  .cadeau__texte {
-    max-width: 50ch;
-    margin: 0 auto 24px;
-    font-weight: 700;
-    font-size: 1.02rem;
-    line-height: 1.6;
+  /* Intertitres des deux accordéons de la carte cadeau. */
+  .groupe {
+    margin: 38px 0 6px;
+    font-size: clamp(1.15rem, 3vw, 1.4rem);
     text-wrap: balance;
+  }
+
+  .groupe + .accordeon .pli:first-child {
+    border-top: 2px solid rgba(196, 113, 74, 0.35);
   }
 
   .cadeau__precision {
@@ -740,45 +923,11 @@ const textes = {
 
   .lieux__intro {
     max-width: 52ch;
-    margin: 0 auto 30px;
+    margin: 0 auto 18px;
     font-weight: 700;
     font-size: 1.02rem;
     line-height: 1.6;
     text-wrap: balance;
-  }
-
-  .espaces {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 22px;
-  }
-
-  .espace {
-    padding: 22px 16px 24px;
-    border: 3px solid var(--terracotta-light);
-    border-radius: var(--radius);
-  }
-
-  .espace svg {
-    display: block;
-    width: 56px;
-    height: 56px;
-    margin: 0 auto 10px;
-  }
-
-  .espace h3 {
-    font-size: 1.3rem;
-  }
-
-  .espace p {
-    margin-top: 4px;
-    font-weight: 700;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    color: var(--brown);
   }
 
   .note {
@@ -826,9 +975,5 @@ const textes = {
       font-size: 1.1rem;
     }
 
-    .espaces {
-      grid-template-columns: 1fr;
-      gap: 14px;
-    }
   }
 </style>
