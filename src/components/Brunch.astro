@@ -107,6 +107,7 @@ const textes = {
       bouton: 'Offrir la carte',
       precision: '',
       occasionsTitre: 'Une carte cadeau brunch pour chaque occasion',
+      occasionsResume: 'idées',
       occasions: [
         {
           titre: 'Offrir un brunch pour Noël',
@@ -228,6 +229,7 @@ const textes = {
       bouton: 'Give the gift card',
       precision: 'Order form in French',
       occasionsTitre: 'A brunch gift card for every occasion',
+      occasionsResume: 'ideas',
       occasions: [
         {
           titre: 'Give brunch for Christmas',
@@ -423,21 +425,35 @@ const faqJsonLd = {
       </a>
       {textes.cadeau.precision && <p class="cadeau__precision">{textes.cadeau.precision}</p>}
 
-      <h3 class="groupe">{textes.cadeau.occasionsTitre}</h3>
-      <div class="accordeon">
-        {
-          textes.cadeau.occasions.map((occasion) => (
-            <details class="pli" name="occasions">
-              <summary>
-                <span class="pli__titre pli__titre--court">{occasion.titre}</span>
-                <span class="pli__signe" aria-hidden="true" />
-              </summary>
-              <div class="pli__contenu">
-                <p class="pli__texte">{occasion.texte}</p>
-              </div>
-            </details>
-          ))
-        }
+      <!-- Les occasions sont repliées dans un pli de plus : la section reste
+           courte, et leur texte reste dans la page pour les moteurs. -->
+      <div class="accordeon groupe-plie">
+        <details class="pli">
+          <summary>
+            <span class="pli__titre">{textes.cadeau.occasionsTitre}</span>
+            <span class="pli__resume">
+              {textes.cadeau.occasions.length} {textes.cadeau.occasionsResume}
+            </span>
+            <span class="pli__signe" aria-hidden="true" />
+          </summary>
+          <div class="pli__contenu">
+            <div class="accordeon accordeon--imbrique">
+              {
+                textes.cadeau.occasions.map((occasion) => (
+                  <details class="pli" name="occasions">
+                    <summary>
+                      <span class="pli__titre pli__titre--court">{occasion.titre}</span>
+                      <span class="pli__signe" aria-hidden="true" />
+                    </summary>
+                    <div class="pli__contenu">
+                      <p class="pli__texte">{occasion.texte}</p>
+                    </div>
+                  </details>
+                ))
+              }
+            </div>
+          </div>
+        </details>
       </div>
 
       <h3 class="groupe">{textes.cadeau.faqTitre}</h3>
@@ -803,12 +819,12 @@ const faqJsonLd = {
     transform: rotate(90deg);
   }
 
-  .pli[open] .pli__signe::after {
+  .pli[open] > summary .pli__signe::after {
     transform: rotate(0deg);
   }
 
   .pli summary:hover .pli__signe,
-  .pli[open] .pli__signe {
+  .pli[open] > summary .pli__signe {
     background: var(--terracotta);
     border-color: var(--terracotta);
     color: var(--cream);
@@ -906,6 +922,26 @@ const faqJsonLd = {
 
   .groupe + .accordeon .pli:first-child {
     border-top: 2px solid rgba(196, 113, 74, 0.35);
+  }
+
+  /* Le pli qui regroupe les occasions, entre deux filets. */
+  .groupe-plie {
+    margin-top: 32px;
+    border-block: 2px solid rgba(196, 113, 74, 0.35);
+  }
+
+  .groupe-plie > .pli > summary .pli__titre {
+    font-size: clamp(1.05rem, 2.6vw, 1.3rem);
+  }
+
+  /* Les occasions, en retrait sous leur titre. */
+  .accordeon--imbrique {
+    padding-left: 14px;
+    border-left: 3px solid var(--terracotta-light);
+  }
+
+  .accordeon--imbrique .pli summary {
+    padding-block: 13px;
   }
 
   .cadeau__precision {
