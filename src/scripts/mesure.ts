@@ -3,8 +3,9 @@
 // - Tout passe par window.dataLayer (la file que lit gtag.js, et que lirait
 //   Google Tag Manager si on en ajoutait un).
 // - Consentement d'abord (CNIL) : gtag.js n'est chargé qu'après « Accepter ».
-//   Les événements poussés avant restent dans la file et partent à ce
-//   moment-là ; après « Refuser », rien ne quitte le navigateur.
+//   Les événements antérieurs à l'accord ne sont pas envoyés (la page vue,
+//   si : au moment de l'accord) ; après « Refuser », rien ne quitte le
+//   navigateur.
 // - GA ne se charge que sur le domaine de prod, et seulement si PUBLIC_GA_ID
 //   est défini. Ailleurs (dev, local), chaque événement s'affiche dans la
 //   console : c'est là qu'on vérifie le plan de marquage.
@@ -38,17 +39,6 @@ window.gtag = function gtag() {
   window.dataLayer.push(arguments);
 };
 
-// Mode « consentement d'abord » : tout est refusé tant que le visiteur n'a
-// rien dit. Aucune publicité : les signaux publicitaires restent refusés.
-window.gtag('consent', 'default', {
-  ad_storage: 'denied',
-  ad_user_data: 'denied',
-  ad_personalization: 'denied',
-  analytics_storage: 'denied',
-});
-window.gtag('js', new Date());
-if (GA_ID) window.gtag('config', GA_ID);
-
 function lireChoix(): string | null {
   try {
     return localStorage.getItem(CLE_CONSENTEMENT);
@@ -57,11 +47,24 @@ function lireChoix(): string | null {
   }
 }
 
+// Consentement d'abord : gtag.js n'est chargé qu'après « Accepter », donc
+// rien ne part avant. L'état de consentement est déclaré une seule fois, au
+// chargement, avant la configuration : une mise à jour « granted » poussée
+// après un défaut « denied » ne s'applique pas à la première page vue (testé),
+// ce qui la ferait partir sans cookie et perdre la source de la visite.
+// Aucune publicité : les signaux publicitaires restent refusés.
 let charge = false;
 function chargerGa() {
   if (charge || !GA_ID || !enProd) return;
   charge = true;
-  window.gtag('consent', 'update', { analytics_storage: 'granted' });
+  window.gtag('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'granted',
+  });
+  window.gtag('js', new Date());
+  window.gtag('config', GA_ID);
   const script = document.createElement('script');
   script.async = true;
   script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(GA_ID)}`;
@@ -125,6 +128,7 @@ document.addEventListener('click', (e) => {
   if ((cible as HTMLElement).dataset.suiviArticle === 'carte-cadeau') {
     parametres.items = [articleCarteCadeau()];
   }
+
   suivre(nom, parametres);
 });
 
