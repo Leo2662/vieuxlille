@@ -368,7 +368,14 @@ const faqJsonLd = {
         {textes.horaires.map((morceau) => <span>{morceau}</span>)}
       </p>
 
-      <a class="lum-pill-btn" href={RESERVATION} target="_blank" rel="noopener noreferrer">
+      <a
+        class="lum-pill-btn"
+        href={RESERVATION}
+        target="_blank"
+        rel="noopener noreferrer"
+        data-suivi="clic_reservation"
+        data-suivi-emplacement="brunch"
+      >
         {textes.reserver} <span class="arrow">→</span>
       </a>
     </section>
@@ -422,7 +429,14 @@ const faqJsonLd = {
         />
       </svg>
 
-      <a class="lum-pill-btn" href={CARTE_CADEAU} hreflang={langue === 'fr' ? undefined : 'fr'}>
+      <a
+        class="lum-pill-btn"
+        href={CARTE_CADEAU}
+        hreflang={langue === 'fr' ? undefined : 'fr'}
+        data-suivi="select_item"
+        data-suivi-item-list-name="Page brunch"
+        data-suivi-article="carte-cadeau"
+      >
         {textes.cadeau.bouton} <span class="arrow">→</span>
       </a>
       {textes.cadeau.precision && <p class="cadeau__precision">{textes.cadeau.precision}</p>}

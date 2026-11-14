@@ -1,0 +1,184 @@
+---
+// Bandeau de consentement à la mesure d'audience (Google Analytics).
+// « Refuser » est aussi visible et aussi facile que « Accepter » (CNIL), et
+// le lien « Cookies » en bas de page permet de changer d'avis à tout moment.
+// Le choix est appliqué par src/scripts/mesure.ts.
+import type { Langue } from '../i18n';
+
+interface Props {
+  langue: Langue;
+}
+
+const { langue } = Astro.props;
+
+// Sans identifiant GA, rien à consentir : ni bandeau ni lien (les
+// événements restent visibles dans la console, voir src/scripts/mesure.ts).
+const actif = Boolean(import.meta.env.PUBLIC_GA_ID);
+
+const t = {
+  fr: {
+    titre: 'Cookies',
+    texte:
+      'On aimerait mesurer la fréquentation du site avec Google Analytics (pages vues, clics, achats de cartes cadeaux), sans aucune publicité. Tu es d’accord ?',
+    refuser: 'Refuser',
+    accepter: 'Accepter',
+    lien: 'Cookies',
+  },
+  en: {
+    titre: 'Cookies',
+    texte:
+      'We’d like to measure site traffic with Google Analytics (page views, clicks, gift card purchases), with no advertising at all. Is that OK?',
+    refuser: 'Decline',
+    accepter: 'Accept',
+    lien: 'Cookies',
+  },
+}[langue];
+---
+
+{
+  actif && (
+    <>
+      <div class="cookies" data-cookies role="region" aria-label={t.titre} hidden>
+        <p class="cookies__texte">{t.texte}</p>
+        <div class="cookies__boutons">
+          <button type="button" class="cookies__bouton" data-choix="non">
+            {t.refuser}
+          </button>
+          <button type="button" class="cookies__bouton" data-choix="oui">
+            {t.accepter}
+          </button>
+        </div>
+      </div>
+
+      <p class="cookies-lien">
+        <button type="button" data-cookies-ouvrir>
+          {t.lien}
+        </button>
+      </p>
+    </>
+  )
+}
+
+<script>
+  import '../scripts/mesure.ts';
+
+  const bandeau = document.querySelector<HTMLElement>('[data-cookies]');
+
+  let choix: string | null = null;
+  try {
+    choix = localStorage.getItem('lum-consentement');
+  } catch {
+    // stockage indisponible : on redemande
+  }
+  if (bandeau && !choix) bandeau.hidden = false;
+
+  bandeau?.querySelectorAll<HTMLButtonElement>('[data-choix]').forEach((bouton) => {
+    bouton.addEventListener('click', () => {
+      window.lumConsentement?.(bouton.dataset.choix as 'oui' | 'non');
+      bandeau.hidden = true;
+    });
+  });
+
+  document.querySelector('[data-cookies-ouvrir]')?.addEventListener('click', () => {
+    if (!bandeau) return;
+    bandeau.hidden = false;
+    bandeau.querySelector<HTMLButtonElement>('[data-choix="oui"]')?.focus();
+  });
+</script>
+
+<style>
+  .cookies {
+    position: fixed;
+    z-index: 1000;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 18px 20px;
+    border-radius: var(--radius);
+    background: var(--cream);
+    color: var(--terracotta);
+    box-shadow: 0 10px 32px rgba(44, 24, 16, 0.3);
+    animation: monte 0.35s ease both;
+  }
+
+  .cookies[hidden] {
+    display: none;
+  }
+
+  .cookies__texte {
+    font-weight: 700;
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+
+  /* Deux boutons identiques : refuser n'est pas plus discret qu'accepter. */
+  .cookies__boutons {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .cookies__bouton {
+    flex: 1;
+    padding: 10px 16px;
+    border: 2.5px solid var(--terracotta);
+    border-radius: 999px;
+    background: var(--terracotta);
+    color: var(--cream);
+    font: inherit;
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .cookies__bouton:hover,
+  .cookies__bouton:focus-visible {
+    background: var(--terracotta-dark);
+    border-color: var(--terracotta-dark);
+  }
+
+  .cookies-lien {
+    padding: 0 16px 24px;
+    text-align: center;
+  }
+
+  .cookies-lien button {
+    border: 0;
+    background: none;
+    color: var(--cream);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 700;
+    opacity: 0.7;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .cookies-lien button:hover,
+  .cookies-lien button:focus-visible {
+    opacity: 1;
+  }
+
+  @keyframes monte {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cookies {
+      animation: none;
+    }
+  }
+</style>
