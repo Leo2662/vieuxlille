@@ -70,8 +70,10 @@ import Entete from '../../../components/Entete.astro';
 </BaseLayout>
 
 <script>
+  import { DEVISE, articleCarteCadeau, suivre } from '../../../scripts/mesure.ts';
+
   type Reponse =
-    | { statut: 'envoyee'; email: string; code: string; pour: string }
+    | { statut: 'envoyee'; email: string; code: string; pour: string; quantite: number; montant: number }
     | { statut: 'en-attente' | 'erreur' };
 
   const montrer = (etat: string) => {
@@ -110,12 +112,33 @@ import Entete from '../../../components/Entete.astro';
       remplir('code', resultat.code);
       remplir('pour', resultat.pour ? ` pour ${resultat.pour}` : '');
       montrer('envoyee');
+      achat(resultat);
     } else if (essai < 6) {
       // Square peut mettre quelques secondes à valider : on réessaie.
       setTimeout(() => confirmer(essai + 1), 2500);
     } else {
       montrer(resultat.statut === 'erreur' ? 'erreur' : 'en-attente');
+      suivre(resultat.statut === 'erreur' ? 'erreur_confirmation' : 'paiement_en_attente');
     }
+  }
+
+  // L'achat ne compte qu'une fois, même si la page est rechargée. Le code
+  // de la carte sert d'identifiant de transaction : c'est lui qu'on retrouve
+  // dans Square et dans le mail de l'équipe.
+  function achat(r: Extract<Reponse, { statut: 'envoyee' }>) {
+    const cle = `lum-achat-${r.code}`;
+    try {
+      if (localStorage.getItem(cle)) return;
+      localStorage.setItem(cle, '1');
+    } catch {
+      // stockage indisponible : GA dédoublonne de toute façon sur transaction_id
+    }
+    suivre('purchase', {
+      transaction_id: r.code,
+      currency: DEVISE,
+      value: r.montant,
+      items: [articleCarteCadeau(r.quantite)],
+    });
   }
 
   if (orderId) confirmer();
