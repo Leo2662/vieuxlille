@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ChoixLangue from './ChoixLangue.astro';
 import { chemins, type Langue } from '../i18n';
-import { QUANTITE_MAX } from '../../api/_lib/config.ts';
+import { faq, occasions } from '../data/carte-cadeau.ts';
 
 interface Props {
   langue: Langue;
@@ -30,8 +30,8 @@ const TRACES = {
 const CADEAU =
   'M9 21h30v21H9z M6 14h36v7H6z M24 14v28 M24 14c-2.5-6.5-11-9-11-3.5 0 3.5 6 3.5 11 3.5 M24 14c2.5-6.5 11-9 11-3.5 0 3.5-6 3.5-11 3.5';
 
-// La commande d'une carte cadeau n'existe qu'en français (comme l'afterwork).
-const CARTE_CADEAU = '/brunch/carte-cadeau/';
+// La commande d'une carte cadeau, dans la langue de la page.
+const CARTE_CADEAU = chemins('brunch/carte-cadeau/')[langue];
 
 // Une formule à prix unique : on choisit une option dans chaque bloc.
 // Prix, horaires, options et espaces sont redits dans public/llms.txt : à
@@ -108,58 +108,10 @@ const textes = {
       precision: '',
       occasionsTitre: 'Une carte cadeau brunch pour chaque occasion',
       occasionsResume: 'idées',
-      occasions: [
-        {
-          titre: 'Offrir un brunch pour Noël',
-          texte:
-            "Une idée cadeau de Noël qui se savoure : la carte arrive tout de suite par e-mail, en PDF, même commandée le 24 au soir. À glisser sous le sapin, imprimée ou transférée, pour un brunch dans le Vieux-Lille quand on veut dans l'année.",
-        },
-        {
-          titre: 'Offrir un brunch pour un anniversaire',
-          texte: `Un cadeau d'anniversaire à partager : offre un brunch pour deux, ou pour toute la bande (jusqu'à ${QUANTITE_MAX} sur une même carte), avec ton petit mot imprimé dessus.`,
-        },
-        {
-          titre: 'Offrir un brunch pour la Saint-Valentin',
-          texte:
-            'Deux brunchs, un mot doux sur la carte, et un week-end à deux au cœur du Vieux-Lille : en terrasse, en salle ou dans notre cave voûtée.',
-        },
-        {
-          titre: 'Offrir un brunch pour la fête des mères ou des pères',
-          texte: "Un week-end en famille autour d'une bonne table : choisis le nombre de brunchs, chacun compose le sien.",
-        },
-        {
-          titre: 'Offrir un brunch pour dire merci',
-          texte:
-            "Pour une collègue qui s'en va, un voisin serviable ou une nounou adorée : un cadeau simple, qui fait toujours plaisir.",
-        },
-      ],
+      occasions: occasions.fr,
       faqTitre: 'Questions fréquentes',
       faqResume: 'questions',
-      faq: [
-        {
-          question: "Comment j'offre la carte cadeau ?",
-          reponse:
-            "Clique sur « Offrir la carte », choisis le nombre de brunchs, ajoute le prénom de la personne et ton petit mot, puis paie en ligne par carte bancaire, en toute sécurité avec Square. Tu reçois aussitôt la carte cadeau en PDF par e-mail : imprime-la ou transfère-la à la personne.",
-        },
-        {
-          question: 'Quelle est la date de validité ?',
-          reponse: "La carte est valable un an à partir de l'achat. La date limite est écrite dessus.",
-        },
-        {
-          question: 'Comment utiliser la carte ?',
-          reponse:
-            'Viens le week-end, entre 11h et 15h30, au 94 rue Saint-André, et montre la carte au comptoir, imprimée ou sur ton téléphone. Pense à réserver : 06 42 99 62 42.',
-        },
-        {
-          question: 'Combien coûte une carte cadeau brunch ?',
-          reponse: `25 € par brunch, de 1 à ${QUANTITE_MAX} brunchs sur une même carte. Chaque brunch comprend une douceur salée, une douceur sucrée, une boisson chaude et une boisson froide.`,
-        },
-        {
-          question: "Je n'ai pas reçu l'e-mail, que faire ?",
-          reponse:
-            'Regarde dans tes courriers indésirables. Toujours rien ? Appelle-nous au 06 42 99 62 42 et on te la renvoie.',
-        },
-      ],
+      faq: faq.fr,
     },
     note: 'Prix en euros, taxes comprises.',
   },
@@ -228,78 +180,23 @@ const textes = {
     cadeau: {
       titre: 'Give brunch as a gift',
       bouton: 'Give the gift card',
-      precision: 'Order form in French',
+      precision: '',
       occasionsTitre: 'A brunch gift card for every occasion',
       occasionsResume: 'ideas',
-      occasions: [
-        {
-          titre: 'Give brunch for Christmas',
-          texte:
-            'A Christmas gift you can taste: the card arrives instantly by e-mail as a PDF, even if you order on Christmas Eve. Print it or forward it, for a brunch in Vieux-Lille any time within the year.',
-        },
-        {
-          titre: 'Give brunch for a birthday',
-          texte: `A birthday gift to share: give brunch for two, or for the whole gang (up to ${QUANTITE_MAX} on one card), with your own message printed on it.`,
-        },
-        {
-          titre: "Give brunch for Valentine's Day",
-          texte: 'Two brunches, a sweet note on the card, and a weekend for two in the heart of Vieux-Lille.',
-        },
-        {
-          titre: "Give brunch for Mother's or Father's Day",
-          texte: 'A family weekend around a good table: choose how many brunches, and everyone builds their own.',
-        },
-        {
-          titre: 'Give brunch to say thank you',
-          texte:
-            "For a colleague who's leaving, a helpful neighbour or a much-loved nanny: a simple gift that always goes down well.",
-        },
-      ],
+      occasions: occasions.en,
       faqTitre: 'Frequently asked questions',
       faqResume: 'questions',
-      faq: [
-        {
-          question: 'How do I give the gift card?',
-          reponse:
-            "Click “Give the gift card”, choose the number of brunches, add the recipient's name and your message, then pay online by card, securely with Square. The gift card arrives straight away by e-mail as a PDF: print it or forward it. The order form is in French.",
-        },
-        {
-          question: 'How long is it valid?',
-          reponse: 'One year from purchase. The expiry date is printed on the card.',
-        },
-        {
-          question: 'How do I use it?',
-          reponse:
-            'Come at the weekend, between 11am and 3:30pm, to 94 rue Saint-André, and show the card at the counter, printed or on your phone. Booking recommended: +33 6 42 99 62 42.',
-        },
-        {
-          question: 'How much does a brunch gift card cost?',
-          reponse: `€25 per brunch, from 1 to ${QUANTITE_MAX} brunches on one card. Each brunch includes a savoury treat, a sweet treat, a hot drink and a cold drink.`,
-        },
-        {
-          question: "I didn't get the e-mail, what now?",
-          reponse: "Check your spam folder. Still nothing? Call us on +33 6 42 99 62 42 and we'll resend it.",
-        },
-      ],
+      faq: faq.en,
     },
     note: 'Prices in euros, taxes included.',
   },
 }[langue];
 
-// La FAQ de la carte cadeau, redite pour les moteurs de recherche.
-const faqJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: textes.cadeau.faq.map((q) => ({
-    '@type': 'Question',
-    name: q.question,
-    acceptedAnswer: { '@type': 'Answer', text: q.reponse },
-  })),
-};
+// La FAQ de la carte cadeau est balisée (FAQPage) sur la page de commande
+// seulement : Google demande de ne baliser une même FAQ qu'à un endroit.
 ---
 
 <BaseLayout title={textes.titre} description={textes.description} langue={langue} chemins={adresses}>
-  <script slot="head" type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} is:inline />
   <div class="page">
     <header class="entete">
       <a class="logo" href={accueil}>
@@ -432,7 +329,6 @@ const faqJsonLd = {
       <a
         class="lum-pill-btn"
         href={CARTE_CADEAU}
-        hreflang={langue === 'fr' ? undefined : 'fr'}
         data-suivi="select_item"
         data-suivi-item-list-name="Page brunch"
         data-suivi-article="carte-cadeau"

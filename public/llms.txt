@@ -9,15 +9,22 @@ Téléphone : +33 6 42 99 62 42.
 
 Brunch dans le Vieux-Lille le week-end uniquement, de 11h à 15h30 : 25 €.
 
-Le site tient en deux pages, l'accueil et le brunch, en français et en
-anglais ; le menu et la réservation sont hébergés ailleurs.
+Pour offrir le brunch : carte cadeau à 25 € le brunch, achetée en ligne,
+envoyée tout de suite par e-mail en PDF, valable un an, utilisable le
+week-end uniquement (samedi et dimanche, 11h – 15h30).
+
+Pages du site : l'accueil, le brunch et la carte cadeau brunch, en français
+et en anglais ; le menu et la réservation sont hébergés ailleurs.
 
 ## Commander
 
 - [Menu](https://xn--lm-xka.my.canva.site/l-m/menu) : la carte, hébergée sur Canva. L'adresse `/carte` du site y redirige.
 - [Réservation](https://lumvieuxlille-hash.github.io/lum-vieuxlille/) : réserver une table.
 - [Brunch](https://lumvieuxlille.fr/brunch/) : la formule du week-end à 25 €, de 11h à 15h30. Une douceur salée (œufs cocotte et tartines, recette chèvre, miel, pommes et noix ou recette cream cheese, moutarde, effiloché de canard et oignons caramélisés), une douceur sucrée (cookie, cinnamon roll, granola bowl ou flan), une boisson chaude (espresso, allongé, double espresso, cappuccino, thé ou infusion, chocolat chaud) et une boisson froide (citron pressé, jus de pomme ou orange pressée). En terrasse, en intérieur ou dans la cave voûtée naturellement climatisée.
-- [Carte cadeau brunch](https://lumvieuxlille.fr/brunch/carte-cadeau/) : offrir un ou plusieurs brunchs, 25 € le brunch, payée en ligne et envoyée par e-mail en PDF avec un petit mot. Valable un an.
+
+## Offrir
+
+- [Carte cadeau brunch](https://lumvieuxlille.fr/brunch/carte-cadeau/) : offrir un brunch au LÜM Vieux-Lille, idée cadeau à Lille pour Noël, un anniversaire, la Saint-Valentin, la fête des mères ou des pères, ou pour dire merci. 25 € le brunch, de 1 à 10 brunchs sur une même carte (50 € pour deux). Payée en ligne par carte bancaire (Square), envoyée aussitôt par e-mail en PDF, avec le prénom de la personne et un petit mot imprimés dessus. Valable un an à partir de l'achat. Utilisable le week-end uniquement, samedi et dimanche de 11h à 15h30, car le brunch n'est servi que le week-end. Réservation pas obligatoire mais conseillée (en ligne ou au 06 42 99 62 42). La carte se montre au comptoir, imprimée ou sur téléphone.
 
 ## Suivre et donner son avis
 
@@ -29,6 +36,7 @@ anglais ; le menu et la réservation sont hébergés ailleurs.
 
 - [Home](https://lumvieuxlille.fr/en/) : l'accueil en anglais.
 - [Brunch](https://lumvieuxlille.fr/en/brunch/) : le brunch en anglais.
+- [Brunch gift card](https://lumvieuxlille.fr/en/brunch/carte-cadeau/) : la carte cadeau brunch en anglais (la carte elle-même est rédigée en français).
 
 ## Optionnel
 
