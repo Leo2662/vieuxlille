@@ -1,0 +1,948 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Entete from './Entete.astro';
+import { chemins, type Langue } from '../i18n';
+import { faq, occasions } from '../data/carte-cadeau.ts';
+import { PRIX_CENTIMES, QUANTITE_MAX } from '../../api/_lib/config.ts';
+
+// Commande d'une carte cadeau brunch, en français (/brunch/carte-cadeau/) et
+// en anglais (/en/brunch/carte-cadeau/). Le formulaire part vers la fonction
+// Vercel /api/carte-cadeau/commander, qui crée la commande chez Square et
+// renvoie vers la page de paiement Square. Au retour, /brunch/carte-cadeau/merci/
+// (en français seulement) fait vérifier le paiement et envoyer la carte en PDF
+// par e-mail — une carte rédigée en français, quelle que soit la langue.
+//
+// Prix et quantité maximale viennent de api/_lib/config.ts, comme pour le
+// serveur ; les longueurs de champs y sont redites (LIMITES) et revérifiées.
+//
+// Sous le formulaire, la page répond par écrit aux questions qu'on pose aux
+// moteurs de recherche et aux assistants IA (« offrir un brunch à Lille »,
+// « carte cadeau brunch »…) : occasions et FAQ, avec leur balisage.
+
+interface Props {
+  langue: Langue;
+}
+
+const { langue } = Astro.props;
+
+const prix = PRIX_CENTIMES / 100;
+const adresses = chemins('brunch/carte-cadeau/');
+const siteUrl = Astro.site?.href.replace(/\/$/, '') ?? 'https://lumvieuxlille.fr';
+const url = siteUrl + adresses[langue];
+
+// Tant que Square tourne en bac à sable, la page le dit (variable lue au build).
+const test = import.meta.env.PUBLIC_SQUARE_ENV !== 'production';
+
+const t = {
+  fr: {
+    titre: 'Offrir le brunch — Carte cadeau brunch LÜM Vieux-Lille',
+    description:
+      'Offrez un brunch au LÜM, dans le Vieux-Lille : carte cadeau à 25 € le brunch, envoyée tout de suite par e-mail en PDF avec votre petit mot, valable un an, le week-end.',
+    retour: '/brunch/',
+    h1: 'Offrir le brunch',
+    accroche: 'Une carte cadeau, et ton petit mot dessus',
+    intro: `Offre un brunch au LÜM, coffee shop du Vieux-Lille, au 94 rue Saint-André à Lille : une carte cadeau à ${prix} € le brunch, envoyée tout de suite par e-mail en PDF avec ton petit mot, valable un an, à utiliser le week-end de 11h à 15h30.`,
+    coordonnees: 'Tes coordonnées',
+    prenom: 'Prénom',
+    nom: 'Nom',
+    email: 'E-mail',
+    emailAide: "La carte t'y est envoyée.",
+    telephone: 'Téléphone',
+    carte: 'La carte',
+    pour: 'Pour qui\u00a0? (facultatif)',
+    pourPlaceholder: 'Son prénom',
+    pourAide: 'La carte dira «\u00a0Un brunch pour…\u00a0».',
+    mot: 'Ton petit mot (facultatif)',
+    motPlaceholder: 'Joyeux anniversaire ! Un brunch rien que pour toi…',
+    motAide: 'Écrit à la main sur la carte.',
+    restants: 'caractères restants.',
+    recap: 'Récapitulatif',
+    offre: 'Carte cadeau brunch',
+    quand: 'Le week-end, 11h – 15h30',
+    inclus: ['Un salé', 'Un sucré', 'Une boisson chaude', 'Une boisson froide'],
+    quantite: 'Brunchs offerts',
+    moins: 'Un brunch de moins',
+    plus: 'Un brunch de plus',
+    total: 'Total',
+    payer: 'Payer',
+    redirection: 'Redirection vers Square…',
+    connexion: 'Connexion impossible. Vérifie ta connexion et réessaie.',
+    note: 'Paiement sécurisé par Square. La carte arrive par e-mail, en PDF, dès le paiement validé. Valable un an, le week-end.',
+    occasionsTitre: 'Une idée cadeau à Lille, pour chaque occasion',
+    faqTitre: 'Questions fréquentes',
+  },
+  en: {
+    titre: 'Give brunch — LÜM Vieux-Lille brunch gift card',
+    description:
+      'Give brunch at LÜM in Vieux-Lille (Old Lille): a €25 brunch gift card, sent instantly by e-mail as a PDF with your message, valid for one year, at weekends.',
+    retour: '/en/brunch/',
+    h1: 'Give brunch',
+    accroche: 'A gift card, with your own message',
+    intro: `Give brunch at LÜM, a coffee shop in Vieux-Lille (Old Lille), 94 rue Saint-André, Lille: a €${prix} brunch gift card, sent instantly by e-mail as a PDF with your message, valid for one year, to be used at weekends from 11am to 3:30pm.`,
+    coordonnees: 'Your details',
+    prenom: 'First name',
+    nom: 'Last name',
+    email: 'E-mail',
+    emailAide: 'The card is sent here.',
+    telephone: 'Phone',
+    carte: 'The card',
+    pour: 'Who is it for? (optional)',
+    pourPlaceholder: 'Their first name',
+    pourAide: 'The card will read “Un brunch pour…” (“A brunch for…”).',
+    mot: 'Your message (optional)',
+    motPlaceholder: 'Happy birthday! A brunch just for you…',
+    motAide: 'Printed in handwriting on the card.',
+    restants: 'characters left.',
+    recap: 'Summary',
+    offre: 'Brunch gift card',
+    quand: 'Weekends, 11am – 3:30pm',
+    inclus: ['Something savoury', 'Something sweet', 'A hot drink', 'A cold drink'],
+    quantite: 'Brunches',
+    moins: 'One brunch less',
+    plus: 'One brunch more',
+    total: 'Total',
+    payer: 'Pay',
+    redirection: 'Redirecting to Square…',
+    connexion: 'Could not connect. Check your connection and try again.',
+    note: 'Secure payment by Square. The card arrives by e-mail as a PDF as soon as payment is confirmed. Valid for one year, at weekends. The card is written in French.',
+    occasionsTitre: 'A gift idea in Lille, for every occasion',
+    faqTitre: 'Frequently asked questions',
+  },
+}[langue];
+
+const questions = faq[langue];
+
+// 25 € en français, €25 en anglais (même règle dans le script de la page).
+const montant = (n: number) => (langue === 'fr' ? `${n}\u00a0€` : `€${n}`);
+
+// La carte cadeau comme produit, vendue par le café (fiche de BaseLayout).
+const produitJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  '@id': `${siteUrl}/brunch/carte-cadeau/#carte`,
+  name: langue === 'fr' ? 'Carte cadeau brunch LÜM Vieux-Lille' : 'LÜM Vieux-Lille brunch gift card',
+  description: t.description,
+  image: `${siteUrl}/og/carte-cadeau.png`,
+  category: langue === 'fr' ? 'Carte cadeau' : 'Gift card',
+  brand: { '@type': 'Brand', name: 'LÜM' },
+  offers: {
+    '@type': 'Offer',
+    url,
+    price: prix.toFixed(2),
+    priceCurrency: 'EUR',
+    availability: 'https://schema.org/InStock',
+    eligibleQuantity: { '@type': 'QuantitativeValue', minValue: 1, maxValue: QUANTITE_MAX },
+    seller: { '@id': `${siteUrl}/#cafe` },
+  },
+};
+
+// La FAQ affichée sous le formulaire, redite pour les moteurs de recherche.
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: questions.map((q) => ({
+    '@type': 'Question',
+    name: q.question,
+    acceptedAnswer: { '@type': 'Answer', text: q.reponse },
+  })),
+};
+---
+
+<BaseLayout
+  title={t.titre}
+  description={t.description}
+  langue={langue}
+  chemins={adresses}
+  image="/og/carte-cadeau.png"
+>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(produitJsonLd)} is:inline />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} is:inline />
+  <div class="page">
+    <Entete retour={t.retour} langue={langue} chemins={adresses} />
+
+    {
+      test && (
+        <p class="test">
+          <span class="test__pastille">Mode test</span>
+          Paiement Square en bac à sable&nbsp;: carte 4111 1111 1111 1111, date future, n'importe quel cryptogramme.
+        </p>
+      )
+    }
+
+    <div class="intro">
+      <h1 class="titre-page">{t.h1}</h1>
+      <p class="script">{t.accroche}</p>
+      <p class="intro__texte">{t.intro}</p>
+    </div>
+
+    <form
+      class="commande"
+      method="post"
+      action="/api/carte-cadeau/commander"
+      data-commande
+      data-prix={prix}
+      data-payer-libelle={t.payer}
+      data-redirection={t.redirection}
+      data-connexion={t.connexion}
+    >
+      <div class="blocs">
+        <fieldset class="carte bloc">
+          <legend><span class="num" aria-hidden="true">1</span> {t.coordonnees}</legend>
+
+          <div class="champs champs--deux">
+            <label class="champ">
+              <span class="champ__libelle">{t.prenom}</span>
+              <input name="prenom" autocomplete="given-name" maxlength="60" required />
+            </label>
+            <label class="champ">
+              <span class="champ__libelle">{t.nom}</span>
+              <input name="nom" autocomplete="family-name" maxlength="60" required />
+            </label>
+            <label class="champ">
+              <span class="champ__libelle">{t.email}</span>
+              <input name="email" type="email" autocomplete="email" maxlength="120" required />
+              <span class="champ__aide">{t.emailAide}</span>
+            </label>
+            <label class="champ">
+              <span class="champ__libelle">{t.telephone}</span>
+              <input name="telephone" type="tel" autocomplete="tel" maxlength="25" required />
+            </label>
+          </div>
+        </fieldset>
+
+        <fieldset class="carte bloc">
+          <legend><span class="num" aria-hidden="true">2</span> {t.carte}</legend>
+
+          <div class="champs">
+            <label class="champ">
+              <span class="champ__libelle">{t.pour}</span>
+              <input name="pour" autocomplete="off" maxlength="60" placeholder={t.pourPlaceholder} />
+              <span class="champ__aide">{t.pourAide}</span>
+            </label>
+            <label class="champ">
+              <span class="champ__libelle">{t.mot}</span>
+              <textarea
+                name="mot"
+                rows="4"
+                maxlength="250"
+                placeholder={t.motPlaceholder}
+                data-mot></textarea>
+              <span class="champ__aide">{t.motAide} <span data-compteur>250</span> {t.restants}</span>
+            </label>
+          </div>
+        </fieldset>
+      </div>
+
+      <aside class="carte recap">
+        <h2>{t.recap}</h2>
+
+        <p class="recap__offre">{t.offre}</p>
+        <p class="recap__lieu">{t.quand} · <span class="insecable">94 rue Saint-André</span></p>
+
+        <ul class="recap__inclus">
+          {t.inclus.map((ligne) => <li>{ligne}</li>)}
+        </ul>
+
+        <!-- Sans script, le champ numérique suffit ; les boutons − et + ne
+             font que l'incrémenter. -->
+        <div class="quantite">
+          <label class="champ__libelle" for="quantite">{t.quantite}</label>
+          <div class="stepper">
+            <button type="button" class="stepper__btn" data-moins aria-label={t.moins}>−</button>
+            <input
+              id="quantite"
+              name="quantite"
+              type="number"
+              inputmode="numeric"
+              min="1"
+              max={QUANTITE_MAX}
+              value="1"
+              required
+              data-quantite
+            />
+            <button type="button" class="stepper__btn" data-plus aria-label={t.plus}>+</button>
+          </div>
+        </div>
+
+        <p class="recap__ligne">
+          <span data-detail>1 × {montant(prix)}</span>
+          <span data-sous-total>{montant(prix)}</span>
+        </p>
+        <p class="recap__total">
+          <span>{t.total}</span>
+          <strong data-total>{montant(prix)}</strong>
+        </p>
+
+        <p class="erreur" role="alert" data-erreur hidden></p>
+
+        <button class="lum-pill-btn lum-pill-btn--plein recap__payer" type="submit" data-payer>
+          <span data-payer-texte>{t.payer} {montant(prix)}</span>
+          <span class="arrow" aria-hidden="true">→</span>
+        </button>
+        <p class="recap__note">
+          {t.note}
+        </p>
+      </aside>
+    </form>
+
+    <!-- Occasions et questions : du texte à lire, pour les visiteurs comme
+         pour les moteurs. Chaque occasion a son ancre (#noel…). -->
+    <section class="carte infos" aria-labelledby="occasions-titre">
+      <h2 id="occasions-titre">{t.occasionsTitre}</h2>
+      <div class="occasions">
+        {
+          occasions[langue].map((o) => (
+            <article class="occasion" id={o.id}>
+              <h3>{o.titre}</h3>
+              <p>{o.texte}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="carte infos" aria-labelledby="faq-titre">
+      <h2 id="faq-titre">{t.faqTitre}</h2>
+      <div class="faq">
+        {
+          questions.map((q, i) => (
+            <details class="question" open={i < 3}>
+              <summary>
+                <h3>{q.question}</h3>
+                <span class="question__signe" aria-hidden="true" />
+              </summary>
+              <p>{q.reponse}</p>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  import { DEVISE, articleCarteCadeau, suivre } from '../scripts/mesure.ts';
+
+  const form = document.querySelector<HTMLFormElement>('[data-commande]')!;
+  const payer = form.querySelector<HTMLButtonElement>('[data-payer]')!;
+  const payerTexte = form.querySelector<HTMLElement>('[data-payer-texte]')!;
+  const erreur = form.querySelector<HTMLElement>('[data-erreur]')!;
+  const mot = form.querySelector<HTMLTextAreaElement>('[data-mot]')!;
+  const compteur = form.querySelector<HTMLElement>('[data-compteur]')!;
+
+  const majCompteur = () => {
+    compteur.textContent = String(mot.maxLength - mot.value.length);
+  };
+  mot.addEventListener('input', majCompteur);
+  majCompteur();
+
+  // Quantité : boutons − et +, total et bouton de paiement suivent.
+  const prix = Number(form.dataset.prix);
+  const quantite = form.querySelector<HTMLInputElement>('[data-quantite]')!;
+  const moins = form.querySelector<HTMLButtonElement>('[data-moins]')!;
+  const plus = form.querySelector<HTMLButtonElement>('[data-plus]')!;
+  const min = Number(quantite.min);
+  const max = Number(quantite.max);
+  const euros = (n: number) => (document.documentElement.lang === 'en' ? `€${n}` : `${n}\u00a0€`);
+
+  function lireQuantite(): number {
+    const n = Math.round(Number(quantite.value));
+    return Number.isFinite(n) ? Math.min(max, Math.max(min, n)) : min;
+  }
+
+  function majMontant() {
+    const n = lireQuantite();
+    form.querySelector('[data-detail]')!.textContent = `${n} × ${euros(prix)}`;
+    form.querySelector('[data-sous-total]')!.textContent = euros(n * prix);
+    form.querySelector('[data-total]')!.textContent = euros(n * prix);
+    payerTexte.textContent = `${form.dataset.payerLibelle} ${euros(n * prix)}`;
+    moins.disabled = n <= min;
+    plus.disabled = n >= max;
+  }
+
+  function changer(delta: number) {
+    quantite.value = String(lireQuantite() + delta);
+    majMontant();
+  }
+
+  suivre('view_item', { currency: DEVISE, value: prix, items: [articleCarteCadeau(1)] });
+
+  moins.addEventListener('click', () => changer(-1));
+  plus.addEventListener('click', () => changer(1));
+  quantite.addEventListener('input', majMontant);
+  // En quittant le champ, une saisie hors bornes est ramenée entre 1 et le max.
+  quantite.addEventListener('change', () => {
+    quantite.value = String(lireQuantite());
+    majMontant();
+  });
+  majMontant();
+
+  // Sans script, le formulaire part tel quel et la fonction redirige vers
+  // Square. Avec, on reste sur la page pour afficher une erreur éventuelle.
+  form.addEventListener('submit', async (evenement) => {
+    evenement.preventDefault();
+    erreur.hidden = true;
+
+    // Ni nom, ni e-mail, ni message dans la mesure : seulement le panier.
+    const n = lireQuantite();
+    suivre('begin_checkout', {
+      currency: DEVISE,
+      value: n * prix,
+      items: [articleCarteCadeau(n)],
+      avec_beneficiaire: Boolean((form.elements.namedItem('pour') as HTMLInputElement | null)?.value.trim()),
+      avec_mot: Boolean(mot.value.trim()),
+    });
+    payer.disabled = true;
+    payerTexte.textContent = form.dataset.redirection!;
+
+    try {
+      const reponse = await fetch(form.action, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+      });
+      const resultat = (await reponse.json()) as { url?: string; orderId?: string; erreur?: string };
+      if (!resultat.url) throw new Error(resultat.erreur ?? 'Une erreur est survenue.');
+      // Secours pour la page de retour, si l'adresse revient de Square sans
+      // numéro de commande : le paiement se fait dans le même onglet.
+      try {
+        if (resultat.orderId) sessionStorage.setItem('lum-carte-cadeau-commande', resultat.orderId);
+      } catch {}
+      window.location.href = resultat.url;
+    } catch (e) {
+      erreur.textContent =
+        e instanceof Error && e.message !== 'Failed to fetch'
+          ? e.message
+          : form.dataset.connexion!;
+      erreur.hidden = false;
+      suivre('erreur_commande', { message: erreur.textContent.slice(0, 100) });
+      payer.disabled = false;
+      majMontant();
+    }
+  });
+
+  // Retour arrière depuis Square : la page sort du cache avec le bouton figé.
+  window.addEventListener('pageshow', () => {
+    payer.disabled = false;
+    majMontant();
+  });
+</script>
+
+<style>
+  .page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 28px var(--gutter) 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .intro {
+    text-align: center;
+    color: var(--cream);
+  }
+
+  .titre-page {
+    font-size: clamp(2.4rem, 8vw, 4rem);
+  }
+
+  .script {
+    margin-top: 6px;
+    font-family: var(--font-script);
+    font-size: 1.6rem;
+    line-height: 1.2;
+  }
+
+  .intro__texte {
+    max-width: 640px;
+    margin: 16px auto 0;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  /* --- Bandeau du mode test --- */
+  .test {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px 12px;
+    padding: 12px 18px;
+    border: 2px dashed rgba(249, 241, 230, 0.6);
+    border-radius: var(--radius);
+    color: var(--cream);
+    font-weight: 700;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .test__pastille {
+    padding: 3px 12px;
+    border-radius: 999px;
+    background: var(--cream);
+    color: var(--terracotta);
+    font-weight: 800;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* --- Cartes --- */
+  .carte {
+    padding: 28px;
+    border-radius: var(--radius-lg);
+    background: var(--cream);
+    box-shadow: var(--edge-light), var(--elevation-3);
+    animation: fade-up 0.5s ease both;
+  }
+
+  .commande {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  .blocs {
+    display: grid;
+    gap: 22px;
+  }
+
+  .bloc {
+    min-width: 0;
+    margin: 0;
+    border: 0;
+  }
+
+  .bloc + .bloc {
+    animation-delay: 0.1s;
+  }
+
+  /* La légende flotte pour se placer comme un titre ordinaire. */
+  .bloc legend {
+    float: left;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 0;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .bloc legend + * {
+    clear: both;
+  }
+
+  .num {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    color: var(--cream);
+    font-size: 1.05rem;
+    box-shadow: var(--elevation-1);
+  }
+
+  /* --- Champs --- */
+  .champs {
+    display: grid;
+    gap: 16px;
+  }
+
+  .champs--deux {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .champ {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+  }
+
+  .champ__libelle {
+    font-weight: 800;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--brown);
+  }
+
+  .champ__aide {
+    margin-top: 2px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--brown);
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid var(--terracotta-light);
+    border-radius: 12px;
+    background: #fffaf3;
+    color: var(--terracotta);
+    font: inherit;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.3;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  /* Le petit mot s'écrit dans la police manuscrite de la carte. */
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+    font-family: var(--font-script);
+    font-weight: 600;
+    font-size: 1.35rem;
+    line-height: 1.25;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--terracotta-light);
+    opacity: 0.8;
+  }
+
+  input:focus,
+  textarea:focus {
+    outline: none;
+    border-color: var(--terracotta);
+    box-shadow: 0 0 0 3px rgba(196, 113, 74, 0.3);
+  }
+
+  /* --- Récapitulatif : il suit le défilement sur ordinateur --- */
+  .recap {
+    position: sticky;
+    top: 24px;
+    animation-delay: 0.15s;
+  }
+
+  .recap h2 {
+    margin-bottom: 16px;
+    font-size: 1.6rem;
+  }
+
+  .recap__offre {
+    font-weight: 900;
+    font-size: 1.05rem;
+  }
+
+  .recap__lieu {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--brown);
+  }
+
+  .insecable {
+    white-space: nowrap;
+  }
+
+  .recap__inclus {
+    display: grid;
+    gap: 6px;
+    margin: 16px 0;
+    padding: 16px 0 0;
+    border-top: 2px solid var(--cream-dark);
+    list-style: none;
+  }
+
+  .recap__inclus li {
+    position: relative;
+    padding-left: 20px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--brown);
+  }
+
+  .recap__inclus li::before {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 0.6em;
+    width: 7px;
+    height: 7px;
+    background: var(--terracotta);
+    transform: rotate(45deg);
+  }
+
+  /* --- Quantité : − [n] + --- */
+  .quantite {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 14px;
+    margin-bottom: 14px;
+    border-top: 2px solid var(--cream-dark);
+  }
+
+  .stepper {
+    display: inline-flex;
+    align-items: center;
+    border: 2px solid var(--terracotta-light);
+    border-radius: 999px;
+    background: #fffaf3;
+  }
+
+  .stepper__btn {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--terracotta);
+    font: inherit;
+    font-weight: 800;
+    font-size: 1.35rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .stepper__btn:hover:not(:disabled) {
+    background: var(--terracotta);
+    color: var(--cream);
+  }
+
+  .stepper__btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+  }
+
+  .stepper input {
+    width: 3ch;
+    padding: 6px 0;
+    border: 0;
+    background: none;
+    text-align: center;
+    font-weight: 900;
+    font-size: 1.2rem;
+    box-shadow: none;
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+
+  .stepper input::-webkit-outer-spin-button,
+  .stepper input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .stepper input:focus {
+    box-shadow: none;
+  }
+
+  .stepper:focus-within {
+    border-color: var(--terracotta);
+    box-shadow: 0 0 0 3px rgba(196, 113, 74, 0.3);
+  }
+
+  .recap__ligne,
+  .recap__total {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .recap__ligne {
+    font-weight: 700;
+  }
+
+  .recap__total {
+    margin: 10px 0 20px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .recap__total strong {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 2.2rem;
+    letter-spacing: 0.02em;
+  }
+
+  .recap__payer {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .recap__payer:disabled {
+    opacity: 0.6;
+    cursor: progress;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .recap__note {
+    margin-top: 12px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--brown);
+  }
+
+  .erreur {
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    border: 2px solid var(--terracotta);
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+
+  .erreur[hidden] {
+    display: none;
+  }
+
+  /* --- Occasions et questions fréquentes --- */
+  .infos h2 {
+    margin-bottom: 18px;
+    font-size: clamp(1.6rem, 4vw, 2rem);
+  }
+
+  .occasions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 14px;
+  }
+
+  .occasion {
+    padding: 18px 20px;
+    border-radius: var(--radius);
+    background: var(--cream-dark);
+  }
+
+  .occasion h3,
+  .question h3 {
+    font-family: var(--font-body);
+    font-weight: 900;
+    font-size: 1.02rem;
+    line-height: 1.35;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .occasion p,
+  .question p {
+    margin-top: 6px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--brown);
+  }
+
+  /* Un lien vers #noel met l'occasion en valeur. */
+  .occasion:target {
+    outline: 3px solid var(--terracotta);
+  }
+
+  .faq {
+    display: grid;
+  }
+
+  .question {
+    border-top: 2px solid var(--cream-dark);
+  }
+
+  .question:last-child {
+    border-bottom: 2px solid var(--cream-dark);
+  }
+
+  .question summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 0;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .question summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .question p {
+    margin: 0 0 16px;
+  }
+
+  /* Le signe + devient − quand la réponse est ouverte. */
+  .question__signe {
+    position: relative;
+    flex: none;
+    width: 14px;
+    height: 14px;
+  }
+
+  .question__signe::before,
+  .question__signe::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 14px;
+    height: 2.5px;
+    border-radius: 2px;
+    background: var(--terracotta);
+    transition: transform 0.2s;
+  }
+
+  .question__signe::after {
+    transform: rotate(90deg);
+  }
+
+  .question[open] .question__signe::after {
+    transform: rotate(0deg);
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 860px) {
+    .commande {
+      grid-template-columns: 1fr;
+    }
+
+    .recap {
+      position: static;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .carte {
+      padding: 24px 20px;
+    }
+
+    .champs--deux {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,22 +1,32 @@
 ---
 // En-tête des pages intérieures, sur la terre cuite : logo et retour.
 // Le retour mène à l'accueil, sauf si la page en indique un autre.
+// Sur une page traduite, `langue` et `chemins` ajoutent le choix de langue.
+import ChoixLangue from './ChoixLangue.astro';
+import type { Langue } from '../i18n';
 
 interface Props {
   retour?: string;
+  langue?: Langue;
+  chemins?: Record<Langue, string>;
 }
 
-const { retour = '/' } = Astro.props;
+const { langue = 'fr', chemins } = Astro.props;
+const accueil = langue === 'fr' ? '/' : '/en/';
+const retour = Astro.props.retour ?? accueil;
 ---
 
 <header class="entete">
-  <a class="logo" href="/">
+  <a class="logo" href={accueil}>
     LÜM
     <small>Vieux-Lille</small>
   </a>
-  <a class="retour" href={retour}>
-    <span class="arrow">←</span> Retour
-  </a>
+  <div class="entete__droite">
+    {chemins && <ChoixLangue langue={langue} chemins={chemins} />}
+    <a class="retour" href={retour}>
+      <span class="arrow">←</span> {langue === 'fr' ? 'Retour' : 'Back'}
+    </a>
+  </div>
 </header>
 
 <style>
@@ -26,6 +36,12 @@ const { retour = '/' } = Astro.props;
     justify-content: space-between;
     gap: 16px;
     color: var(--cream);
+  }
+
+  .entete__droite {
+    display: flex;
+    align-items: center;
+    gap: 18px;
   }
 
   .logo {

@@ -15,6 +15,8 @@ interface Props {
   langue?: Langue;
   /** Pour une page traduite : son adresse dans chaque langue. */
   chemins?: Record<Langue, string>;
+  /** Image de partage (1200 × 630, dans public/og/). Par défaut, celle du lieu. */
+  image?: string;
 }
 
 // `base` est pris en compte : les chemins absolus doivent en tenir compte.
@@ -31,10 +33,15 @@ const {
   description = descriptions[langue],
   noindex = false,
   chemins,
+  image = '/og/lum.png',
 } = Astro.props;
 
 // Le domaine vient de `site` dans astro.config.mjs : une seule source.
 const siteUrl = Astro.site?.href.replace(/\/$/, '') ?? 'https://lumvieuxlille.fr';
+
+// Adresse canonique : celle de la page, sans paramètres (utm, orderId…).
+const canonique = siteUrl + Astro.url.pathname;
+const imageUrl = siteUrl + image;
 
 // Chaque version annonce l'autre aux moteurs de recherche ; le français est
 // la version par défaut, pour les visiteurs d'aucune des deux langues.
@@ -46,19 +53,24 @@ const alternates = chemins
   : [];
 
 // Fiche établissement pour les moteurs de recherche. N'y figure que ce qui
-// est fourni par la boutique : il manque encore `image`, faute de photo
-// hébergée — une valeur inventée dans un balisage structuré se retrouve
-// telle quelle dans les résultats de recherche.
+// est fourni par la boutique : une valeur inventée dans un balisage structuré
+// se retrouve telle quelle dans les résultats de recherche (et dans les
+// réponses des assistants IA). La description est celle du lieu, la même sur
+// toutes les pages : celle de la page ne décrit pas l'établissement.
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'CafeOrCoffeeShop',
   '@id': `${siteUrl}/#cafe`,
   name: 'LÜM Vieux-Lille',
-  description,
+  description: descriptions[langue],
   url: siteUrl,
+  // Visuel de marque, faute de photo hébergée : à remplacer par une photo du
+  // lieu dès qu'il y en a une sur le site.
+  image: `${siteUrl}/og/lum.png`,
   // Format E.164 : sans espaces, c'est ce qui rend l'appel cliquable partout.
   telephone: '+33642996242',
-  priceRange: '10€-15€',
+  // Du simple espresso à la formule brunch (src/data/menu.ts, Brunch.astro).
+  priceRange: '2,50 € – 25 €',
   address: {
     '@type': 'PostalAddress',
     streetAddress: '94 rue Saint-André',
@@ -106,7 +118,19 @@ const jsonLd = {
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" href={`${base}/favicon.svg`} type="image/svg+xml" />
     {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+    <link rel="canonical" href={canonique} />
     <title>{title}</title>
+    <!-- Aperçu des liens partagés (WhatsApp, Messenger, iMessage, réseaux…) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="LÜM Vieux-Lille" />
+    <meta property="og:locale" content={langue === 'fr' ? 'fr_FR' : 'en_GB'} />
+    <meta property="og:url" content={canonique} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
     <slot name="head" />
   </head>
