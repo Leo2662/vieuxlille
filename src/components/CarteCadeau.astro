@@ -321,8 +321,6 @@ const faqJsonLd = {
 </BaseLayout>
 
 <script>
-  import { DEVISE, articleCarteCadeau, suivre } from '../scripts/mesure.ts';
-
   const form = document.querySelector<HTMLFormElement>('[data-commande]')!;
   const payer = form.querySelector<HTMLButtonElement>('[data-payer]')!;
   const payerTexte = form.querySelector<HTMLElement>('[data-payer-texte]')!;
@@ -365,8 +363,6 @@ const faqJsonLd = {
     majMontant();
   }
 
-  suivre('view_item', { currency: DEVISE, value: prix, items: [articleCarteCadeau(1)] });
-
   moins.addEventListener('click', () => changer(-1));
   plus.addEventListener('click', () => changer(1));
   quantite.addEventListener('input', majMontant);
@@ -383,15 +379,6 @@ const faqJsonLd = {
     evenement.preventDefault();
     erreur.hidden = true;
 
-    // Ni nom, ni e-mail, ni message dans la mesure : seulement le panier.
-    const n = lireQuantite();
-    suivre('begin_checkout', {
-      currency: DEVISE,
-      value: n * prix,
-      items: [articleCarteCadeau(n)],
-      avec_beneficiaire: Boolean((form.elements.namedItem('pour') as HTMLInputElement | null)?.value.trim()),
-      avec_mot: Boolean(mot.value.trim()),
-    });
     payer.disabled = true;
     payerTexte.textContent = form.dataset.redirection!;
 
@@ -415,7 +402,6 @@ const faqJsonLd = {
           ? e.message
           : form.dataset.connexion!;
       erreur.hidden = false;
-      suivre('erreur_commande', { message: erreur.textContent.slice(0, 100) });
       payer.disabled = false;
       majMontant();
     }

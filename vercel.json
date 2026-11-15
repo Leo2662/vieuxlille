@@ -4,5 +4,11 @@
     "api/carte-cadeau/*.ts": {
       "includeFiles": "api/_fonts/**"
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/api/vue",
+      "destination": "https://stats.lumvieuxlille.fr/collect"
+    }
+  ]
 }
