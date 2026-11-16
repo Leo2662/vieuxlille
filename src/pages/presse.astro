@@ -1,0 +1,409 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Entete from '../components/Entete.astro';
+import { parutions, recommandations, moisLisible } from '../data/presse';
+
+// Du plus récent au plus ancien : AAAA-MM se trie comme du texte.
+const articles = [...parutions].sort((a, b) => b.date.localeCompare(a.date));
+
+// Mêmes coordonnées que /afterwork, la fiche JSON-LD de BaseLayout et llms.txt.
+const TELEPHONE = 'tel:+33642996242';
+const TELEPHONE_LISIBLE = '06 42 99 62 42';
+// ig.me ouvre directement une conversation privée avec le compte.
+const INSTAGRAM = 'https://ig.me/m/lum_vieuxlille';
+
+const externe = { target: '_blank', rel: 'noopener noreferrer' };
+---
+
+<BaseLayout
+  title="Presse — LÜM Vieux-Lille"
+  description="Ils parlent du LÜM : les articles et sélections qui citent le coffee shop & brunch healthy du 94 rue Saint-André, dans le Vieux-Lille, et sa seconde adresse rue du Molinel."
+>
+  <div class="page">
+    <Entete />
+
+    <!-- Accroche -->
+    <section class="carte hero">
+      <p class="chip">Presse</p>
+
+      <span class="hero__icone">
+        <!-- Un journal plié, au trait, dans le style de Trinquer -->
+        <svg
+          viewBox="0 0 48 48"
+          width="100%"
+          height="100%"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.6"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M8 8h26v30a4 4 0 0 0 4 4H12a4 4 0 0 1-4-4Z" />
+          <path d="M34 16h6v22a4 4 0 0 1-4 4" />
+          <path d="M13 15h16 M13 21h6 M13 27h6 M13 33h16" />
+          <path d="M23 21h6v6h-6Z" />
+        </svg>
+      </span>
+
+      <h1>Ils parlent du LÜM</h1>
+      <p class="script">Merci pour les jolis mots&nbsp;!</p>
+
+      <p class="lede">
+        <!-- Trait d'union insécable : « Saint-André » ne se coupe pas en fin de ligne. -->
+        Articles et sélections qui citent le LÜM, de la rue Saint&#8209;André à la rue du Molinel.
+      </p>
+    </section>
+
+    <!-- Les articles, du plus récent au plus ancien -->
+    <section class="section">
+      <h2 class="titre-section">Dans la presse</h2>
+
+      <ol class="articles">
+        {
+          articles.map((article) => (
+            <li>
+              <article class="carte carte--petite article">
+                <div class="article__meta">
+                  <p class="article__media">
+                    {article.media}
+                    <span>{article.site}</span>
+                  </p>
+                  <time class="article__date" datetime={article.date}>
+                    {moisLisible(article.date)}
+                  </time>
+                </div>
+
+                <h3 class="article__titre">{article.titre}</h3>
+                <p class="article__resume">{article.resume}</p>
+
+                <div class="article__bas">
+                  <span class="article__lieu">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" />
+                      <circle cx="12" cy="10" r="2.6" />
+                    </svg>
+                    {article.lieu}
+                  </span>
+                  <a
+                    class="lum-pill-btn"
+                    href={article.url}
+                    aria-label={`Lire l’article de ${article.media} (nouvel onglet)`}
+                    {...externe}
+                  >
+                    Lire l’article <span class="arrow">↗</span>
+                  </a>
+                </div>
+              </article>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <!-- Guides et sélections, sans article dédié -->
+    <section class="section">
+      <h2 class="titre-section">Recommandé par</h2>
+
+      {
+        recommandations.map((reco) => (
+          <article class="carte carte--petite reco">
+            <h3 class="reco__media">{reco.media}</h3>
+            <p class="article__resume">{reco.texte}</p>
+            <a
+              class="lum-pill-btn"
+              href={reco.url}
+              aria-label={`${reco.bouton} de l’${reco.media} (nouvel onglet)`}
+              {...externe}
+            >
+              {reco.bouton} <span class="arrow">↗</span>
+            </a>
+          </article>
+        ))
+      }
+    </section>
+
+    <!-- Contact presse : les mêmes canaux que le reste du site -->
+    <section class="carte contact">
+      <h2>Vous écrivez sur Lille&nbsp;?</h2>
+      <p class="lede">
+        Un article, un reportage, une sélection&nbsp;: écrivez-nous sur Instagram ou appelez-nous,
+        on vous accueille avec plaisir.
+      </p>
+      <div class="actions">
+        <a class="lum-pill-btn lum-pill-btn--plein" href={INSTAGRAM} {...externe}>
+          Nous écrire <span class="arrow">→</span>
+        </a>
+        <a class="lum-pill-btn" href={TELEPHONE}>
+          {TELEPHONE_LISIBLE}
+        </a>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .page {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 28px var(--gutter) 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+  }
+
+  /* --- Cartes crème qui flottent sur la terre cuite, comme /afterwork --- */
+  .carte {
+    position: relative;
+    padding: 40px;
+    border-radius: var(--radius-lg);
+    background: var(--cream);
+    box-shadow: var(--edge-light), var(--elevation-3);
+    text-align: center;
+    animation: fade-up 0.5s ease both;
+  }
+
+  .carte--petite {
+    padding: 28px 30px;
+    box-shadow: var(--edge-light), var(--elevation-2);
+  }
+
+  .carte h2 {
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+  }
+
+  .titre-section {
+    margin-bottom: 26px;
+    text-align: center;
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    color: var(--cream);
+  }
+
+  .lede {
+    max-width: 52ch;
+    margin: 0 auto;
+    font-weight: 700;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    text-wrap: balance;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 28px;
+  }
+
+  /* --- Accroche --- */
+  .hero {
+    margin-top: 30px;
+    padding: 70px 40px 40px;
+  }
+
+  /* Le cartouche chevauche le bord de la carte, comme sur l'accueil. */
+  .chip {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: max-content;
+    max-width: calc(100% - 40px);
+    padding: 9px 26px;
+    border: 3px solid var(--terracotta-light);
+    border-radius: var(--radius);
+    background: var(--cream);
+    box-shadow: var(--elevation-2);
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .hero__icone {
+    display: block;
+    width: 96px;
+    height: 96px;
+    margin: 0 auto 18px;
+  }
+
+  .hero h1 {
+    max-width: 16ch;
+    margin: 0 auto;
+    font-size: clamp(2.3rem, 7vw, 3.6rem);
+    text-wrap: balance;
+  }
+
+  .script {
+    margin: 10px 0 18px;
+    font-family: var(--font-script);
+    font-size: 1.7rem;
+    line-height: 1.2;
+  }
+
+  /* --- Articles --- */
+  .articles {
+    display: grid;
+    gap: 22px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .articles li:nth-child(2) .article {
+    animation-delay: 0.08s;
+  }
+
+  .articles li:nth-child(3) .article {
+    animation-delay: 0.16s;
+  }
+
+  .article {
+    text-align: left;
+  }
+
+  .article__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px 16px;
+    margin-bottom: 14px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--cream-dark);
+  }
+
+  /* Le nom du titre de presse, en lettres d'affiche, son site dessous. */
+  .article__media {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .article__media span {
+    display: block;
+    margin-top: 4px;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    text-transform: none;
+    color: var(--brown);
+  }
+
+  .article__date {
+    padding: 4px 14px;
+    border-radius: 999px;
+    background: var(--cream-dark);
+    font-weight: 800;
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  /* Le titre de l'article : en texte courant, pas en lettres d'affiche —
+     un titre de presse se lit, il ne se crie pas. */
+  .article__titre {
+    margin-bottom: 8px;
+    font-family: var(--font-body);
+    font-weight: 900;
+    font-size: 1.2rem;
+    line-height: 1.4;
+    letter-spacing: 0;
+    text-transform: none;
+    text-wrap: pretty;
+  }
+
+  .article__resume {
+    font-size: 0.97rem;
+    line-height: 1.6;
+    color: var(--brown);
+  }
+
+  .article__bas {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 22px;
+  }
+
+  .article__lieu {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .article__lieu svg {
+    width: 18px;
+    height: 18px;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .article .lum-pill-btn,
+  .reco .lum-pill-btn {
+    padding: 9px 22px;
+    font-size: 0.85rem;
+  }
+
+  /* --- Recommandations --- */
+  .reco__media {
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+  }
+
+  .reco .article__resume {
+    max-width: 46ch;
+    margin: 0 auto 20px;
+  }
+
+  /* --- Contact presse --- */
+  .contact h2 {
+    margin-bottom: 14px;
+  }
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .page {
+      gap: 46px;
+    }
+
+    .carte {
+      padding: 32px 22px;
+    }
+
+    .hero {
+      padding: 60px 22px 32px;
+    }
+
+    .carte--petite {
+      padding: 24px 22px;
+    }
+
+    .article__titre {
+      font-size: 1.1rem;
+    }
+  }
+</style>

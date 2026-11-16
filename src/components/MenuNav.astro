@@ -20,9 +20,9 @@ interface Lien {
   externe?: boolean;
 }
 
-// /menu et /afterwork n'existent qu'en français : la version anglaise mène
-// à la carte française (c'est déjà le cas du bouton de l'accueil anglais)
-// et ne propose pas l'afterwork.
+// /menu, /afterwork et /presse n'existent qu'en français : la version
+// anglaise mène à la carte française (c'est déjà le cas du bouton de
+// l'accueil anglais) et ne propose ni l'afterwork ni la presse.
 const textes = {
   fr: {
     bouton: 'Découvrir',
@@ -33,6 +33,7 @@ const textes = {
       { nom: 'Le brunch', url: chemins('brunch/').fr },
       { nom: 'Carte cadeau', url: chemins('brunch/carte-cadeau/').fr },
       { nom: 'Afterwork', url: '/afterwork' },
+      { nom: 'Presse', url: '/presse' },
       { nom: 'Réserver', url: RESERVATION, externe: true },
     ],
   },
