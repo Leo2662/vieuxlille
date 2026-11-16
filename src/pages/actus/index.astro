@@ -1,10 +1,16 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import Entete from '../components/Entete.astro';
-import { parutions, recommandations, moisLisible } from '../data/presse';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Entete from '../../components/Entete.astro';
+import { actus } from '../../lib/actus';
+import { recommandations } from '../../data/presse';
 
-// Du plus récent au plus ancien : AAAA-MM se trie comme du texte.
-const articles = [...parutions].sort((a, b) => b.date.localeCompare(a.date));
+const fil = await actus();
+
+const filtres = [
+  { id: 'tout', nom: 'Tout' },
+  { id: 'blog', nom: 'Nos articles' },
+  { id: 'presse', nom: 'Presse' },
+];
 
 // Mêmes coordonnées que /afterwork, la fiche JSON-LD de BaseLayout et llms.txt.
 const TELEPHONE = 'tel:+33642996242';
@@ -16,15 +22,15 @@ const externe = { target: '_blank', rel: 'noopener noreferrer' };
 ---
 
 <BaseLayout
-  title="Presse — LÜM Vieux-Lille"
-  description="Ils parlent du LÜM : les articles et sélections qui citent le coffee shop & brunch healthy du 94 rue Saint-André, dans le Vieux-Lille, et sa seconde adresse rue du Molinel."
+  title="Actus — LÜM Vieux-Lille"
+  description="Les actus du LÜM, coffee shop & brunch healthy du 94 rue Saint-André, dans le Vieux-Lille : nos nouvelles, et ce que la presse dit de nous."
 >
   <div class="page">
     <Entete />
 
     <!-- Accroche -->
     <section class="carte hero">
-      <p class="chip">Presse</p>
+      <p class="chip">Actus</p>
 
       <span class="hero__icone">
         <!-- Un journal plié, au trait, dans le style de Trinquer -->
@@ -46,53 +52,74 @@ const externe = { target: '_blank', rel: 'noopener noreferrer' };
         </svg>
       </span>
 
-      <h1>Ils parlent du LÜM</h1>
-      <p class="script">Merci pour les jolis mots&nbsp;!</p>
+      <h1>Les actus du LÜM</h1>
+      <p class="script">Fraîchement sorties du four&nbsp;!</p>
 
       <p class="lede">
         <!-- Trait d'union insécable : « Saint-André » ne se coupe pas en fin de ligne. -->
-        Articles et sélections qui citent le LÜM, de la rue Saint&#8209;André à la rue du Molinel.
+        Nos nouvelles, et ce que la presse dit de nous, de la rue Saint&#8209;André à la rue du Molinel.
       </p>
     </section>
 
-    <!-- Les articles, du plus récent au plus ancien -->
-    <section class="section">
-      <h2 class="titre-section">Dans la presse</h2>
-
-      <ol class="articles">
+    <!-- Le fil : articles du blog et presse, du plus récent au plus ancien.
+         Sans JavaScript, tout s'affiche et la barre de filtres reste cachée. -->
+    <section class="fil" aria-label="Toutes les actus" data-fil>
+      <div class="barre" role="group" aria-label="Filtrer les actus" hidden>
         {
-          articles.map((article) => (
-            <li>
-              <article class="carte carte--petite article">
-                <div class="article__meta">
-                  <p class="article__media">
-                    {article.media}
-                    <span>{article.site}</span>
+          filtres.map((f, i) => (
+            <button class="filtre" type="button" data-filtre={f.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+              {f.nom}
+            </button>
+          ))
+        }
+      </div>
+
+      <ol class="actus">
+        {
+          fil.map((actu) => (
+            <li data-type={actu.type}>
+              <article class={`carte carte--petite actu actu--${actu.type}`}>
+                <div class="actu__meta">
+                  <p class="actu__source">
+                    {actu.source}
+                    <span>{actu.detail}</span>
                   </p>
-                  <time class="article__date" datetime={article.date}>
-                    {moisLisible(article.date)}
+                  <time class="actu__date" datetime={actu.date}>
+                    {actu.dateLisible}
                   </time>
                 </div>
 
-                <h3 class="article__titre">{article.titre}</h3>
-                <p class="article__resume">{article.resume}</p>
+                <h2 class="actu__titre">
+                  {actu.type === 'blog' ? <a href={actu.url}>{actu.titre}</a> : actu.titre}
+                </h2>
+                <p class="actu__resume">{actu.resume}</p>
 
-                <div class="article__bas">
-                  <span class="article__lieu">
-                    <svg viewBox="0 0 24 24" aria-hidden="true">
-                      <path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" />
-                      <circle cx="12" cy="10" r="2.6" />
-                    </svg>
-                    {article.lieu}
-                  </span>
-                  <a
-                    class="lum-pill-btn"
-                    href={article.url}
-                    aria-label={`Lire l’article de ${article.media} (nouvel onglet)`}
-                    {...externe}
-                  >
-                    Lire l’article <span class="arrow">↗</span>
-                  </a>
+                <div class="actu__bas">
+                  {actu.lieu && (
+                    <span class="actu__lieu">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" />
+                        <circle cx="12" cy="10" r="2.6" />
+                      </svg>
+                      {actu.lieu}
+                    </span>
+                  )}
+                  {actu.type === 'blog' ? (
+                    // Le titre porte déjà le lien, étendu à toute la carte :
+                    // le bouton n'est qu'une indication visuelle.
+                    <span class="lum-pill-btn" aria-hidden="true">
+                      Lire l’article <span class="arrow">→</span>
+                    </span>
+                  ) : (
+                    <a
+                      class="lum-pill-btn"
+                      href={actu.url}
+                      aria-label={`Lire l’article de ${actu.source} (nouvel onglet)`}
+                      {...externe}
+                    >
+                      Lire l’article <span class="arrow">↗</span>
+                    </a>
+                  )}
                 </div>
               </article>
             </li>
@@ -109,7 +136,7 @@ const externe = { target: '_blank', rel: 'noopener noreferrer' };
         recommandations.map((reco) => (
           <article class="carte carte--petite reco">
             <h3 class="reco__media">{reco.media}</h3>
-            <p class="article__resume">{reco.texte}</p>
+            <p class="actu__resume">{reco.texte}</p>
             <a
               class="lum-pill-btn"
               href={reco.url}
@@ -141,6 +168,27 @@ const externe = { target: '_blank', rel: 'noopener noreferrer' };
     </section>
   </div>
 </BaseLayout>
+
+<script>
+  // Filtres : n'affichent que les articles du blog, ou que la presse.
+  document.querySelectorAll<HTMLElement>('[data-fil]').forEach((fil) => {
+    const barre = fil.querySelector<HTMLElement>('.barre')!;
+    const boutons = Array.from(fil.querySelectorAll<HTMLButtonElement>('.filtre'));
+    const items = Array.from(fil.querySelectorAll<HTMLLIElement>('.actus > li'));
+
+    barre.hidden = false;
+
+    boutons.forEach((bouton) => {
+      bouton.addEventListener('click', () => {
+        const choix = bouton.dataset.filtre;
+        boutons.forEach((b) => b.setAttribute('aria-pressed', String(b === bouton)));
+        items.forEach((li) => {
+          li.hidden = choix !== 'tout' && li.dataset.type !== choix;
+        });
+      });
+    });
+  });
+</script>
 
 <style>
   .page {
@@ -242,8 +290,57 @@ const externe = { target: '_blank', rel: 'noopener noreferrer' };
     line-height: 1.2;
   }
 
-  /* --- Articles --- */
-  .articles {
+  /* --- Filtres : une barre crème, comme les onglets de /menu. Le filtre
+     choisi y prend la terre cuite et monte d'un cran. --- */
+  .barre {
+    display: flex;
+    gap: 4px;
+    max-width: 460px;
+    margin: 0 auto 26px;
+    padding: 6px;
+    border-radius: 999px;
+    background: var(--cream);
+    box-shadow: var(--edge-light), var(--elevation-2);
+  }
+
+  .barre[hidden] {
+    display: none;
+  }
+
+  .filtre {
+    flex: 1;
+    padding: 10px 12px;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: var(--terracotta);
+    font: inherit;
+    font-weight: 800;
+    font-size: 0.8rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, box-shadow 0.25s;
+  }
+
+  .filtre:hover {
+    background: var(--cream-dark);
+  }
+
+  .filtre:focus-visible {
+    outline: 3px solid var(--terracotta);
+    outline-offset: 2px;
+  }
+
+  .filtre[aria-pressed='true'] {
+    background: var(--terracotta);
+    color: var(--cream);
+    box-shadow: var(--elevation-1);
+  }
+
+  /* --- Le fil --- */
+  .actus {
     display: grid;
     gap: 22px;
     margin: 0;
@@ -251,19 +348,61 @@ const externe = { target: '_blank', rel: 'noopener noreferrer' };
     list-style: none;
   }
 
-  .articles li:nth-child(2) .article {
+  .actus li[hidden] {
+    display: none;
+  }
+
+  .actus li:nth-child(2) .actu {
     animation-delay: 0.08s;
   }
 
-  .articles li:nth-child(3) .article {
+  .actus li:nth-child(3) .actu {
     animation-delay: 0.16s;
   }
 
-  .article {
+  .actu {
     text-align: left;
+    transition: transform 0.25s, box-shadow 0.25s;
+    /* Une fois l'apparition finie, l'animation lâche `transform` : sinon
+       son état final l'emporterait sur le soulèvement au survol. */
+    animation-fill-mode: backwards;
   }
 
-  .article__meta {
+  /* Un article du blog se clique en entier : le lien du titre s'étend sur
+     toute la carte (::after), sans imbriquer de lien dans un autre. */
+  .actu--blog .actu__titre a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  .actu--blog .actu__titre a:focus-visible {
+    outline: none;
+  }
+
+  .actu--blog:focus-within {
+    outline: 3px solid var(--cream);
+    outline-offset: 4px;
+  }
+
+  @media (hover: hover) {
+    .actu--blog:hover {
+      transform: var(--lift);
+      box-shadow: var(--edge-light), var(--elevation-3);
+    }
+
+    .actu--blog:hover .lum-pill-btn {
+      background: var(--terracotta);
+      color: var(--cream);
+    }
+
+    .actu--blog:hover .lum-pill-btn .arrow {
+      transform: translateX(4px);
+    }
+  }
+
+  .actu__meta {
     display: flex;
     flex-wrap: wrap;
     align-items: baseline;
@@ -274,8 +413,8 @@ const externe = { target: '_blank', rel: 'noopener noreferrer' };
     border-bottom: 2px solid var(--cream-dark);
   }
 
-  /* Le nom du titre de presse, en lettres d'affiche, son site dessous. */
-  .article__media {
+  /* Qui parle, en lettres d'affiche ; le détail dessous. */
+  .actu__source {
     font-family: var(--font-display);
     font-size: 1.5rem;
     line-height: 1.1;
@@ -283,7 +422,7 @@ const externe = { target: '_blank', rel: 'noopener noreferrer' };
     text-transform: uppercase;
   }
 
-  .article__media span {
+  .actu__source span {
     display: block;
     margin-top: 4px;
     font-family: var(--font-body);
@@ -294,7 +433,7 @@ const externe = { target: '_blank', rel: 'noopener noreferrer' };
     color: var(--brown);
   }
 
-  .article__date {
+  .actu__date {
     padding: 4px 14px;
     border-radius: 999px;
     background: var(--cream-dark);
@@ -304,8 +443,8 @@ const externe = { target: '_blank', rel: 'noopener noreferrer' };
   }
 
   /* Le titre de l'article : en texte courant, pas en lettres d'affiche —
-     un titre de presse se lit, il ne se crie pas. */
-  .article__titre {
+     un titre d'article se lit, il ne se crie pas. */
+  .carte .actu__titre {
     margin-bottom: 8px;
     font-family: var(--font-body);
     font-weight: 900;
@@ -316,22 +455,26 @@ const externe = { target: '_blank', rel: 'noopener noreferrer' };
     text-wrap: pretty;
   }
 
-  .article__resume {
+  .actu__resume {
     font-size: 0.97rem;
     line-height: 1.6;
     color: var(--brown);
   }
 
-  .article__bas {
+  .actu__bas {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
     gap: 14px;
     margin-top: 22px;
   }
 
-  .article__lieu {
+  /* Le bouton reste calé à droite, qu'il y ait une adresse ou non. */
+  .actu__bas .lum-pill-btn {
+    margin-left: auto;
+  }
+
+  .actu__lieu {
     display: inline-flex;
     align-items: center;
     gap: 7px;
@@ -341,7 +484,7 @@ const externe = { target: '_blank', rel: 'noopener noreferrer' };
     text-transform: uppercase;
   }
 
-  .article__lieu svg {
+  .actu__lieu svg {
     width: 18px;
     height: 18px;
     flex: none;
@@ -352,7 +495,7 @@ const externe = { target: '_blank', rel: 'noopener noreferrer' };
     stroke-linejoin: round;
   }
 
-  .article .lum-pill-btn,
+  .actu .lum-pill-btn,
   .reco .lum-pill-btn {
     padding: 9px 22px;
     font-size: 0.85rem;
@@ -364,7 +507,7 @@ const externe = { target: '_blank', rel: 'noopener noreferrer' };
     font-size: 1.5rem;
   }
 
-  .reco .article__resume {
+  .reco .actu__resume {
     max-width: 46ch;
     margin: 0 auto 20px;
   }
@@ -402,8 +545,13 @@ const externe = { target: '_blank', rel: 'noopener noreferrer' };
       padding: 24px 22px;
     }
 
-    .article__titre {
+    .carte .actu__titre {
       font-size: 1.1rem;
+    }
+
+    /* Sur un téléphone, le bouton passe sous l'adresse, à gauche. */
+    .actu__bas .lum-pill-btn {
+      margin-left: 0;
     }
   }
 </style>

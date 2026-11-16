@@ -1,6 +1,6 @@
-// Les articles qui citent le LÜM, affichés sur /presse du plus récent au
-// plus ancien. Pour en ajouter un : une entrée de plus dans `parutions`,
-// l'ordre est rétabli à l'affichage.
+// Les articles qui citent le LÜM, affichés sur /actus avec ceux du blog,
+// du plus récent au plus ancien. Pour en ajouter un : une entrée de plus
+// dans `parutions`, l'ordre est rétabli à l'affichage (src/lib/actus.ts).
 //
 // N'y figure que ce qui a été vérifié sur la page de l'article : le titre
 // tel que publié, le mois de parution, et ce qu'il dit du LÜM. Le résumé est

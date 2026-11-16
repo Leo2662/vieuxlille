@@ -25,4 +25,4 @@ Rue du Molinel, on passe, on choisit, on repart : LÜM Lille Centre est dédié
 
 Rien ne change rue Saint-André : pour s'installer, [bruncher le week-end](/brunch/) ou [privatiser le café un jeudi soir](/afterwork), on vous attend au 94 rue Saint-André, du mercredi au lundi, de 10h à 18h.
 
-Lille Actu a raconté cette ouverture : [lire l'article](https://actu.fr/hauts-de-france/lille_59350/moins-dun-an-apres-sa-premiere-adresse-le-coffee-shop-lum-ouvre-en-plein-centre-de-lille_64840272.html), et tous les autres sur notre [page presse](/presse).
+Lille Actu a raconté cette ouverture : [lire l'article](https://actu.fr/hauts-de-france/lille_59350/moins-dun-an-apres-sa-premiere-adresse-le-coffee-shop-lum-ouvre-en-plein-centre-de-lille_64840272.html), et tous les autres articles de presse dans nos [actus](/actus).

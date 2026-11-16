@@ -1,6 +1,6 @@
 // Les collections de contenu du site. Pour l'instant, une seule : le blog.
 // Un article = un fichier Markdown dans src/content/blog/ ; son nom de
-// fichier (sans .md) devient son adresse : /blog/<nom-du-fichier>/.
+// fichier (sans .md) devient son adresse : /actus/<nom-du-fichier>/.
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
