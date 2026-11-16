@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ChoixLangue from './ChoixLangue.astro';
+import MenuNav from './MenuNav.astro';
 import { chemins, type Langue } from '../i18n';
 import { faq, occasions } from '../data/carte-cadeau.ts';
 
@@ -204,6 +205,7 @@ const textes = {
         <small>Vieux-Lille</small>
       </a>
       <div class="entete__droite">
+        <MenuNav langue={langue} />
         <ChoixLangue langue={langue} chemins={adresses} />
         <a class="retour" href={accueil}>
           <span class="arrow">←</span> {textes.retour}
@@ -472,6 +474,16 @@ const textes = {
     display: flex;
     align-items: center;
     gap: 18px;
+  }
+
+  /* Sur un téléphone, menu, langues et retour ne tiennent pas sur une ligne
+     à côté du logo : le retour passe dessous, calé à droite. */
+  @media (max-width: 480px) {
+    .entete__droite {
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px 12px;
+    }
   }
 
   .retour {

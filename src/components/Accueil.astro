@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ChoixLangue from './ChoixLangue.astro';
+import MenuNav from './MenuNav.astro';
 import Trinquer from './Trinquer.astro';
 import { chemins, type Langue } from '../i18n';
 
@@ -78,6 +79,7 @@ const liens = [
 <BaseLayout title={textes.titre} langue={langue} chemins={adresses}>
   <main class="stage">
     <div class="stage__langues">
+      <MenuNav langue={langue} />
       <ChoixLangue langue={langue} chemins={adresses} />
     </div>
 
@@ -236,6 +238,10 @@ const liens = [
     position: absolute;
     top: 18px;
     right: var(--gutter);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
   /* --- Carte de l'offre afterwork, au-dessus du panneau ---

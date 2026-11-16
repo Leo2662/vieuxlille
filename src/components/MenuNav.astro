@@ -1,0 +1,249 @@
+---
+// Menu déroulant de navigation : un bouton pilule crème, comme le choix de
+// langue, qui déroule la liste des pages du site. Il vit sur la terre cuite
+// des en-têtes et de l'accueil.
+// La page courante est marquée (aria-current) plutôt que retirée : on voit
+// où l'on est dans le site.
+import { chemins, type Langue } from '../i18n';
+
+interface Props {
+  langue?: Langue;
+}
+
+const { langue = 'fr' } = Astro.props;
+
+const RESERVATION = 'https://lumvieuxlille-hash.github.io/lum-vieuxlille/';
+
+interface Lien {
+  nom: string;
+  url: string;
+  externe?: boolean;
+}
+
+// /menu et /afterwork n'existent qu'en français : la version anglaise mène
+// à la carte française (c'est déjà le cas du bouton de l'accueil anglais)
+// et ne propose pas l'afterwork.
+const textes = {
+  fr: {
+    bouton: 'Découvrir',
+    etiquette: 'Pages du site',
+    liens: [
+      { nom: 'Accueil', url: chemins('').fr },
+      { nom: 'La carte', url: '/menu' },
+      { nom: 'Le brunch', url: chemins('brunch/').fr },
+      { nom: 'Carte cadeau', url: chemins('brunch/carte-cadeau/').fr },
+      { nom: 'Afterwork', url: '/afterwork' },
+      { nom: 'Réserver', url: RESERVATION, externe: true },
+    ],
+  },
+  en: {
+    bouton: 'Explore',
+    etiquette: 'Site pages',
+    liens: [
+      { nom: 'Home', url: chemins('').en },
+      { nom: 'Menu', url: '/menu' },
+      { nom: 'Brunch', url: chemins('brunch/').en },
+      { nom: 'Gift card', url: chemins('brunch/carte-cadeau/').en },
+      { nom: 'Book a table', url: RESERVATION, externe: true },
+    ],
+  },
+}[langue] satisfies { bouton: string; etiquette: string; liens: Lien[] };
+
+// Comparaison sans la barre finale : /menu et /menu/ sont la même page.
+const sansBarre = (p: string) => p.replace(/\/+$/, '') || '/';
+const ici = sansBarre(Astro.url.pathname);
+---
+
+<nav class="nav" aria-label={textes.etiquette} data-menu-nav>
+  <button
+    class="nav__bouton"
+    type="button"
+    aria-expanded="false"
+    aria-controls={`menu-nav-${langue}`}
+  >
+    {textes.bouton}
+    <svg class="nav__chevron" viewBox="0 0 12 8" aria-hidden="true">
+      <path
+        d="M1.5 1.5 6 6l4.5-4.5"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"></path>
+    </svg>
+  </button>
+
+  <ul class="nav__liste" id={`menu-nav-${langue}`} hidden>
+    {
+      textes.liens.map((lien) => {
+        const courant = !lien.externe && sansBarre(lien.url) === ici;
+        return (
+          <li>
+            <a
+              class="nav__lien"
+              href={lien.url}
+              aria-current={courant ? 'page' : undefined}
+              {...(lien.externe ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            >
+              {lien.nom}
+              <span class="arrow" aria-hidden="true">
+                {lien.externe ? '↗' : '→'}
+              </span>
+            </a>
+          </li>
+        );
+      })
+    }
+  </ul>
+</nav>
+
+<script>
+  // Ouvre et ferme la liste. Elle se referme sur Échap (le focus revient au
+  // bouton), sur un clic ailleurs, ou quand le focus quitte le menu.
+  document.querySelectorAll<HTMLElement>('[data-menu-nav]').forEach((nav) => {
+    const bouton = nav.querySelector<HTMLButtonElement>('.nav__bouton')!;
+    const liste = nav.querySelector<HTMLUListElement>('.nav__liste')!;
+
+    const basculer = (ouvert: boolean) => {
+      bouton.setAttribute('aria-expanded', String(ouvert));
+      liste.hidden = !ouvert;
+    };
+
+    bouton.addEventListener('click', () => {
+      basculer(bouton.getAttribute('aria-expanded') !== 'true');
+    });
+
+    nav.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !liste.hidden) {
+        basculer(false);
+        bouton.focus();
+      }
+    });
+
+    nav.addEventListener('focusout', (e) => {
+      if (!nav.contains(e.relatedTarget as Node | null)) basculer(false);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!nav.contains(e.target as Node)) basculer(false);
+    });
+  });
+</script>
+
+<style>
+  .nav {
+    position: relative;
+  }
+
+  /* Même pilule à contour crème que le choix de langue, à sa hauteur. */
+  .nav__bouton {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border: 2.5px solid var(--cream);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--cream);
+    font: inherit;
+    font-weight: 800;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .nav__bouton:hover,
+  .nav__bouton:focus-visible {
+    background: rgba(249, 241, 230, 0.2);
+  }
+
+  .nav__bouton[aria-expanded='true'] {
+    background: var(--cream);
+    color: var(--terracotta);
+  }
+
+  .nav__chevron {
+    width: 11px;
+    height: 8px;
+    transition: transform 0.25s;
+  }
+
+  .nav__bouton[aria-expanded='true'] .nav__chevron {
+    transform: rotate(180deg);
+  }
+
+  /* La liste : une carte crème qui flotte (niveau 3) sous le bouton, calée
+     sur son bord droit pour ne jamais sortir de l'écran. */
+  .nav__liste {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 50;
+    min-width: 210px;
+    margin: 0;
+    padding: 8px;
+    list-style: none;
+    background: var(--cream);
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--elevation-3), var(--edge-light);
+    animation: deroule 0.22s ease both;
+  }
+
+  .nav__liste[hidden] {
+    display: none;
+  }
+
+  @keyframes deroule {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .nav__lien {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    color: var(--terracotta);
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .nav__lien .arrow {
+    transition: transform 0.2s;
+  }
+
+  .nav__lien:hover,
+  .nav__lien:focus-visible {
+    background: var(--cream-dark);
+  }
+
+  .nav__lien:hover .arrow {
+    transform: translateX(3px);
+  }
+
+  .nav__lien[aria-current='page'] {
+    background: var(--terracotta);
+    color: var(--cream);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav__liste {
+      animation: none;
+    }
+  }
+</style>

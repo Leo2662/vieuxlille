@@ -3,6 +3,7 @@
 // Le retour mène à l'accueil, sauf si la page en indique un autre.
 // Sur une page traduite, `langue` et `chemins` ajoutent le choix de langue.
 import ChoixLangue from './ChoixLangue.astro';
+import MenuNav from './MenuNav.astro';
 import type { Langue } from '../i18n';
 
 interface Props {
@@ -22,6 +23,7 @@ const retour = Astro.props.retour ?? accueil;
     <small>Vieux-Lille</small>
   </a>
   <div class="entete__droite">
+    <MenuNav langue={langue} />
     {chemins && <ChoixLangue langue={langue} chemins={chemins} />}
     <a class="retour" href={retour}>
       <span class="arrow">←</span> {langue === 'fr' ? 'Retour' : 'Back'}
@@ -42,6 +44,16 @@ const retour = Astro.props.retour ?? accueil;
     display: flex;
     align-items: center;
     gap: 18px;
+  }
+
+  /* Sur un téléphone, menu, langues et retour ne tiennent pas sur une ligne
+     à côté du logo : le retour passe dessous, calé à droite. */
+  @media (max-width: 480px) {
+    .entete__droite {
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 10px 12px;
+    }
   }
 
   .logo {
