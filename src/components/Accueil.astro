@@ -551,29 +551,6 @@ const liens = [
     transform: translateX(3px);
   }
 
-  /* --- TEST visuel : sections en pleine largeur, bord à bord ---
-     Les trois blocs perdent leur largeur max de 820px et leurs coins
-     arrondis. Supprimer ce bloc pour revenir aux cartes centrées. */
-  /* padding-top : le bandeau afterwork, désormais pleine largeur, passerait
-     sous le menu et le choix de langue du coin haut droit. */
-  .stage {
-    padding-top: 76px;
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .offre,
-  .panel,
-  .avis {
-    max-width: none;
-    border-radius: 0;
-  }
-
-  .pied,
-  .reseaux {
-    padding: 0 var(--gutter);
-  }
-
   @keyframes fade-up {
     from {
       opacity: 0;
